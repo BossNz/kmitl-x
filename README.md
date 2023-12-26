@@ -43,7 +43,8 @@ $ yarn build
 ## 🤝 Contribute
 we invite you to contribute kmitlx
 
-- you can open pull request to this repo we will review you code and approve 😎
+- you can open pull request to this repo we will review your code and approve 😎
 
 ## 🫡 credit
 [Svelte Typescript Chrome Extension Boilerplate](https://arc.net/l/quote/zscimusa)
+[KMITL +](https://github.com/t0ngk/KMITL-PLUS)

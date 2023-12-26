@@ -1,7 +1,7 @@
 <script lang="ts">
   import { createTimeSlot } from "../../utils/StudentHelper";
   import type { ScheduleI } from "../../utils/StudentScraping";
-  import CardSubject from "./cardSubject.svelte";
+  import CardSubject from "./CardSubject.svelte";
   export let schedule: Array<ScheduleI>;
   const days = [
     { name: "Mon", code: "จ." },
@@ -22,7 +22,7 @@
         <th />
         {#each Array.from({ length: 20 - 8 }, (_, i) => i + 8) as hour}
           {#if hour < 20 - 1}
-            <th class="border border-orange-100 w-[8.33%]" colspan="4">
+            <th class="border-x border-orange-100 w-[8.33%]" colspan="4">
               {`${formatTime(hour)} - ${formatTime(hour + 1)}`}
             </th>
           {/if}
@@ -39,7 +39,7 @@
           </td>
           {#each createTimeSlot(schedule, day.code) as slot}
             {#if slot == undefined}
-              <td class="border-l border-r border-orange-100" />
+              <td class="border-x border-orange-100" />
             {:else}
               <td colspan={slot.cols}>
                 <CardSubject subject={slot} />
