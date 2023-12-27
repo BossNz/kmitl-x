@@ -10,13 +10,13 @@
   export let information: InformationI;
 
   let captureScreen: any;
-  setTimeout(async ()=>{
-    const blob = await toBlob(captureScreen)
-    if(blob == null) return
-    var file = new Blob([blob], { type: 'image/png' });
-    var fileURL = URL.createObjectURL(file);
-    window.open(fileURL);
-  },1000)
+  // setTimeout(async ()=>{
+  //   const blob = await toBlob(captureScreen)
+  //   if(blob == null) return
+  //   var file = new Blob([blob], { type: 'image/png' });
+  //   var fileURL = URL.createObjectURL(file);
+  //   window.open(fileURL);
+  // },1000)
 </script>
 
 <main class="min-h-screen p-2 flex flex-col justify-between">
