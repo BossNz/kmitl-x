@@ -2,7 +2,9 @@
   import { createTimeSlot } from "../../utils/StudentHelper";
   import type { ScheduleI } from "../../utils/StudentScraping";
   import CardSubject from "./CardSubject.svelte";
+
   export let schedule: Array<ScheduleI>;
+
   const days = [
     { name: "Mon", code: "จ." },
     { name: "Tue", code: "อ." },
@@ -12,6 +14,7 @@
     { name: "Sat", code: "ส." },
     { name: "Sun", code: "อา." },
   ];
+
   const formatTime = (hour: number) => `${hour.toString().padStart(2, "0")}:00`;
 </script>
 
@@ -31,9 +34,9 @@
     </thead>
     <tbody>
       {#each days as day}
-        <tr>
+        <tr class="hover:bg-orange-100/20 group">
           <td
-            class="text-right font-semibold text-sm text-orange-400 whitespace-nowrap"
+            class="text-right font-semibold text-sm text-orange-300 whitespace-nowrap group-hover:scale-125 group-hover:text-orange-400 transition-all"
           >
             {day.name}
           </td>
@@ -41,7 +44,7 @@
             {#if slot == undefined}
               <td class="border-x border-orange-100" />
             {:else}
-              <td colspan={slot.cols}>
+              <td colspan={slot.colSpan}>
                 <CardSubject subject={slot} />
               </td>
             {/if}
@@ -57,6 +60,6 @@
     @apply font-prompt font-normal whitespace-nowrap text-orange-400;
   }
   td {
-    @apply font-prompt w-[2.22%] p-1 h-28;
+    @apply font-prompt w-[2.22%] py-1 px-2 h-28;
   }
 </style>

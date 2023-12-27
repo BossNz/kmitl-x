@@ -1,7 +1,7 @@
 {
-  "name": "kmitl-student-helper",
-  "description": "Enhance your academic journey at King Mongkut's Institute of Technology Ladkrabang (KMITL) with the KMITL Student Helper Extension! This powerful browser extension is designed to simplify and improve your daily student life, providing you with essential tools and features right at your fingertips.",
-  "version": "1.0.0",
+  "name": "kmitl-x",
+  "description": "extension redesign table for student at kmitl.",
+  "version": "1.0.5",
   "license": "MIT",
   "type": "module",
   "scripts": {
@@ -23,6 +23,7 @@
   },
   "dependencies": {
     "autoprefixer": "^10.4.16",
+    "html-to-image": "^1.11.11",
     "postcss": "^8.4.32",
     "tailwindcss": "^3.4.0"
   }

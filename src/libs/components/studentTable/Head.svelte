@@ -1,7 +1,5 @@
 <script lang="ts">
   import type { InformationI } from "../../utils/StudentScraping";
-
-
   export let information: InformationI;
 </script>
 
