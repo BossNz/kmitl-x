@@ -46,6 +46,6 @@ we invite you to contribute kmitlx
 - you can open pull request to this repo we will review your code and approve 😎
 
 ## 🫡 credit
-> [Svelte Typescript Chrome Extension Boilerplate](https://arc.net/l/quote/zscimusa)
+> [Svelte Typescript Chrome Extension Boilerplate](https://github.com/NekitCorp/chrome-extension-svelte-typescript-boilerplate)
 
 > [KMITL +](https://github.com/t0ngk/KMITL-PLUS)
