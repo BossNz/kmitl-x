@@ -1,6 +1,28 @@
 import type { ScheduleI } from "./StudentScraping";
 
-export const createTimeSlot = (
+const downloadBlob = (blob: Blob, name = "file.txt") => {
+  if ((window.navigator as any) && (window.navigator as any).msSaveOrOpenBlob)
+    return (window.navigator as any).msSaveOrOpenBlob(blob);
+  const data = window.URL.createObjectURL(blob);
+
+  const link = document.createElement("a");
+  link.href = data;
+  link.download = name;
+
+  link.dispatchEvent(
+    new MouseEvent("click", {
+      bubbles: true,
+      cancelable: true,
+      view: window,
+    })
+  );
+
+  setTimeout(() => {
+    window.URL.revokeObjectURL(data);
+    link.remove();
+  }, 100);
+};
+const createTimeSlot = (
   schedule: ScheduleI[],
   day: string = "จ."
 ): Array<undefined | (ScheduleI & { colSpan: number })> => {
@@ -47,3 +69,5 @@ const convertToMinutes = (time: string): number => {
   const [hours, minutes] = time.split(":");
   return parseInt(hours, 10) * 60 + parseInt(minutes, 10);
 };
+
+export { downloadBlob, createTimeSlot };
