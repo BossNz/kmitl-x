@@ -60,6 +60,6 @@
     @apply font-prompt font-normal whitespace-nowrap text-orange-400;
   }
   td {
-    @apply font-prompt w-[2.22%] py-1 px-2 h-28;
+    @apply font-prompt w-[2.22%] p-1 h-28;
   }
 </style>

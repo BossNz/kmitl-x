@@ -99,9 +99,12 @@ export default class StudentScraping {
         end: this.getInnerTextOrChildText(childNodes[25], offset)
           .split(" ")[1]
           .split("-")[1],
-        type: this.getInnerTextOrChildText(childNodes[25], offset)
-          .split(" ")[2]
-          .replace("น.", ""),
+        type:
+          this.getInnerTextOrChildText(childNodes[25], offset)
+            .split(" ")[2]
+            .replaceAll(/น\.|\(|\)/g, "")[0] == "ท"
+            ? "ทฤษฏี"
+            : "ปฏิบัติ",
       },
       room: this.getInnerTextOrChildText(childNodes[29], offset),
       building: this.getInnerTextOrChildText(childNodes[33], offset),
