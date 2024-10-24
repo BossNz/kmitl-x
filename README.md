@@ -1,7 +1,24 @@
 # 📦 KMITLX Extension Chrome
 
-> schedule table extension for student kmitl
+> Transform your KMITL timetable into a sleek, modern, and user-friendly interface
 
+ <table>
+        <tr>
+            <td>
+                <img src=".github/images/preview-dark.png" alt="Preview" width="100%" style="border-radius: 5px;">
+                <p align="center">
+                    Preview in dark mode
+                </p>
+            </td>
+            <td>
+                <img src=".github/images/preview-light.png" alt="Preview" width="100%" style="border-radius: 5px;">
+                <p align="center">
+                    Preview in light mode
+                </p>
+            </td>
+        </tr>
+    </table>
+    
 ## 🔮 Features
 
 -   [Svelte](https://svelte.dev/)
@@ -37,8 +54,6 @@ $ yarn build
 2. Enable Developer Mode by clicking the toggle switch next to `Developer mode`.
 3. Click the `LOAD UNPACKED` button and select the `/dist` directory.
 4. Install [Extensions Reloader](https://chromewebstore.google.com/detail/extensions-reloader/fimgfedafeadlieiabdeeaodndnlbhid) for auto update `/dist` to easy develop.
-
-![Example](https://wd.imgix.net/image/BhuKGJaIeLNPW9ehns59NfwqKxF2/vOu7iPbaapkALed96rzN.png?auto=format&w=571)
 
 ## 🤝 Contribute
 we invite you to contribute kmitlx
