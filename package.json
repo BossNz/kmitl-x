@@ -1,13 +1,17 @@
 {
   "name": "kmitl-x",
   "description": "Transform your KMITL timetable into a sleek, modern, and user-friendly interface",
-  "version": "1.0.5",
+  "version": "1.1.0",
   "license": "MIT",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "check": "svelte-check --tsconfig ./tsconfig.json"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/BossNz/kmitl-x.git"
   },
   "devDependencies": {
     "@crxjs/vite-plugin": "2.0.0-beta.26",

@@ -1,13 +1,13 @@
 import { defineManifest } from "@crxjs/vite-plugin";
 import packageJson from "../package.json";
 
-const { version, name, description } = packageJson;
+const { version, description } = packageJson;
 
 const [major, minor, patch] = version.replace(/[^\d.-]+/g, "").split(/[.-]/);
 
 export default defineManifest(async (env) => ({
   manifest_version: 3,
-  name: name,
+  name: "KMITL X",
   description: description,
   version: `${major}.${minor}.${patch}`,
   version_name: version,
