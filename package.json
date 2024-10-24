@@ -1,7 +1,7 @@
 {
   "name": "kmitl-x",
   "description": "Transform your KMITL timetable into a sleek, modern, and user-friendly interface",
-  "version": "1.1.0",
+  "version": "1.1.5",
   "license": "MIT",
   "type": "module",
   "scripts": {
