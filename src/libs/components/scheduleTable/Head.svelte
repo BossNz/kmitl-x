@@ -1,10 +1,10 @@
 <script lang="ts">
-  import type { InformationI } from "../../utils/StudentScraping";
+  import type { InformationI } from "../../utils/ScheduleTableScraping";
   export let information: InformationI;
 </script>
 
 <div
-  class="bg-orange-100/50 text-orange-500 rounded font-prompt px-3 py-3 border border-orange-200"
+  class="dark:bg-orange-500/10 bg-orange-100/50 text-orange-500 rounded font-prompt px-3 py-3 border dark:border-orange-500 border-orange-200"
 >
   <div class="flex justify-between">
     <img

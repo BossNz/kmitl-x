@@ -26,7 +26,7 @@ export interface InformationI {
   name: string;
 }
 
-export default class StudentScraping {
+export default class ScheduleTableScraping {
   private scheduleTable: HTMLTableElement;
   constructor(scheduleTable: HTMLTableElement) {
     this.scheduleTable = scheduleTable;

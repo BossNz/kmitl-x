@@ -1,11 +1,11 @@
 <script lang="ts">
-  import type { ScheduleI } from "../../utils/StudentScraping";
+  import type { ScheduleI } from "../../utils/ScheduleTableScraping";
   export let subject: ScheduleI;
 </script>
 
 <div
-  class="bg-orange-100/50 border-l-2 border-orange-200 px-3 py-1 h-full flex flex-col justify-between rounded
-  hover:scale-105 hover:border-orange-400 hover:rotate-2 transition-all"
+  class=" dark:bg-orange-500/10 bg-orange-100/50 border-l-2 dark:border-orange-400 border-orange-200 px-3 py-1 h-full flex flex-col justify-between rounded
+  hover:border-orange-500 dark:hover:border-orange-600 transition-all dark:text-orange-300 text-black"
 >
   <div class="flex justify-between text-xs opacity-65 z-10">
     <p>{subject.time.type}</p>
