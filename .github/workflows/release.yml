@@ -27,7 +27,8 @@ jobs:
       - name: Zip dist folder
         run: |
           VERSION=${GITHUB_REF#refs/tags/}
-          zip -r kmitl-x-$VERSION.zip dist/
+          cd dist
+          zip -r ../kmitl-x-$VERSION.zip .
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
