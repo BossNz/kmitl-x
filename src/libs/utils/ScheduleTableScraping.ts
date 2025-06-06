@@ -71,9 +71,14 @@ export default class ScheduleTableScraping {
       .slice(1);
 
     for (const data of studyTableRowsArray) {
-      scheduleData.push(this.parseScheduleData(data.childNodes));
-      if (data.childNodes[21].textContent != "-") {
-        scheduleData.push(this.parseScheduleData(data.childNodes, 2));
+      const splitedTime = data.childNodes[25].textContent?.split("+") || [];
+      for (let i = 0; i < splitedTime.length; i++) {
+        const tempNode = data.childNodes;
+        tempNode[25].textContent = splitedTime[i].trim();
+        scheduleData.push(this.parseScheduleData(tempNode));
+        if (data.childNodes[21].textContent != "-") {
+          scheduleData.push(this.parseScheduleData(tempNode, 2));
+        }
       }
     }
 
