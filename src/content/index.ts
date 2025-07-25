@@ -2,7 +2,7 @@ import StudentTable from "../pages/StudentTable.svelte";
 import ScheduleTableScraping from "../libs/utils/ScheduleTableScraping";
 import "../assets/css/tailwind.css";
 import { mount } from "svelte";
-import { originalTable } from "../stores/ScheduleTable";
+import { originalTable } from "../stores/scheduletable";
 
 const font = document.createElement("style");
 font.innerHTML =

@@ -15,12 +15,12 @@
 
   export let schedule: Array<ScheduleI>;
   export let information: InformationI;
-  let captureScreen: any;
+  let captureScreen;
 
-  let originalTableToggle: boolean = true;
-  let copyPngToggle: boolean = false;
+  let originalTableToggle = true;
+  let copyPngToggle = false;
 
-  let originalTableRawHTML: string;
+  let originalTableRawHTML = "";
 
   originalTable.subscribe((value) => {
     originalTableRawHTML = value;

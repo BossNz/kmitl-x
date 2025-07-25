@@ -71,12 +71,9 @@ export default class ScheduleTableScraping {
       .slice(1);
 
     for (const data of studyTableRowsArray) {
-      const timeText = data.childNodes[25].textContent ?? "";
-      const matches = timeText.match(/((?:[ก-ฮ]{1,2}|อา)\.\s*\d{2}:\d{2}-\d{2}:\d{2}\s*น?\.?\([ทป]\))/g) || [];
-      for (let i = 0; i < matches.length; i++) {
-        const tempNode = data.childNodes;
-        tempNode[25].textContent = matches[i].trim();
-        scheduleData.push(this.parseScheduleData(tempNode));
+      scheduleData.push(this.parseScheduleData(data.childNodes));
+      if (data.childNodes[21].textContent != "-") {
+        scheduleData.push(this.parseScheduleData(data.childNodes, 2));
       }
     }
 
