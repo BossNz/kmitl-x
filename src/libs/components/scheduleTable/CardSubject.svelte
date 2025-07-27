@@ -3,7 +3,6 @@
   export let subject: ScheduleI;
 </script>
 
-
 <div
   class="relative z-5 dark:bg-orange-500/10 bg-orange-100/50 overflow-hidden border-l-4 border-2 border-orange-400/15
   border-l-orange-400/70 dark:border-l-orange-400 px-3 py-1 h-full flex flex-col justify-between rounded

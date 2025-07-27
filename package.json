@@ -1,7 +1,7 @@
 {
   "name": "kmitl-x",
   "description": "Transform your KMITL timetable into a sleek, modern, and user-friendly interface",
-  "version": "1.2.1",
+  "version": "1.2.7",
   "license": "MIT",
   "type": "module",
   "scripts": {
@@ -19,18 +19,19 @@
     "@sveltejs/vite-plugin-svelte": "4.0.0",
     "@tsconfig/svelte": "5.0.4",
     "@types/chrome": "0.0.279",
-    "svelte": "5.0.5",
+    "svelte": "^5.33.14",
     "svelte-check": "4.0.5",
     "tslib": "2.8.0",
     "typescript": "5.6.3",
     "vite": "5.4.10",
-    "svelte-preprocess": "5.0.4"
+    "svelte-preprocess": "^6.0.3"
   },
   "dependencies": {
     "@xpd/tailwind-3dtransforms": "^1.0.3",
     "autoprefixer": "^10.4.20",
     "html-to-image": "^1.11.11",
     "postcss": "^8.4.47",
-    "tailwindcss": "^3.4.14"
+    "tailwindcss": "^3.4.14",
+    "vite-plugin-svelte": "^3.0.1"
   }
 }
