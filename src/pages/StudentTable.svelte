@@ -15,7 +15,7 @@
 
   export let schedule: Array<ScheduleI>;
   export let information: InformationI;
-  let captureScreen;
+  let captureScreen: HTMLElement;
 
   let originalTableToggle = true;
   let copyPngToggle = false;
