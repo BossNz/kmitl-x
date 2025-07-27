@@ -25,7 +25,7 @@
         <th></th>
         {#each Array.from({ length: 20 - 8 }, (_, i) => i + 8) as hour}
           {#if hour < 20 - 1}
-            <th class="border-x dark:border-orange-100/10 border-orange-100 w-[8.33%]" colspan="4">
+            <th class="border-x dark:border-orange-100/10 border-zinc-400/50 w-[8.33%]" colspan="4">
               {`${formatTime(hour)} - ${formatTime(hour + 1)}`}
             </th>
           {/if}
@@ -34,17 +34,18 @@
     </thead>
     <tbody>
       {#each days as day}
-        <tr class="hover:bg-orange-100/20 dark:hover:bg-orange-100/5 group">
+        <tr class="group">
           <td
-            class="text-right font-semibold text-sm dark:text-orange-400 text-orange-300 whitespace-nowrap group-hover:scale-125 group-hover:text-orange-400 dark:group-hover:text-orange-600 transition-all"
+            class="td-day text-right font-semibold text-sm dark:text-orange-400 text-orange-500 whitespace-nowrap
+            group-hover:scale-125 group-hover:text-orange-400 dark:group-hover:text-orange-600 transition-all"
           >
             {day.name}
           </td>
           {#each createTimeSlot(schedule, day.code) as slot}
             {#if slot == undefined}
-              <td class="border-x dark:border-orange-100/10 border-orange-100"></td>
+              <td class="row-hover-overlay border-x dark:border-orange-100/10 border-zinc-400/50"></td>
             {:else}
-              <td colspan={slot.colSpan}>
+              <td class="row-hover-overlay" colspan={slot.colSpan}>
                 <CardSubject subject={slot} />
               </td>
             {/if}
@@ -56,10 +57,26 @@
 </div>
 
 <style scoped>
+  /* table rows hover effects */
+  tr.group > td.row-hover-overlay {
+    position: relative;
+  }
+  tr.group > td.row-hover-overlay::before {
+    @apply absolute inset-0 bg-black/10 dark:bg-white/5 opacity-0 pointer-events-none transition;
+    content: "";
+  }
+  tr.group:hover > td.row-hover-overlay::before {
+    @apply opacity-100;
+  }
+
   th {
-    @apply font-prompt font-normal whitespace-nowrap text-orange-400;
+    @apply font-prompt font-normal whitespace-nowrap text-orange-500;
   }
   td {
     @apply font-prompt w-[2.22%] p-1 h-28;
+  }
+
+  .td-day {
+    @apply px-2 py-0 w-auto;
   }
 </style>

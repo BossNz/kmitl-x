@@ -20,7 +20,7 @@
   let originalTableToggle: boolean = true;
   let copyPngToggle: boolean = false;
 
-  let originalTableRawHTML: string;
+  let originalTableRawHTML: string = "";
 
   originalTable.subscribe((value) => {
     originalTableRawHTML = value;
