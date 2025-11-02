@@ -55,7 +55,7 @@
   </table>
 </div>
 
-<style scoped>
+<style lang="postcss">
   th {
     @apply font-prompt font-normal whitespace-nowrap text-orange-400;
   }
