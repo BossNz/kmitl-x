@@ -56,7 +56,7 @@
     "ตารางสอบส่วนบุคคล",
     "ข้อมูลคะแนนเก็บ",
     "ข้อมูลผลการเรียน",
-    "ลงทะเบียน", // เปลี่ยนจาก "ลงทะเบียนเรียน" เป็น "ลงทะเบียน" เพื่อให้ค้นหาได้กว้างขึ้น
+    "ลงทะเบียน", // Changed from registration page name to broader search term
   ];
 
   const flattenedItems = sections

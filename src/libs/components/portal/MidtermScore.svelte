@@ -26,7 +26,7 @@
   function getStatusIcon(status: string): string {
     switch (status) {
       case "score":
-        return ""; // ไม่แสดงไอคอน แสดงตัวเลข
+        return ""; // No icon, show number
       case "processing":
         return "ph:spinner-duotone";
       case "notAnnounced":

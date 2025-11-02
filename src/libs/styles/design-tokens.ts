@@ -3,13 +3,13 @@ export const DesignTokens = {
   colors: {
     // Primary - Orange Accent
     primary: {
-      50: '#fff7ed',   // ใช้สำหรับ background ที่อ่อนมาก
-      100: '#ffedd5',  // ใช้สำหรับ hover states
-      200: '#fed7aa',  // ใช้สำหรับ border, divider
+      50: '#fff7ed',   // For very light backgrounds
+      100: '#ffedd5',  // For hover states
+      200: '#fed7aa',  // For borders, dividers
       300: '#fdba74',
       400: '#fb923c',
       500: '#f97316',  // Main primary color
-      600: '#ea580c',  // ใช้สำหรับ hover, active
+      600: '#ea580c',  // For hover, active states
       700: '#c2410c',
       800: '#9a3412',
       900: '#7c2d12',

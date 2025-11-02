@@ -355,7 +355,7 @@ function extractNewsListContent(doc: Document): PortalContentModel | null {
     const title = normalizeText(titleElement.textContent || "");
     if (!title) return;
 
-    // Extract date and time from the format: [ 21 ต.ค. 62 - 10:06 น. ]
+    // Extract date and time from the format: [ 21 Oct. 62 - 10:06 ]
     const dateTimeMatch = cell.textContent?.match(/\[\s*(\d{1,2}\s+[^\d\s]+\s+\d{2,4})\s*-\s*(\d{1,2}:\d{2}\s*[^\]]*)\s*\]/);
     let date: string | undefined;
     
@@ -515,14 +515,14 @@ function extractMinorProgramContent(
 }
 
 function extractRegistrationEligibilityContent(doc: Document): PortalContentModel | null {
-  // หา h1.prompt เพื่อดูสถานะการลงทะเบียน
+  // Find h1.prompt to check registration status
   const promptHeading = doc.querySelector("h1.prompt");
   if (!promptHeading) return null;
 
   const headingText = normalizeText(promptHeading.textContent || "");
   const hasEligibility = headingText.includes("สามารถลงทะเบียน");
 
-  // ลองหาข้อมูลจาก div id ก่อน
+  // Try to find student info from div id first
   let studentId = "";
   let studentName = "";
   let semester = "";
@@ -541,7 +541,7 @@ function extractRegistrationEligibilityContent(doc: Document): PortalContentMode
     semester = normalizeText(semesterDiv.textContent || "");
   }
 
-  // ถ้าไม่เจอจาก div ให้หาจากตารางแทน
+  // If not found from div, search from table instead
   if (!studentId || !studentName) {
     const tables = Array.from(doc.querySelectorAll("table"));
     for (const table of tables) {
@@ -564,7 +564,7 @@ function extractRegistrationEligibilityContent(doc: Document): PortalContentMode
     }
   }
 
-  // ถ้าไม่มีข้อมูลนักศึกษา ให้ return null
+  // If no student info found, return null
   if (!studentId || !studentName) return null;
 
   return {
@@ -1216,11 +1216,11 @@ function extractMidtermNote(doc: Document): string | undefined {
 
 function extractTranscriptContent(doc: Document): PortalContentModel | null {
   try {
-    // ใช้ windows-874 decoder เพื่อแก้ปัญหา encoding
+    // Use windows-874 decoder to fix encoding issues
     const tables = Array.from(doc.querySelectorAll("table"));
     if (tables.length === 0) return null;
 
-    // หาตารางหลักที่มีข้อมูล transcript
+    // Find main table with transcript data
     const mainTable = tables.find(table => {
       const text = table.textContent || "";
       return text.includes("COURSE TITLE") && text.includes("CREDIT") && text.includes("GRADE");
@@ -1228,7 +1228,7 @@ function extractTranscriptContent(doc: Document): PortalContentModel | null {
 
     if (!mainTable) return null;
 
-    // หา PDF URL
+    // Find PDF URL
     const pdfLink = doc.querySelector<HTMLAnchorElement>("a[href*='transcript_pdf']");
     const pdfUrl = pdfLink?.href;
 

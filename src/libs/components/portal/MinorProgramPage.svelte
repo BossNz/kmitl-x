@@ -90,7 +90,7 @@
           const title = titleElement.textContent?.trim() || "";
           if (!title) return null;
           
-          // Extract date and time from the format: [ 21 ต.ค. 62 - 10:06 น. ]
+          // Extract date and time from the format: [ 21 Oct. 62 - 10:06 ]
           const dateTimeMatch = cell.textContent?.match(/\[\s*(\d{1,2}\s+[^\d\s]+\s+\d{2,4})\s*-\s*(\d{1,2}:\d{2}\s*[^\]]*)\s*\]/);
           let date: string | undefined;
           
