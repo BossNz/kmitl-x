@@ -777,6 +777,19 @@ function detectSpecializedContent(
     };
   }
 
+  if (options.sourceUrl?.includes("grade_process.php")) {
+    return {
+      title: "ขั้นตอนการส่งเกรด",
+      blocks: [
+        {
+          type: "note",
+          tone: "info",
+          text: "ฟีเจอร์นี้กำลังอยู่ในระหว่างการพัฒนา กรุณาใช้หน้าต้นฉบับในการดูข้อมูล",
+        },
+      ],
+    };
+  }
+
   if (options.sourceUrl?.includes("report_gradetable")) {
     const gradeReport = extractGradeReportContent(doc);
     if (gradeReport) return gradeReport;
