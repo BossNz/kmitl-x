@@ -50,7 +50,7 @@
   let examType: "M" | "F" = "M";
   let examItems: ExamItem[] = [];
   let groupedExams: ExamGroup[] = [];
-  let darkMode = true;
+  let theme = "dark";
   let selectedExam: ExamItem | null = null;
   let showExamDetail = false;
   
@@ -126,6 +126,11 @@
   }
 
   onMount(() => {
+    // Initialize theme from localStorage
+    const storedTheme = localStorage.getItem("theme") || "dark";
+    theme = storedTheme;
+    applyTheme(theme);
+    
     parseExamData();
   });
 
@@ -506,6 +511,18 @@
     setTimeout(() => selectedExam = null, 300);
   }
 
+  function applyTheme(nextTheme: string) {
+    const root = document.documentElement;
+    root.classList.remove("light", "dark");
+    root.classList.add(nextTheme === "light" ? "light" : "dark");
+    localStorage.setItem("theme", nextTheme);
+  }
+
+  function toggleTheme() {
+    theme = theme === "dark" ? "light" : "dark";
+    applyTheme(theme);
+  }
+
   function changeMonth(direction: number) {
     currentMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + direction, 1);
     generateCalendarDays();
@@ -593,14 +610,7 @@
     return "default";
   }
 
-  function toggleDarkMode() {
-    darkMode = !darkMode;
-    if (darkMode) {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
-  }
+
 
   function showOriginal() {
     // Restore original HTML
@@ -678,8 +688,7 @@
   </style>
 </svelte:head>
 
-<div class="{darkMode ? 'dark' : ''} min-h-screen">
-  <div class="min-h-screen bg-gradient-to-br from-slate-50 via-gray-50 to-blue-50/20 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950 transition-colors duration-300">
+<div class="min-h-screen bg-gradient-to-br from-slate-50 via-gray-50 to-blue-50/20 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950 transition-colors duration-300">
     <!-- Header -->
     <div class="sticky top-0 z-50 bg-white/80 dark:bg-gray-800/90 backdrop-blur-md border-b border-gray-200/40 dark:border-gray-700/50 shadow-sm">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
@@ -716,10 +725,10 @@
             <Button
               variant="secondary"
               class="shadow-sm"
-              icon={darkMode ? "ph:sun-duotone" : "ph:moon-duotone"}
-              on:click={toggleDarkMode}
+              icon={theme === "dark" ? "ph:sun-duotone" : "ph:moon-duotone"}
+              on:click={toggleTheme}
             >
-              <span class="hidden xl:inline text-sm">{darkMode ? "สว่าง" : "มืด"}</span>
+              <span class="hidden xl:inline text-sm">{theme === "dark" ? "สว่าง" : "มืด"}</span>
             </Button>
 
             <Button
@@ -928,7 +937,6 @@
       {/if}
     </div>
   </div>
-</div>
 
 <!-- Exam Detail Modal -->
 {#if showExamDetail && selectedExam}
