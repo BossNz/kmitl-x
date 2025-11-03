@@ -12,6 +12,7 @@
   import ToggleTheme from "../libs/components/scheduleTable/ToggleTheme.svelte";
   import Button from "../libs/components/scheduleTable/Button.svelte";
   import { originalTable } from "../stores/ScheduleTable";
+  import { classes, cn } from "../libs/styles";
 
   export let schedule: Array<ScheduleI>;
   export let information: InformationI;
@@ -52,9 +53,9 @@
 
 {#if originalTableToggle}
   <main
-    class="min-h-screen p-2 flex flex-col justify-between dark:bg-zinc-900 bg-white"
+    class="min-h-screen p-2 flex flex-col justify-between dark:bg-gray-900 bg-white"
   >
-    <div bind:this={captureScreen} class="p-1 dark:bg-zinc-900 bg-white">
+    <div bind:this={captureScreen} class="p-1 dark:bg-gray-900 bg-white">
       <Head {information} />
       <div class="mb-auto mt-5">
         <ScheduleTable {schedule} />
