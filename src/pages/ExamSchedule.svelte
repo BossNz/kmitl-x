@@ -67,7 +67,7 @@
   // Helper function to parse location string
   function parseLocation(locationStr: string): ExamLocation {
     // Format: "building:room:seat_number"
-    // Example: "30:3042:001" or "Not specified" or "-"
+    // Example: "30:3042:001" or "E12:802:D1" or "Not specified" or "-"
     
     if (!locationStr || locationStr === "-" || locationStr === "ไม่ระบุ") {
       return {
@@ -78,23 +78,36 @@
       };
     }
 
-    // Check if it's special text (not in building:room:seat format)
+    // Check if it's special text (examination info, not location format)
     const isSpecialText = locationStr.includes('สอบ') || 
                           locationStr.includes('Examination') || 
+                          locationStr.includes('ปลายภาค') ||
+                          locationStr.includes('final exam') ||
                           locationStr.length > 50 || // Very long text
-                          !locationStr.match(/^\d/); // Doesn't start with number
+                          !locationStr.includes(':'); // No colon separator
 
+    if (isSpecialText) {
+      return {
+        building: "",
+        room: "",
+        seatNo: "",
+        raw: locationStr
+      };
+    }
+
+    // Parse colon-separated format
     const parts = locationStr.split(":");
     
-    if (parts.length >= 3 && !isSpecialText) {
+    if (parts.length >= 3) {
+      // Full format: building:room:seat
       return {
         building: parts[0].trim(),
         room: parts[1].trim(),
         seatNo: parts[2].trim(),
         raw: locationStr
       };
-    } else if (parts.length === 2 && !isSpecialText) {
-      // Case with only 2 parts, might be building:room
+    } else if (parts.length === 2) {
+      // Partial format: building:room (no seat number)
       return {
         building: parts[0].trim(),
         room: parts[1].trim(),
@@ -102,7 +115,7 @@
         raw: locationStr
       };
     } else {
-      // Case without : or special format, keep as raw only
+      // Single part or unknown format
       return {
         building: "",
         room: "",
@@ -987,6 +1000,7 @@
 
         <!-- Location -->
         {#if selectedExam.location.building || selectedExam.location.room || selectedExam.location.seatNo}
+          <!-- Case: Structured location data (building:room:seat format) -->
           <div class="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-4">
             <div class="flex items-center gap-2 text-gray-600 dark:text-gray-400 mb-3">
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1016,10 +1030,17 @@
                   <div class="text-xs text-gray-500 dark:text-gray-400 mb-1">ที่นั่ง</div>
                   <div class="text-lg font-bold text-orange-600 dark:text-orange-400">{selectedExam.location.seatNo}</div>
                 </div>
+              {:else}
+                <!-- Show placeholder if no seat number -->
+                <div class="bg-white dark:bg-gray-800/50 rounded-lg p-3 opacity-50">
+                  <div class="text-xs text-gray-500 dark:text-gray-400 mb-1">ที่นั่ง</div>
+                  <div class="text-lg font-bold text-gray-400 dark:text-gray-500">-</div>
+                </div>
               {/if}
             </div>
           </div>
         {:else if selectedExam.location.raw && (selectedExam.location.raw.includes('ปลายภาค') || selectedExam.location.raw.includes('final exam') || selectedExam.location.raw.includes('ในห้องสอบ') || selectedExam.location.raw.includes('examination room'))}
+          <!-- Case: Exam during final period without specific location -->
           <div class="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-xl p-4">
             <div class="flex items-start gap-3">
               <div class="flex-shrink-0">
@@ -1034,6 +1055,7 @@
             </div>
           </div>
         {:else if selectedExam.location.raw}
+          <!-- Case: Other location format (raw text) -->
           <div class="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-4">
             <div class="flex items-center gap-2 text-gray-600 dark:text-gray-400 mb-2">
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1043,6 +1065,18 @@
               <span class="text-sm font-medium">สถานที่สอบ</span>
             </div>
             <p class="text-base text-gray-900 dark:text-white">{selectedExam.location.raw}</p>
+          </div>
+        {:else}
+          <!-- Case: No location data at all -->
+          <div class="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-4">
+            <div class="flex items-center gap-2 text-gray-600 dark:text-gray-400 mb-2">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+              <span class="text-sm font-medium">สถานที่สอบ</span>
+            </div>
+            <p class="text-sm text-gray-500 dark:text-gray-400">ยังไม่ได้ระบุสถานที่สอบ</p>
           </div>
         {/if}
 
