@@ -1,4 +1,7 @@
 /** @type {import('tailwindcss').Config} */
+import plugin3d from '@xpd/tailwind-3dtransforms';
+
+/** @type {import('tailwindcss').Config} */
 export default {
   content: ["./src/**/*.{svelte,js,ts,jsx,tsx}"],
   darkMode: "class",
@@ -11,7 +14,7 @@ export default {
     },
   },
   plugins: [
-    require("@xpd/tailwind-3dtransforms"),
+    plugin3d,
     // Custom scrollbar plugin
     function ({ addUtilities }) {
       addUtilities({
