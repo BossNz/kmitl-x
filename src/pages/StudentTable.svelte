@@ -1,5 +1,4 @@
 <script lang="ts">
-  import "../assets/css/tailwind.css";
   import type {
     InformationI,
     ScheduleI,
