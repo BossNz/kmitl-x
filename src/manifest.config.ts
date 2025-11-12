@@ -17,9 +17,16 @@ export default defineManifest(async (env) => ({
   content_scripts: [
     {
       matches: [
-        "https://*.reg.kmitl.ac.th/u_student/report_studytable_show.php",
+        "https://*.reg.kmitl.ac.th/u_student/report_studytable_show.php*",
+        "https://*.reg.kmitl.ac.th/u_student/index.php*",
       ],
       js: ["src/content/index.ts"],
+    },
+    {
+      matches: [
+        "https://*.reg.kmitl.ac.th/u_student/report_examtable_show.php*",
+      ],
+      js: ["src/content/exam-schedule.ts"],
     },
   ],
 }));
