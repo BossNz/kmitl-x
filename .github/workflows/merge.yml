@@ -1,9 +1,10 @@
 name: Merge and Release Extension
 
 on:
-    push:
-        tags:
-            - "v*"
+    pull_request:
+        types: [closed]
+        branches:
+            - main
 
 permissions:
     contents: write
