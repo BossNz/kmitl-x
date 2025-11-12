@@ -7,19 +7,35 @@ on:
             - completed
 
 jobs:
-    build:
+    publish:
+        if: ${{ github.event.workflow_run.conclusion == 'success' }}
         name: Publish webextension
         runs-on: ubuntu-latest
 
-        steps:
-            - uses: actions/checkout@v1
+        permissions:
+            contents: read
 
-            - name: Upload & release
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+
+            - name: Download release asset
+              env:
+                  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              run: |
+                  tag_name=$(gh api repos/${{ github.repository }}/releases/latest --jq '.tag_name')
+                  echo "Latest tag: $tag_name"
+                  gh release download "$tag_name" \
+                    --repo ${{ github.repository }} \
+                    --pattern "kmitl-x-${tag_name}.zip" \
+                    --dir .
+
+            - name: Publish to Chrome Web Store
               uses: mnao305/chrome-extension-upload@v5.0.0
               with:
-                  file-path: https://github.com/${{github.repository_owner}}/kmitl-x/releases/download/${{github.ref_name}}/kmitl-x-${{github.ref_name}}.zip
+                  file-path: ./kmitl-x-${{ github.ref_name || github.event.workflow_run.head_branch }}.zip
                   extension-id: ${{ secrets.EXTENSION_ID }}
                   client-id: ${{ secrets.CLIENT_ID }}
                   client-secret: ${{ secrets.CLIENT_SECRET }}
                   refresh-token: ${{ secrets.REFRESH_TOKEN }}
-                  publish: false
+                  publish: true
