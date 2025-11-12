@@ -48,3 +48,32 @@ jobs:
                   files: kmitl-x-${{ steps.version.outputs.TAG_NAME }}.zip
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    publish:
+        needs: build-and-release
+        runs-on: ubuntu-latest
+        if: success()
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+
+            - name: Download release asset
+              env:
+                  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              run: |
+                  tag_name=${GITHUB_REF#refs/tags/}
+                  echo "Downloading release asset for tag $tag_name"
+                  gh release download "$tag_name" \
+                    --repo ${{ github.repository }} \
+                    --pattern "kmitl-x-${tag_name}.zip" \
+                    --dir .
+
+            - name: Publish to Chrome Web Store
+              uses: mnao305/chrome-extension-upload@v5.0.0
+              with:
+                  file-path: ./kmitl-x-${{ github.ref_name }}.zip
+                  extension-id: "lnhfadikffnjjhmoimkeinbbhcnkkcln"
+                  client-id: ${{ secrets.CLIENT_ID }}
+                  client-secret: ${{ secrets.CLIENT_SECRET }}
+                  refresh-token: ${{ secrets.REFRESH_TOKEN }}
+                  publish: true
