@@ -2,12 +2,8 @@ name: Build and Release Extension
 
 on:
   push:
-    branches:
-      - main
-      - dev
-
-permissions:
-  contents: write
+    tags:
+      - "v*"
 
 jobs:
   build-and-release:
@@ -30,12 +26,13 @@ jobs:
 
       - name: Zip dist folder
         run: |
+          VERSION=${GITHUB_REF#refs/tags/}
           cd dist
-          zip -r ../kmitl-x-release.zip .
+          zip -r ../kmitl-x-$VERSION.zip .
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
-          files: kmitl-x-release.zip
+          files: kmitl-x-${{ github.ref_name }}.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
