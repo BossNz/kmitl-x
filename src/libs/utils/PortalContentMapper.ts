@@ -1,183 +1,27 @@
-export type ScoreStatus = "score" | "processing" | "notAnnounced" | "notEntered";
-
-export interface ScoreAssessment {
-  label: string;
-  status: ScoreStatus;
-  display: string;
-  raw: string;
-}
-
-export interface ScoreCourse {
-  order: string;
-  courseNumber: string;
-  courseTitle: string;
-  section: string;
-  assessments: ScoreAssessment[];
-}
-
-export interface ScoreLegendItem {
-  status: ScoreStatus | "score";
-  label: string;
-  description: string;
-}
-
-export interface ScoreboardHeader {
-  institution?: string;
-  faculty?: string;
-  studentId?: string;
-  studentEnglishName?: string;
-  studentThaiName?: string;
-  major?: string;
-  semester?: string;
-}
-
-export interface ScoreboardBlock {
-  type: "scoreboard";
-  header?: ScoreboardHeader;
-  assessments: string[];
-  courses: ScoreCourse[];
-  legend: ScoreLegendItem[];
-  note?: string;
-}
-
-export interface MidtermScoreBlock {
-  type: "midtermScore";
-  actionUrl: string;
-  years: ScheduleOption[];
-  semesters: ScheduleOption[];
-  selectedYear?: string;
-  selectedSemester?: string;
-  header?: ScoreboardHeader;
-  assessments: string[];
-  courses: ScoreCourse[];
-  legend: ScoreLegendItem[];
-  note?: string;
-}
-
-export interface NewsItem {
-  id: string;
-  title: string;
-  href: string;
-  date?: string;
-  category?: string;
-}
-
-export interface NewsListBlock {
-  type: "newsList";
-  title?: string;
-  items: NewsItem[];
-}
-
-export interface ScheduleOption {
-  value: string;
-  label: string;
-}
-
-export interface ScheduleTableBlock {
-  type: "scheduleTable";
-  title?: string;
-  years: ScheduleOption[];
-  semesters: ScheduleOption[];
-  actionUrl: string;
-}
-
-export interface ExamTableBlock {
-  type: "examTable";
-  title?: string;
-  years: ScheduleOption[];
-  semesters: ScheduleOption[];
-  actionUrl: string;
-}
-
-export interface MinorProgramBlock {
-  type: "minorProgram";
-  sourceUrl: string;
-}
-
-export interface RegistrationEligibilityBlock {
-  type: "registrationEligibility";
-  studentId: string;
-  studentName: string;
-  semester: string;
-  hasEligibility: boolean;
-}
-
-export interface GradeReportCourse {
-  no: string;
-  courseNo: string;
-  courseTitle: string;
-  section: string;
-  credit: string;
-  type: string;
-  grade: string;
-}
-
-export interface GradeReportSummary {
-  label: string;
-  ca: string;
-  cp: string;
-  cd: string;
-  gp: string;
-  gpsGpa: string;
-  status: string;
-}
-
-export interface GradeReportLegendItem {
-  symbol: string;
-  symbolColor: string;
-  description: string;
-}
-
-export interface GradeReportBlock {
-  type: "gradeReport";
-  actionUrl: string;
-  pdfUrl?: string;
-  years: ScheduleOption[];
-  semesters: ScheduleOption[];
-  selectedYear?: string;
-  selectedSemester?: string;
-  header?: ScoreboardHeader;
-  courses: GradeReportCourse[];
-  summaries: GradeReportSummary[];
-  legend: GradeReportLegendItem[];
-  note?: string;
-}
-
-export interface TranscriptBlock {
-  type: "transcript";
-  actionUrl: string;
-  pdfUrl?: string;
-}
-
-export type PortalBlock =
-  | { type: "heading"; level: number; text: string }
-  | { type: "paragraph"; text: string }
-  | { type: "list"; ordered: boolean; items: string[] }
-  | { type: "keyValue"; items: Array<{ label: string; value: string }> }
-  | { type: "table"; headers: string[]; rows: string[][] }
-  | { type: "links"; items: Array<{ label: string; href: string }> }
-  | { type: "note"; tone: "info" | "warning"; text: string }
-  | { type: "divider" }
-  | ScoreboardBlock
-  | MidtermScoreBlock
-  | NewsListBlock
-  | ScheduleTableBlock
-  | ExamTableBlock
-  | MinorProgramBlock
-  | RegistrationEligibilityBlock
-  | GradeReportBlock
-  | TranscriptBlock;
-
-export interface PortalContentModel {
-  type?: "registrationEligibility" | "minorProgram" | "newsList" | "schedule" | "exam" | "midtermScore" | "gradeReport" | "transcript";
-  title: string;
-  subtitle?: string;
-  blocks: PortalBlock[];
-}
-
-export interface PortalContentMapperOptions {
-  sourceUrl?: string;
-}
+import type {
+  ScoreStatus,
+  ScoreAssessment,
+  ScoreCourse,
+  ScoreLegendItem,
+  ScoreboardHeader,
+  ScoreboardBlock,
+  MidtermScoreBlock,
+  NewsItem,
+  NewsListBlock,
+  ScheduleOption,
+  ScheduleTableBlock,
+  ExamTableBlock,
+  MinorProgramBlock,
+  RegistrationEligibilityBlock,
+  GradeReportCourse,
+  GradeReportSummary,
+  GradeReportLegendItem,
+  GradeReportBlock,
+  TranscriptBlock,
+  PortalBlock,
+  PortalContentModel,
+  PortalContentMapperOptions,
+} from "../types";
 
 export function mapDocumentToContent(
   doc: Document,

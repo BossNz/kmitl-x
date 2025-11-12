@@ -10,7 +10,7 @@
   import ExamTable from "./ExamTable.svelte";
   import MinorProgramPage from "./MinorProgramPage.svelte";
   import RegistrationEligibility from "./RegistrationEligibility.svelte";
-  import type { PortalContentModel } from "../../utils/PortalContentMapper";
+  import type { PortalContentModel, PortalBlock } from "../../types";
   import { classes, cn } from '../../styles';
 
   export let model: PortalContentModel;

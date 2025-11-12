@@ -1,21 +1,4 @@
-export interface PortalScript {
-  src?: string;
-  content?: string;
-}
-
-export interface PortalContent {
-  url: string;
-  html: string;
-  title: string;
-  scripts: PortalScript[];
-  document: Document;
-  encoding: string;
-  fetchedAt: number;
-}
-
-interface PortalFetcherOptions {
-  throttleMs?: number;
-}
+import type { PortalScript, PortalContent, PortalFetcherOptions } from "../types";
 
 export default class PortalFetcher {
   private readonly cache = new Map<string, Promise<PortalContent>>();

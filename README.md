@@ -1,6 +1,6 @@
 # 📦 KMITLX Extension Chrome
 
-> Transform your KMITL timetable into a sleek, modern, and user-friendly interface
+> Transform KMITL Student Information System UI/UX with enhanced features for a better experience.
 
  <table>
         <tr>
@@ -62,5 +62,3 @@ we invite you to contribute kmitlx
 
 ## 🫡 credit
 > [Svelte Typescript Chrome Extension Boilerplate](https://github.com/NekitCorp/chrome-extension-svelte-typescript-boilerplate)
-
-> [KMITL +](https://github.com/t0ngk/KMITL-PLUS)

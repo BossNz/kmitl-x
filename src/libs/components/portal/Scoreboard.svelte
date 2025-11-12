@@ -1,6 +1,6 @@
 <script lang="ts">
   import Icon from "@iconify/svelte";
-  import type { ScoreboardBlock, ScoreStatus } from "../../utils/PortalContentMapper";
+  import type { ScoreboardBlock, ScoreStatus } from "../../types";
   import { classes, cn } from '../../styles';
 
   export let block: ScoreboardBlock;

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { ScheduleI } from "../../utils/ScheduleTableScraping";
+  import type { ScheduleI } from "../../types";
   export let subject: ScheduleI;
 </script>
 

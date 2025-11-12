@@ -1,36 +1,4 @@
-export interface PortalMenuItem {
-	id: string;
-	label: string;
-	url: string;
-	absoluteUrl: string;
-	type: "internal" | "external";
-	supportsEmbed: boolean;
-	openInNewTab: boolean;
-	rawOnclick?: string | null;
-}
-
-export interface PortalSection {
-	key: string;
-	id: string;
-	title: string;
-	description: string;
-	icon: string;
-	accent: string;
-	order: number;
-	items: PortalMenuItem[];
-}
-
-export interface PortalMeta {
-	title: string;
-	logoUrl: string | null;
-	initialServerTime: string | null;
-	homeUrl: string;
-}
-
-export interface PortalDataset {
-	sections: PortalSection[];
-	meta: PortalMeta;
-}
+import type { PortalMenuItem, PortalSection, PortalMeta, PortalDataset } from "../types";
 
 type SectionMeta = Omit<PortalSection, "items">;
 
