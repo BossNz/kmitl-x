@@ -1,4 +1,4 @@
-# 📦 KMITLX Extension Chrome
+# 📦 KMITLX Extension Chrome Test
 
 > Transform your KMITL timetable into a sleek, modern, and user-friendly interface
 
