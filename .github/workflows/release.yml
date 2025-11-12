@@ -1,20 +1,27 @@
 name: Build and Release Extension
 
 on:
-  push:
-    tags:
-      - 'v*'
+  pull_request:
+    types: [closed]
+    branches:
+      - main
 
 jobs:
   build-and-release:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    if: github.event.pull_request.merged == true
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 
 
       - name: Use Node.js 20
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 20
 
@@ -24,15 +31,20 @@ jobs:
       - name: Build the extension
         run: yarn build
 
-      - name: Zip dist folder
+      - name: Get extension version
+        id: version
         run: |
-          VERSION=${GITHUB_REF#refs/tags/}
-          cd dist
-          zip -r ../kmitl-x-$VERSION.zip .
+          VERSION=$(node -p "require('./package.json').version")
+          echo "TAG_NAME=v$VERSION" >> $GITHUB_OUTPUT
+          
+      - name: Zip dist folder
+        run: zip -r kmitl-x-${{ steps.version.outputs.TAG_NAME }}.zip dist/
 
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
-          files: kmitl-x-${{ github.ref_name }}.zip
+          tag_name: ${{ steps.version.outputs.TAG_NAME }}
+          name: Release ${{ steps.version.outputs.TAG_NAME }}
+          files: kmitl-x-${{ steps.version.outputs.TAG_NAME }}.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
