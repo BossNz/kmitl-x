@@ -1,6 +1,6 @@
 <script lang="ts">
   import { createTimeSlot } from "../../utils/StudentHelper";
-  import type { ScheduleI } from "../../utils/ScheduleTableScraping";
+  import type { ScheduleI } from "../../types";
   import CardSubject from "./CardSubject.svelte";
 
   export let schedule: Array<ScheduleI>;

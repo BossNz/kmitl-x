@@ -5,7 +5,7 @@
     ScoreCourse, 
     ScoreLegendItem,
     ScheduleOption 
-  } from "../../utils/PortalContentMapper";
+  } from "../../types";
   import { classes, cn } from '../../styles';
   import { Button, Loading } from '../common';
 

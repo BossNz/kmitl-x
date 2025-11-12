@@ -1,6 +1,6 @@
 <script lang="ts">
   import Icon from "@iconify/svelte";
-  import type { ScheduleTableBlock } from "../../utils/PortalContentMapper";
+  import type { ScheduleTableBlock } from "../../types";
   import { classes, cn } from '../../styles';
   import { Button } from '../common';
 

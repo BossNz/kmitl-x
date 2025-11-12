@@ -1,6 +1,6 @@
 <script lang="ts">
   import Icon from "@iconify/svelte";
-  import type { ExamTableBlock } from "../../utils/PortalContentMapper";
+  import type { ExamTableBlock } from "../../types";
   import { classes, cn } from '../../styles';
   import { Button } from '../common';
 
