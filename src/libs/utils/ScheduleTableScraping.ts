@@ -1,30 +1,4 @@
-export interface ScheduleI {
-  order: string;
-  code: string;
-  name: string;
-  credits: string;
-  theory: string;
-  practice: string;
-  time: {
-    day: string;
-    start: string;
-    end: string;
-    type: string;
-  };
-  room: string;
-  building: string;
-  note: string;
-}
-
-export interface InformationI {
-  faculty: string;
-  department: string;
-  major: string;
-  Semester: string;
-  year: string;
-  studentID: string;
-  name: string;
-}
+import type { ScheduleI, InformationI } from "../types";
 
 export default class ScheduleTableScraping {
   private scheduleTable: HTMLTableElement;

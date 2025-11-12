@@ -1,34 +1,4 @@
-export interface StudentProfileAnnouncement {
-  id: string;
-  title: string;
-  href: string | null;
-  description?: string;
-  source: "personal-info" | "registrar-highlight";
-  variant?: "highlight" | "info" | "empty";
-}
-
-export interface StudentProfile {
-  studentId: string;
-  nationalId: string;
-  nationalIdMasked: string;
-  thaiTitle: string;
-  thaiName: string;
-  thaiFullName: string;
-  englishTitle: string;
-  englishName: string;
-  englishFullName: string;
-  birthDate: string;
-  gender: string;
-  status: string;
-  faculty: string;
-  curriculum: string;
-  admissionType: string;
-  admissionYear: string;
-  expectedGraduationYear: string;
-  expectedGraduationDate: string;
-  advisoryMessage: string;
-  announcements: StudentProfileAnnouncement[];
-}
+import type { StudentProfile, StudentProfileAnnouncement } from "../types";
 
 export default class StudentProfileScraping {
   private readonly doc: Document;

@@ -5,25 +5,17 @@
   import Icon from "@iconify/svelte";
   import { classes, cn } from "../libs/styles";
   import { Button, ConfirmModal } from "../libs/components/common";
-  import PortalFetcher, {
-    type PortalContent,
-    type PortalScript,
-  } from "../libs/utils/PortalFetcher";
-  import StudentProfileScraping, {
-    type StudentProfile,
-    type StudentProfileAnnouncement,
-  } from "../libs/utils/StudentProfileScraping";
-  import type {
-    PortalSection,
-    PortalMenuItem,
-    PortalMeta,
-  } from "../libs/utils/PortalScraping";
+  import PortalFetcher from "../libs/utils/PortalFetcher";
+  import type { PortalContent, PortalScript } from "../libs/types";
+
+  import StudentProfileScraping from "../libs/utils/StudentProfileScraping";
+  import type { StudentProfile, StudentProfileAnnouncement } from "../libs/types";
+
+  import type { PortalSection, PortalMenuItem, PortalMeta } from "../libs/types";
   import ContentRenderer from "../libs/components/portal/ContentRenderer.svelte";
   import MinorProgramPage from "../libs/components/portal/MinorProgramPage.svelte";
-  import {
-    mapDocumentToContent,
-    type PortalContentModel,
-  } from "../libs/utils/PortalContentMapper";
+  import { mapDocumentToContent } from "../libs/utils/PortalContentMapper";
+  import type { PortalContentModel } from "../libs/types";
 
   export let sections: PortalSection[];
   export let portalMeta: PortalMeta;

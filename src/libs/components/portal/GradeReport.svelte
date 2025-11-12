@@ -6,7 +6,7 @@
     GradeReportCourse,
     GradeReportSummary,
     GradeReportLegendItem,
-  } from "../../utils/PortalContentMapper";
+  } from "../../types";
   import { mapDocumentToContent } from "../../utils/PortalContentMapper";
   import Icon from "@iconify/svelte";
   import { classes, cn } from '../../styles';

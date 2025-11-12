@@ -1,4 +1,4 @@
-import type { ScheduleI } from "./ScheduleTableScraping";
+import type { ScheduleI } from "../types";
 
 const downloadBlob = (blob: Blob, name = "file.txt") => {
   if ((window.navigator as any) && (window.navigator as any).msSaveOrOpenBlob)

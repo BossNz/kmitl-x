@@ -1,9 +1,8 @@
 <script lang="ts">
-  import "../assets/css/tailwind.css";
   import type {
     InformationI,
     ScheduleI,
-  } from "../libs/utils/ScheduleTableScraping";
+  } from "../libs/types";
   import Icon from "@iconify/svelte";
   import { toBlob } from "html-to-image";
   import { downloadBlob } from "../libs/utils/StudentHelper";

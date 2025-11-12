@@ -1,6 +1,6 @@
 <script lang="ts">
   import Icon from "@iconify/svelte";
-  import type { NewsListBlock, NewsItem } from "../../utils/PortalContentMapper";
+  import type { NewsListBlock, NewsItem } from "../../types";
   import { classes, cn } from '../../styles';
   import { Button } from '../common';
 

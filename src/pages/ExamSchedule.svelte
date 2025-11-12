@@ -7,42 +7,12 @@
   import Text from "../libs/components/common/Text.svelte";
   import Loading from "../libs/components/common/Loading.svelte";
 
-  interface ExamLocation {
-    building: string;  // Building
-    room: string;      // Room
-    seatNo: string;    // Seat number
-    raw: string;       // Raw data (keep for special formats)
-  }
-
-  interface ExamItem {
-    no: number;
-    code: string;
-    name: string;
-    section: string;
-    credits: string;
-    type: string;
-    date: string;
-    time: string;
-    location: ExamLocation;
-    seatMapUrl?: string;
-  }
-
-  interface ExamGroup {
-    date: string;
-    dayName: string;
-    fullDate: string;
-    daysUntil: number;
-    items: ExamItem[];
-  }
-
-  interface CalendarDay {
-    day: number;
-    isCurrentMonth: boolean;
-    isToday: boolean;
-    exams: ExamItem[];
-    daysUntil: number;
-    fullDate: string;
-  }
+  import type {
+    ExamLocation,
+    ExamItem,
+    ExamGroup,
+    CalendarDay,
+  } from "../libs/types";
 
   // State
   let loading = true;

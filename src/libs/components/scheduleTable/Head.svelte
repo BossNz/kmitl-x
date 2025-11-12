@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { InformationI } from "../../utils/ScheduleTableScraping";
+  import type { InformationI } from "../../types";
   export let information: InformationI;
 </script>
 
