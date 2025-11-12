@@ -1,23 +1,30 @@
 name: Build and Release Extension
 
 on:
-  push:
-    tags:
-      - "v*"
-
-permissions:
-  contents: write
+  pull_request:
+    types: [closed]
+    branches:
+      - main
 
 jobs:
   build-and-release:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    if: github.event.pull_request.merged == true
+
+    outputs:
+      TAG_NAME: ${{ steps.version.outputs.TAG_NAME }}
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 
 
       - name: Use Node.js 20
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 20
 
@@ -27,44 +34,50 @@ jobs:
       - name: Build the extension
         run: yarn build
 
-      - name: Zip dist folder
+      - name: Get extension version
+        id: version
         run: |
-          VERSION=${GITHUB_REF#refs/tags/}
-          cd dist
-          zip -r ../kmitl-x-$VERSION.zip .
+          VERSION=$(node -p "require('./package.json').version")
+          echo "TAG_NAME=v$VERSION" >> $GITHUB_OUTPUT
+          
+      - name: Zip dist folder
+        run: zip -r kmitl-x-${{ steps.version.outputs.TAG_NAME }}.zip dist/
+
+      - name: Upload extension zip as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: kmitl-x-${{ steps.version.outputs.TAG_NAME }}.zip
+          path: kmitl-x-${{ steps.version.outputs.TAG_NAME }}.zip
 
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
-          files: kmitl-x-${{ github.ref_name }}.zip
+          tag_name: ${{ steps.version.outputs.TAG_NAME }}
+          name: Release ${{ steps.version.outputs.TAG_NAME }}
+          files: kmitl-x-${{ steps.version.outputs.TAG_NAME }}.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  publish:
-    needs: build-and-release
+  publish-chrome:
+    name: Publish to Chrome Web Store
     runs-on: ubuntu-latest
-    if: success()
+    needs: build-and-release
+    if: github.event.pull_request.merged == true
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Download release asset
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          tag_name=${GITHUB_REF#refs/tags/}
-          echo "Downloading release asset for tag $tag_name"
-          gh release download "$tag_name" \
-            --repo ${{ github.repository }} \
-            --pattern "kmitl-x-${tag_name}.zip" \
-            --dir .
+      - name: Download extension artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: kmitl-x-${{ needs.build-and-release.outputs.TAG_NAME }}.zip
 
       - name: Publish to Chrome Web Store
         uses: mnao305/chrome-extension-upload@v5.0.0
         with:
-          file-path: ./kmitl-x-${{ github.ref_name }}.zip
-          extension-id: "lnhfadikffnjjhmoimkeinbbhcnkkcln"
-          client-id: ${{ secrets.CLIENT_ID }}
-          client-secret: ${{ secrets.CLIENT_SECRET }}
-          refresh-token: ${{ secrets.REFRESH_TOKEN }}
-          publish: true
+            file-path: kmitl-x-${{ needs.build-and-release.outputs.TAG_NAME }}.zip
+            extension-id: "lnhfadikffnjjhmoimkeinbbhcnkkcln"
+            client-id: ${{ secrets.CLIENT_ID }}
+            client-secret: ${{ secrets.CLIENT_SECRET }}
+            refresh-token: ${{ secrets.REFRESH_TOKEN }}
+            publish: true
+
+ 
+          
