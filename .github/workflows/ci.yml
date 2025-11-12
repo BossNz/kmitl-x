@@ -1,0 +1,25 @@
+name: Publish Extension
+
+on:
+    workflow_run:
+        workflows: ["Build and Release Extension"]
+        types:
+            - completed
+
+jobs:
+    build:
+        name: Publish webextension
+        runs-on: ubuntu-latest
+
+        steps:
+            - uses: actions/checkout@v1
+
+            - name: Upload & release
+              uses: mnao305/chrome-extension-upload@v5.0.0
+              with:
+                  file-path: https://github.com/${{github.repository_owner}}/kmitl-x/releases/download/${{github.ref_name}}/kmitl-x-${{github.ref_name}}.zip
+                  extension-id: hogefuga(extension id)
+                  client-id: ${{ secrets.CLIENT_ID }}
+                  client-secret: ${{ secrets.CLIENT_SECRET }}
+                  refresh-token: ${{ secrets.REFRESH_TOKEN }}
+                  publish: false
