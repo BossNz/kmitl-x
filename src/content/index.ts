@@ -1,3 +1,4 @@
+import { runScraper } from "../libs/handler/scraperHandler";
 import { hideOverlay, showOverlay } from "./overlay";
 import { getCurrentRoute } from "./router";
 
@@ -17,7 +18,7 @@ const KMITLX_MODE_KEY = "kmitlx:view";
   }
 
   // scrape the page content
-  const data = { error: "No scraper available for this page." };
+  const data = await runScraper(route.url);
 
   if (data?.error) {
     console.warn("[KMITL-X] Scraping error:", data.error);
@@ -25,6 +26,10 @@ const KMITLX_MODE_KEY = "kmitlx:view";
     return;
   }
 
+  // TODO: Implement mounting logic based on scraped data
+  console.log("[KMITL-X] Scraped data:", data);
+
+  // simulate loading time
   await new Promise((resolve) => setTimeout(resolve, 2000));
   hideOverlay();
 })();
