@@ -43,7 +43,6 @@ const KMITLX_MODE_KEY = "kmitlx:view";
     return;
   }
 
-  document.body.innerHTML = "";
 
   // mount the Svelte component
   await mountUI(await route.page.component(), document.body, data);

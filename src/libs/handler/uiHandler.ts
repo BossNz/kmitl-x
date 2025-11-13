@@ -22,6 +22,7 @@ export async function mountUI(
   target: HTMLElement,
   props: Record<string, any> = {}
 ): Promise<void> {
+  document.body.innerHTML = "";
   return new Promise((resolve) => {
     mount(componentImport.default, {
       target,
