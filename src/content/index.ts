@@ -1,20 +1,9 @@
-import { mount } from "svelte";
 import { runScraper } from "../libs/handler/scraperHandler";
+import { mountUI, onDOMReady } from "../libs/handler/uiHandler";
 import { hideOverlay, showOverlay } from "./overlay";
 import { getCurrentRoute } from "./router";
 
 const KMITLX_MODE_KEY = "kmitlx:view";
-
-// Wait for DOM to be ready
-function onDOMReady(): Promise<void> {
-  return new Promise(resolve => {
-    if (document.readyState === "interactive" || document.readyState === "complete") {
-      resolve();
-    } else {
-      document.addEventListener("DOMContentLoaded", () => resolve(), { once: true });
-    }
-  });
-}
 
 (async () => {
   showOverlay();
@@ -57,11 +46,7 @@ function onDOMReady(): Promise<void> {
   document.body.innerHTML = "";
 
   // mount the Svelte component
-  const componentImport = await route.page.component();
-  mount(componentImport.default, {
-    target: document.body,
-    props: { data },
-  });
+  await mountUI(await route.page.component(), document.body, data);
 
   hideOverlay();
 })();

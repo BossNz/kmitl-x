@@ -6,7 +6,7 @@ import type { PageDefinition } from "../types/scraper.types";
 export const pages: PageDefinition[] = [
   {
     name: "portal",
-    match: /index\.php/,
+    match: /u_student\/index\.php/,
     scraper: () => import("../scraper/portal.scraper").then(m => new m.PortalScraper()),
     component: () => import("../../pages/Portal.svelte"),
   },
