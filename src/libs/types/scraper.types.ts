@@ -3,7 +3,9 @@ export interface IScraper {
   scrape(doc: Document): Promise<any>;
 }
 
-export interface ScraperRegistryEntry {
+export interface PageDefinition {
+  name: string;
   match: RegExp;
-  factory: () => Promise<IScraper>;
+  scraper: () => Promise<IScraper>;
+  component: () => Promise<any>;
 }

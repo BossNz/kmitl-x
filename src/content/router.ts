@@ -1,7 +1,11 @@
+import { pages } from "../libs/registry/pageManifest";
+
 export function getCurrentRoute() {
   const url = window.location.pathname;
-
-  if (url.includes("/u_student/index.php")) return { name: "portal", url: "index.php" };
-
+  for (const page of pages) {
+    if (page.match.test(url)) {
+      return { name: page.name, url, page };
+    }
+  }
   return { name: "unknown", url };
 }
