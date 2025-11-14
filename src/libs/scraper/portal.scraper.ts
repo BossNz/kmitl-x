@@ -128,9 +128,9 @@ export class PortalScraper extends BaseScraper {
       );
       if (!item) return;
 
-      // deduplicate by section ID + absolute URL
+      // deduplicate by label + absoluteUrl
       // to avoid duplicates from multiple anchors pointing to same URL
-      const dedupeKey = `${meta.id}|${item.absoluteUrl}`;
+      const dedupeKey = `${item.label}|${item.absoluteUrl}`;
       if (takenUrls.has(dedupeKey)) return;
       takenUrls.add(dedupeKey);
 
