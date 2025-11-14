@@ -10,6 +10,7 @@ const KMITLX_MODE_KEY = "kmitlx:view";
 
   const route = getCurrentRoute();
   const mode = sessionStorage.getItem(KMITLX_MODE_KEY) ?? "new";
+  sessionStorage.setItem(KMITLX_MODE_KEY, mode);
   const isOriginalMode = mode === "original";
 
   //   show original version without modifications
