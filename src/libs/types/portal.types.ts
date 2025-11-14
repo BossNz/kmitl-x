@@ -14,10 +14,12 @@ export interface PortalMenuItem {
 }
 
 export interface PortalSection {
+    key: string;
     id: string;
     title: string;
     description: string;
     icon: string;
+    order: number;
     items: PortalMenuItem[];
 }
 

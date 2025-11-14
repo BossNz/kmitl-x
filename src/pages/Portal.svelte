@@ -4,14 +4,12 @@
 
   export let meta: PortalScraperResult["meta"] | undefined;
   export let sections: PortalScraperResult["sections"] | undefined;
-
-  onMount(async () => {
-    console.log("Portal page mounted with data:", meta);
+  onMount(() => {
+    console.log("meta:", meta);
+    console.log("sections:", sections);
   });
 </script>
 
 <main>
-  <h1>Welcome to the Portal Page</h1>
-  <p>This is the portal page content.</p>
   <pre>{JSON.stringify({ meta, sections }, null, 2)}</pre>
 </main>
