@@ -17,36 +17,10 @@ export default defineManifest(async (env) => ({
   content_scripts: [
     {
       matches: [
-        "https://*.reg.kmitl.ac.th/u_student/*",
+        "https://*.reg.kmitl.ac.th/*",
       ],
-      js: ["src/content/injectors/overlay-inject.ts"],
+      js: ["src/content/index.ts"],
       run_at: "document_start",
-    },
-    {
-      matches: [
-        "https://*.reg.kmitl.ac.th/u_student/*",
-      ],
-      js: ["src/content/injectors/font-inject.ts"],
-      run_at: "document_start",
-    },
-    {
-      matches: [
-        "https://*.reg.kmitl.ac.th/u_student/index.php*",
-      ],
-      js: ["src/content/portal.ts"],
-      run_at: "document_start",
-    },
-    {
-      matches: [
-        "https://*.reg.kmitl.ac.th/u_student/report_studytable_show.php*",
-      ],
-      js: ["src/content/study-schedule.ts"],
-    },
-    {
-      matches: [
-        "https://*.reg.kmitl.ac.th/u_student/report_examtable_show.php*",
-      ],
-      js: ["src/content/exam-schedule.ts"],
     },
   ],
 }));

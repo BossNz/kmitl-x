@@ -1,6 +1,6 @@
 import { mount } from "svelte";
 import "../assets/css/tailwind.css";
-import PortalScraping from "../libs/utils/PortalScraping";
+import PortalScraping from "../libs.old/utils/PortalScraping";
 import Portal from "../pages/Portal.svelte";
 
 const PORTAL_MODE_KEY = "kmitlx:portal:view";

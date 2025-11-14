@@ -1,8 +1,8 @@
 import StudentTable from "../pages/StudentTable.svelte";
-import ScheduleTableScraping from "../libs/utils/ScheduleTableScraping";
+import ScheduleTableScraping from "../libs.old/utils/ScheduleTableScraping";
 import "../assets/css/tailwind.css";
 import { mount } from "svelte";
-import { originalTable } from "../stores/ScheduleTable";
+import { originalTable } from "../stores.old/ScheduleTable";
 
 const scheduleTable = document.querySelector("table") as HTMLTableElement;
 const scrapingData = new ScheduleTableScraping(scheduleTable);
