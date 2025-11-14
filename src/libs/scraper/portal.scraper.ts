@@ -82,7 +82,8 @@ const HEADER_META = new Map<string, SectionMeta>(
 );
 
 export class PortalScraper extends BaseScraper {
-  public async scrape(document: Document): Promise<PortalScraperResult> {
+  public async scrape(ctx: { doc: Document }): Promise<PortalScraperResult> {
+    const document = ctx.doc;
     return {
       meta: this.extractMeta(document),
       sections: this.extractSections(document),
