@@ -18,7 +18,7 @@ export class StudentScraper extends BaseScraper {
 
     return {
       studentId: this.getTextById(document, "div_student_id"),
-      nationalId: this.getTextByLabel(document, "ประจำตัวประชาชน"),
+      nationalId: this.getTextByLabel(document, "ประจำตัวประชาชน") || this.getTextByLabel(document, "Citizen"),
       thaiTitle,
       thaiName: splittedThaiName.name,
       thaiSurname: splittedThaiName.surname,
@@ -37,7 +37,7 @@ export class StudentScraper extends BaseScraper {
       faculty: this.getTextById(document, "div_faculty_name"),
       department: this.getCommentContentById(document, "div_dept_name"),
       curriculum: this.getTextById(document, "div_curr2_tname"),
-      bankAccount: this.getTextByLabel(document, "บัญชีธนาคาร"),
+      bankAccount: this.getTextByLabel(document, "บัญชีธนาคาร") || this.getTextByLabel(document, "Bank Account"),
     };
   }
 
