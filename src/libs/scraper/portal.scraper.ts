@@ -1,10 +1,8 @@
-import { registry } from "../registry/scraperRegistry";
 import type {
   PortalMenuItem,
   PortalScraperResult,
   PortalSection,
 } from "../types/portal.types";
-import { parseHTML } from "../utils/fetcher";
 import { BaseScraper } from "./baseScraper";
 
 type SectionMeta = Omit<PortalSection, "items">;
@@ -82,8 +80,7 @@ const HEADER_META = new Map<string, SectionMeta>(
 );
 
 export class PortalScraper extends BaseScraper {
-  public async scrape(ctx: { doc: Document }): Promise<PortalScraperResult> {
-    const document = ctx.doc;
+  public async scrape(document: Document): Promise<PortalScraperResult> {
     return {
       meta: this.extractMeta(document),
       sections: this.extractSections(document),

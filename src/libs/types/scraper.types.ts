@@ -1,9 +1,6 @@
 export interface IScraper {
   requiresFetch?: boolean;
-  scrape(ctx: {
-    doc: Document;
-    fetchHTML?: (url: string) => Promise<Document>;
-  }): Promise<any>;
+  scrape(doc: Document): Promise<any>;
 }
 
 export interface PageDefinition {
