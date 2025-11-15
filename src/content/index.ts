@@ -1,4 +1,4 @@
-import { runScraper } from "../libs/handler/scraperHandler";
+import { runPageScraper } from "../libs/handler/scraperHandler";
 import { mountUI, onDOMReady } from "../libs/handler/uiHandler";
 import { hideOverlay, showOverlay } from "./overlay";
 import { getCurrentRoute } from "./router";
@@ -23,7 +23,7 @@ const KMITLX_MODE_KEY = "kmitlx:view";
   await onDOMReady();
 
   // scrape the page content
-  const data = await runScraper(route.url);
+  const data = await runPageScraper(route.url);
 
   if (data?.error) {
     console.warn("[KMITL-X] Scraping error:", data.error);
@@ -43,7 +43,6 @@ const KMITLX_MODE_KEY = "kmitlx:view";
     hideOverlay();
     return;
   }
-
 
   // mount the Svelte component
   await mountUI(await route.page.component(), document.body, data);
