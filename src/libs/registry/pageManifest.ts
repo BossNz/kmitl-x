@@ -10,4 +10,9 @@ export const pages: PageDefinition[] = [
     scraper: () => import("../scraper/portal.scraper").then(m => new m.PortalScraper()),
     component: () => import("../../pages/Portal.svelte"),
   },
+  {
+    name: "student",
+    match: /u_officer\/student\.php/,
+    scraper: () => import("../scraper/student.scraper").then(m => new m.StudentScraper()),
+  }
 ];
