@@ -10,9 +10,58 @@ export class ReportExamtableScraper extends BaseScraper {
   public async scrape(document: Document): Promise<ExamTable> {
     const rawExamTable = this.extractRawExamTable(document);
     const exams = this.createExamSchedule(rawExamTable);
+    const studentInfo = this.extractStudentDetails(document);
     return {
       exams,
-    } as ExamTable;
+      studentInfo,
+      pdf: this.extractPdfLink(document),
+    };
+  }
+
+  private extractPdfLink(document: Document): string {
+    const pdfLinkElement: HTMLAnchorElement | null = document.querySelector(
+      'a[href*="report_examtable_pdf.php"]'
+    );
+    return pdfLinkElement?.href || "";
+  }
+
+  private extractStudentDetails(document: Document): ExamTable["studentInfo"] {
+    // Extract student details from specific <td> elements
+    // Result: [td, td, td, ...]
+    const rows = Array.from(document.querySelectorAll("td"))
+      .filter((node) => node.getAttribute("colspan") === "17")
+      .filter((node) => node.getAttribute("height") === "18")
+      .slice(1);
+
+    // extract child nodes from each <td>
+    // Result: [[strong, text, ...], [node, node, ...], ...]
+    const extractedRows = rows.map((td) => Array.from(td.childNodes));
+
+    // Map to text content and remove title elements
+    // Result: [[string, string, ...], [string, string, ...], ...]
+    const extractedText = extractedRows.map((cell, index) => {
+      // faculty is in the first td
+      if (index === 0) return cell[0].textContent?.trim() || "";
+      return (
+        Array.from(cell)
+          // remove title elements (strong elements)
+          .filter((n) => n.nodeType === Node.TEXT_NODE)
+          .map((n) => n.textContent?.trim() || "")
+      );
+    });
+
+    // Flatten and assign to respective fields
+    // Result: [string, string, string, ...]
+    const data = extractedText.flat();
+    return {
+      studentId: data[5],
+      name: data[6],
+      faculty: data[0].replace(/^(คณะ|Faculty:\s*)/i, "").trim(),
+      department: data[1],
+      curriculum: data[2],
+      semester: data[3],
+      year: data[4],
+    };
   }
 
   private extractRawExamTable(document: Document): string[][] {
