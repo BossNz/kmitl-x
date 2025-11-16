@@ -132,18 +132,21 @@ export class ReportExamtableScraper extends BaseScraper {
     dateString: string,
     timeString: string
   ): ExamObject["date"] {
-    const [weekDay, day, month, year] = dateString.split(" ");
+    const [weekDay, day, month, rawYear] = dateString.split(" ");
     // this logic is not perfect but works for now
     // year from scraper is last two digits of Gregorian year (at 11 November 2025)
-    const fullGregorianYear = 2000 + parseInt(year, 10);
-    const fullBuddhistYear = fullGregorianYear + 543;
+    let year: string;
+    if (!rawYear) year = "";
+    else {
+      weekDay.match(/[ก-ฮ]/)
+        ? (year = (parseInt(rawYear, 10) + 2543).toString())
+        : (year = (parseInt(rawYear, 10) + 2000).toString());
+    }
     return {
       weekDay,
-      day,
-      month,
-      year: weekDay.match(/[ก-ฮ]/)
-        ? fullBuddhistYear.toString()
-        : fullGregorianYear.toString(),
+      day: day || "",
+      month: month || "",
+      year,
       raw: dateString,
       time: this.parseTimeData(timeString),
     };
