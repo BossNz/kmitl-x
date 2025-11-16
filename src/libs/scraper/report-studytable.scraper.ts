@@ -6,9 +6,49 @@ import { BaseScraper } from "./baseScraper";
 
 export class ReportStudytableScraper extends BaseScraper {
   public async scrape(document: Document): Promise<StudyTable> {
-    const raw = this.extractRawSchedule(document);
-    const studySchedules = this.createStudySchedule(raw);
-    return { studySchedules } as StudyTable;
+    const rawSchedules = this.extractRawSchedule(document);
+    const studySchedules = this.createStudySchedule(rawSchedules);
+    const studentInfo = this.extractStudentDetails(document);
+    return { studySchedules, studentInfo };
+  }
+
+  private extractStudentDetails(document: Document): StudyTable["studentInfo"] {
+    // Extract student details from specific <td> elements
+    // Result: [td, td, td, ...]
+    const rows = Array.from(document.querySelectorAll("td"))
+      .filter((node) => node.getAttribute("colspan") === "18")
+      .filter((node) => node.getAttribute("height") === "18")
+      .slice(1);
+
+    // extract child nodes from each <td>
+    // Result: [[strong, text, ...], [node, node, ...], ...]
+    const extractedRows = rows.map((td) => Array.from(td.childNodes));
+
+    // Map to text content and remove title elements
+    // Result: [[string, string, ...], [string, string, ...], ...]
+    const extractedText = extractedRows.map((cell, index) => {
+      // faculty is in the first td
+      if (index === 0) return cell[0].textContent?.trim() || "";
+      return (
+        Array.from(cell)
+          // remove title elements (strong elements)
+          .filter((n) => n.nodeType === Node.TEXT_NODE)
+          .map((n) => n.textContent?.trim() || "")
+      );
+    });
+
+    // Flatten and assign to respective fields
+    // Result: [string, string, string, ...]
+    const data = extractedText.flat();
+    return {
+      studentId: data[5],
+      name: data[6],
+      faculty: data[0].replace(/^(คณะ|Faculty:\s*)/i, "").trim(),
+      department: data[1],
+      curriculum: data[2],
+      semester: data[3],
+      year: data[4],
+    };
   }
 
   private extractRawSchedule(document: Document): string[][] {
