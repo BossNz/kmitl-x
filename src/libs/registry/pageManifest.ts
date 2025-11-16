@@ -33,4 +33,12 @@ export const pages: PageDefinition[] = [
         (m) => new m.ReportStudytableScraper()
       ),
   },
+  {
+    name: "report-examtable",
+    match: /u_student\/report_examtable_show\.php/,
+    scraper: () =>
+      import("../scraper/report-examtable.scraper").then(
+        (m) => new m.ReportExamtableScraper()
+      ),
+  },
 ];
