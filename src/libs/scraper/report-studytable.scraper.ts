@@ -80,28 +80,44 @@ export class ReportStudytableScraper extends BaseScraper {
     };
   }
   private parseTimeData(timeString: string): StudySchedule["time"] {
-    const timeEntries = timeString.split("+").map((entry) => entry.trim());
+    const timeEntries = timeString.match(
+      /((Mon|Tue|Wed|Thu|Fri|Sat|Sun)\s*(\d{2}:\d{2})-(\d{2}:\d{2})\s*\(?([LP])\)?)|((?:[ก-ฮ]{1,2}|อา)\.\s*\d{2}:\d{2}-\d{2}:\d{2}\s*น?\.?\([ทป]\))/g
+    );
     const timeData: StudySchedule["time"] = [];
-    timeEntries.forEach((entry) => {
-      const match = entry.match(
-        // match both English and Thai day names
-        /((Mon|Tue|Wed|Thu|Fri|Sat|Sun)\s*(\d{2}:\d{2})-(\d{2}:\d{2})\s*\(?([LP])\)?)|((?:[ก-ฮ]{1,2}|อา)\.\s*(\d{2}:\d{2})-(\d{2}:\d{2})\s*น?\.?\([ทป]\))/
+    timeEntries?.forEach((entry) => {
+      const matchThai = entry.match(
+        /(([ก-ฮ]{1,2}|อา)\.\s*(\d{2}:\d{2})-(\d{2}:\d{2})\s*น?\.?\(([ทป])\))/
       );
-      if (match) {
-        timeData.push({
-          day: match[2],
-          startTime: match[3],
-          endTime: match[4],
-          type:
-            match[5] === "ท"
-              ? "lecture"
-              : match[5] === "ป"
-              ? "practice"
-              : match[4] === "L"
-              ? "lecture"
-              : "practice",
-        });
-      }
+      const mathEng = entry.match(
+        /((Mon|Tue|Wed|Thu|Fri|Sat|Sun)\s*(\d{2}:\d{2})-(\d{2}:\d{2})\s*\(([LP])\))/
+      );
+
+      const match = matchThai || mathEng || null;
+      if (!match) return;
+
+      // check if time is duplicated
+      const isDuplicate = timeData.some((time) => {
+        return (
+          time.day === match[2] &&
+          time.startTime === match[3] &&
+          time.endTime === match[4]
+        );
+      });
+      if (isDuplicate) return;
+
+      timeData.push({
+        day: match[2],
+        startTime: match[3],
+        endTime: match[4],
+        type:
+          match[5] === "ท"
+            ? "lecture"
+            : match[5] === "ป"
+            ? "practice"
+            : match[5] === "L"
+            ? "lecture"
+            : "practice",
+      });
     });
     return timeData;
   }
