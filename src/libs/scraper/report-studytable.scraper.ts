@@ -81,7 +81,7 @@ export class ReportStudytableScraper extends BaseScraper {
   }
   private parseTimeData(timeString: string): StudySchedule["time"] {
     const timeEntries = timeString.match(
-      /((Mon|Tue|Wed|Thu|Fri|Sat|Sun)\s*(\d{2}:\d{2})-(\d{2}:\d{2})\s*\(?([LP])\)?)|((?:[ก-ฮ]{1,2}|อา)\.\s*\d{2}:\d{2}-\d{2}:\d{2}\s*น?\.?\([ทป]\))/g
+      /((Mon|Tue|Wed|Thu|Fri|Sat|Sun)\s*(\d{2}:\d{2})-(\d{2}:\d{2})\s*\(([LP])\))|(([ก-ฮ]{1,2}|อา)\.\s*(\d{2}:\d{2})-(\d{2}:\d{2})\s*น?\.?\(([ทป])\))/g
     );
     const timeData: StudySchedule["time"] = [];
     timeEntries?.forEach((entry) => {
