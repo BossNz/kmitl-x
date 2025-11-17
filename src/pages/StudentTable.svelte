@@ -57,7 +57,7 @@
     <div bind:this={captureScreen} class="p-1 dark:bg-gray-900 bg-white">
       <Head {information} />
       <div class="mb-auto mt-5">
-        <ScheduleTable {schedule} />
+        <ScheduleTable {schedule} startHourProp={8} endHourProp={21} />
       </div>
     </div>
     <footer class="flex justify-between items-end">
