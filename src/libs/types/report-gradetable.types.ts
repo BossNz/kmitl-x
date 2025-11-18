@@ -24,7 +24,7 @@ export interface GradeSummary {
 }
 
 export interface GradeSymbolTable {
-  gradeSymbols: GradeSymbol[];
+  symbols: GradeSymbol[];
   note: string;
 }
 
@@ -47,7 +47,7 @@ export interface StudentInfo {
 export interface ReportGradeTable {
   studentInfo: StudentInfo;
   gradeTable: GradeTableObject[];
-  gradeSummaryTable: GradeSummaryTable;
-  gradeSymbolTable: GradeSymbolTable;
+  gradeSummary: GradeSummaryTable;
+  gradeSymbol: GradeSymbolTable;
   pdf: string;
 }

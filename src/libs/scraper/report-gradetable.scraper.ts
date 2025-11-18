@@ -7,8 +7,9 @@ export class ReportGradetableScraper extends BaseScraper {
     const rawGradeTable = this.extractRawGradeTable(document);
     return {
       pdf: this.extractPdfLink(document),
-      gradeSummaryTable: this.parseGradeSummary(rawGradeTable),
+      gradeSummary: this.parseGradeSummary(rawGradeTable),
       gradeTable: this.parseGradeTable(rawGradeTable),
+      gradeSymbol: this.extractSymbols(document),
     } as ReportGradeTable;
   }
 
@@ -17,6 +18,32 @@ export class ReportGradetableScraper extends BaseScraper {
       'a[href*="report_gradetable_pdf.php"]'
     );
     return pdfLinkElement?.href || "";
+  }
+
+  private extractSymbols(document: Document): ReportGradeTable["gradeSymbol"] {
+    const rows = Array.from(document.querySelectorAll("tr"))
+      // only select rows that have exactly 3 child elements
+      .filter((row) => row.childElementCount === 2)
+      // remove header row
+      .slice(1);
+
+    const cells = rows.map((row) =>
+      Array.from(row.querySelectorAll("td")).map(
+        (cell) => cell.textContent?.trim() || ""
+      )
+    );
+    const symbols = cells.map((cell) => {
+      return {
+        symbol: cell[0],
+        description: cell[1],
+      };
+    });
+
+    // for now, only one td with colspan=2 is expected for note
+    const note =
+      document.querySelector("td[colspan='2']")?.textContent?.trim() || "";
+
+    return { symbols, note } as ReportGradeTable["gradeSymbol"];
   }
 
   private extractRawGradeTable(document: Document): Array<string[]> {
@@ -56,7 +83,7 @@ export class ReportGradetableScraper extends BaseScraper {
 
   private parseGradeSummary(
     raw: Array<string[]>
-  ): ReportGradeTable["gradeSummaryTable"] {
+  ): ReportGradeTable["gradeSummary"] {
     // last 3 rows are summary, first column is label
     const summaryData = raw.slice(-3).map((row) => row.slice(1));
     const [semesterSummary, preSemester, cumulation] = summaryData;
