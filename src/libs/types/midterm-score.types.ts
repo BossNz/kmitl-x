@@ -8,7 +8,8 @@ export interface MidtermScoreObject {
 
 export interface StudentInfo {
   studentId: string;
-  name: string;
+  thaiName: string;
+  englishName: string;
   faculty: string;
   department: string;
   curriculum: string;
