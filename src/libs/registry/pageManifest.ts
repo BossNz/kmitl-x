@@ -19,7 +19,7 @@ export const pages: PageDefinition[] = [
   },
   {
     name: "term-selectors",
-    match: /u_student\/(report_(examtable|studytable|gradetable))|(midterm_score)\.php/,
+    match: /u_student\/(report_(examtable|studytable|gradetable))\.php/,
     scraper: () =>
       import("../scraper/term-selectors.scraper").then(
         (m) => new m.TermSelectorsScraper()
@@ -39,6 +39,14 @@ export const pages: PageDefinition[] = [
     scraper: () =>
       import("../scraper/report-examtable.scraper").then(
         (m) => new m.ReportExamtableScraper()
+      ),
+  },
+  {
+    name: "midterm-score",
+    match: /u_student\/midterm_score\.php/,
+    scraper: () =>
+      import("../scraper/midterm-score.scraper").then(
+        (m) => new m.MidtermScoreScraper()
       ),
   },
 ];
