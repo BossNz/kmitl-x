@@ -19,7 +19,7 @@ export const pages: PageDefinition[] = [
   },
   {
     name: "term-selectors",
-    match: /u_student\/report_(examtable|studytable|gradetable)\.php/,
+    match: /u_student\/(report_(examtable|studytable|gradetable))|(midterm_score)\.php/,
     scraper: () =>
       import("../scraper/term-selectors.scraper").then(
         (m) => new m.TermSelectorsScraper()
