@@ -49,4 +49,12 @@ export const pages: PageDefinition[] = [
         (m) => new m.MidtermScoreScraper()
       ),
   },
+  {
+    name: "report-gradetable",
+    match: /u_student\/report_gradetable_show\.php/,
+    scraper: () =>
+      import("../scraper/report-gradetable.scraper").then(
+        (m) => new m.ReportGradetableScraper()
+      ),
+  },
 ];
