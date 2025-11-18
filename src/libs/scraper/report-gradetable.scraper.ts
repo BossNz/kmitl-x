@@ -1,4 +1,7 @@
-import type { ReportGradeTable } from "../types/report-gradetable.types";
+import type {
+  GradeTableObject,
+  ReportGradeTable,
+} from "../types/report-gradetable.types";
 import { BaseScraper } from "./baseScraper";
 
 export class ReportGradetableScraper extends BaseScraper {
@@ -10,6 +13,7 @@ export class ReportGradetableScraper extends BaseScraper {
       gradeSummary: this.parseGradeSummary(rawGradeTable),
       gradeTable: this.parseGradeTable(rawGradeTable),
       gradeSymbol: this.extractSymbols(document),
+      studentInfo: this.extractStudentDetails(document),
     } as ReportGradeTable;
   }
 
@@ -44,6 +48,55 @@ export class ReportGradetableScraper extends BaseScraper {
       document.querySelector("td[colspan='2']")?.textContent?.trim() || "";
 
     return { symbols, note } as ReportGradeTable["gradeSymbol"];
+  }
+
+  private extractStudentDetails(
+    document: Document
+  ): ReportGradeTable["studentInfo"] {
+    // Extract student details from specific <td> elements
+    // Result: [td, td, td, ...]
+    const rows = Array.from(document.querySelectorAll("td"))
+      .filter((node) => node.getAttribute("colspan") === "15")
+      .filter((node) => node.getAttribute("height") === "18");
+
+    // extract child nodes from each <td>
+    // Result: [[strong, text, ...], [node, node, ...], ...]
+    const extractedRows = rows.map((td) => Array.from(td.childNodes));
+
+    // Map to text content and remove title elements
+    // Result: [[string, string, ...], [string, string, ...], ...]
+    const extractedText = extractedRows.map((cell, index) => {
+      // faculty is in the first td
+      if (index === 0) return cell[0].textContent?.trim() || "";
+      return (
+        Array.from(cell)
+          // remove title elements (strong elements)
+          .filter((n) => n.nodeType === Node.TEXT_NODE)
+          .map((n) => n.textContent?.trim() || "")
+      );
+    });
+
+    // Flatten and assign to respective fields
+    // Result: [string, string, string, ...]
+    const data = extractedText.flat();
+
+    // raw name contains both thai and english names
+    const rawName = data[2]
+      .replace(/\s+/g, " ")
+      .replace(/\s+/g, " ")
+      .split(" ");
+
+    // extract semester and year from ": semester/year"
+    const semesterMatch = data[4].match(/(\d)\/(\d+)/);
+    return {
+      studentId: data[1],
+      thaiName: rawName.slice(2, 4).join(" "),
+      englishName: rawName.slice(0, 2).join(" "),
+      curriculum: data[3],
+      semester: semesterMatch ? semesterMatch[1] : "",
+      year: semesterMatch ? semesterMatch[2] : "",
+      faculty: data[0],
+    } as ReportGradeTable["studentInfo"];
   }
 
   private extractRawGradeTable(document: Document): Array<string[]> {
