@@ -8,11 +8,49 @@ export class MidtermScoreScraper extends BaseScraper {
   public async scrape(document: Document): Promise<MidtermScore> {
     const raw = this.extractRawMidtermScoreTable(document);
     const midtermScores = this.createMidtermScore(raw);
-
     return {
       midtermScores: midtermScores,
       studentInfo: this.extractStudentDetails(document),
+      note: this.extractNote(document),
+      scoreSymbols: this.extractSymbols(document),
     } as MidtermScore;
+  }
+
+  private extractSymbols(document: Document): MidtermScore["scoreSymbols"] {
+    const rows = Array.from(document.querySelectorAll("tr"))
+      // only select rows that have exactly 3 child elements
+      // symbol, separator, description
+      .filter((row) => row.childElementCount === 3)
+      // remove header row
+      .slice(1);
+
+    const cells = rows.map((row) =>
+      Array.from(row.querySelectorAll("td"))
+        // this table has alternating row colors, so we can filter by even row index
+        .filter((cell) => cell.cellIndex % 2 === 0)
+        .map(
+          (cell) =>
+            cell.textContent?.trim() ||
+            (cell.querySelector("img")?.alt.includes("ไม่ประกาศ") ? "X" : "P")
+        )
+    );
+
+    return cells.map((cell) => {
+      return {
+        symbol: cell[0],
+        description: cell[1],
+      };
+    });
+  }
+
+  private extractNote(document: Document): string {
+    return (
+      document
+        .querySelector("p strong")
+        ?.textContent?.trim()
+        .split(":")[1]
+        ?.trim() || ""
+    );
   }
 
   private extractStudentDetails(
