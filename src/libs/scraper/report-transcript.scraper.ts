@@ -7,7 +7,46 @@ export class ReportTranscriptScraper extends BaseScraper {
     return {
       transcriptObject: this.extractRawTranscript(document),
       pdf: this.extractPdfLink(document),
+      studentInfo: this.extractStudentDetails(document),
     } as TranscriptData;
+  }
+
+  private extractStudentDetails(
+    document: Document
+  ): TranscriptData["studentInfo"] {
+    const rows = Array.from(document.querySelectorAll("td"))
+      .filter(
+        (node) =>
+          node.textContent?.includes("Student ID") ||
+          node.textContent?.includes("Name") ||
+          node.textContent?.includes("Birth") ||
+          node.textContent?.includes("Degree") ||
+          node.textContent?.includes("Major") ||
+          node.textContent?.includes("Admission") ||
+          node.textContent?.includes("Graduation")
+      )
+      .slice(1);
+
+    const data = rows.map((row) =>
+      row.textContent?.replace(/\s+/g, " ").trim().split(" ")
+    );
+
+    // this looks ugly but works for now
+    // TODO: improve later if needed
+    return {
+      name: data[0] ? data[0][1] + data[0].slice(2).join(" ") : "",
+      dateOfBirth: {
+        day: data[1] ? parseInt(data[1].slice(3)[1]) : 0,
+        month: data[1] ? data[1].slice(3)[0] : "",
+        year: data[1] ? parseInt(data[1].slice(3)[2]) : 0,
+      },
+      studentId: data[2] ? data[2].slice(2).toString() : "",
+      // this is only year but its ok for now
+      dateOfAdmission: data[3] ? data[3].slice(-1).toString() : "",
+      dateOfGraduation: data[4].slice(3).join(" "),
+      degree: data[5] ? data[5].slice(1).join(" ") : "",
+      major: data[6] ? data[6].slice(1).join(" ") : "",
+    };
   }
 
   private extractPdfLink(document: Document): string {
