@@ -6,6 +6,7 @@ export interface GradeTableObject {
   credit: number;
   type: string;
   grade: string;
+  gradeColor?: string;
 }
 
 export interface GradeSummaryTable {
@@ -30,6 +31,7 @@ export interface GradeSymbolTable {
 
 export interface GradeSymbol {
   symbol: string;
+  color: string;
   description: string;
 }
 
