@@ -57,4 +57,12 @@ export const pages: PageDefinition[] = [
         (m) => new m.ReportGradetableScraper()
       ),
   },
+  {
+    name: "report-transcript",
+    match: /u_student\/report_transcript_show2\.php/,
+    scraper: () =>
+      import("../scraper/report-transcript.scraper").then(
+        (m) => new m.ReportTranscriptScraper()
+      ),
+  },
 ];
