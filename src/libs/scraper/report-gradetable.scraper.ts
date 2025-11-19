@@ -1,5 +1,5 @@
 import type {
-  GradeTableObject,
+  GradeSymbol,
   ReportGradeTable,
 } from "../types/report-gradetable.types";
 import { BaseScraper } from "./baseScraper";
@@ -14,7 +14,7 @@ export class ReportGradetableScraper extends BaseScraper {
       gradeTable: this.parseGradeTable(rawGradeTable),
       gradeSymbol: this.extractSymbols(document),
       studentInfo: this.extractStudentDetails(document),
-    } as ReportGradeTable;
+    };
   }
 
   private extractPdfLink(document: Document): string {
@@ -36,18 +36,24 @@ export class ReportGradetableScraper extends BaseScraper {
         (cell) => cell.textContent?.trim() || ""
       )
     );
+    cells.forEach((cell, i) => {
+      const color = rows[i]?.querySelector("font")?.getAttribute("color") || "";
+      cell.push(color);
+    });
+
     const symbols = cells.map((cell) => {
       return {
         symbol: cell[0],
         description: cell[1],
-      };
+        color: cell[2],
+      } as GradeSymbol;
     });
 
     // for now, only one td with colspan=2 is expected for note
     const note =
       document.querySelector("td[colspan='2']")?.textContent?.trim() || "";
 
-    return { symbols, note } as ReportGradeTable["gradeSymbol"];
+    return { symbols, note };
   }
 
   private extractStudentDetails(
@@ -111,7 +117,11 @@ export class ReportGradetableScraper extends BaseScraper {
         .filter((cell) => cell.cellIndex % 2 === 0)
         .map((cell) => cell.textContent?.trim() || "")
     );
-
+    // append font color (if any) as last column for each row
+    cells.forEach((cell, i) => {
+      const color = rows[i]?.querySelector("font")?.getAttribute("color") || "";
+      cell.push(color);
+    });
     return cells;
   }
 
@@ -129,6 +139,7 @@ export class ReportGradetableScraper extends BaseScraper {
           credit: parseFloat(row[4]),
           type: row[5],
           grade: row[6],
+          gradeColor: row[7],
         };
       }
     });
