@@ -11,5 +11,54 @@
 </script>
 
 <main>
-  <pre>{JSON.stringify({ meta, sections }, null, 2)}</pre>
+  <div>
+    <!-- Sidebar -->
+    <aside>
+      <div>
+        <!-- Header with Logo -->
+        <div></div>
+
+        <!-- Sidebar Content -->
+        <div>
+          <!-- Highlights Items -->
+          <div></div>
+
+          <!-- Menu Items -->
+          <div></div>
+        </div>
+
+        <!-- Home Button -->
+        <div></div>
+      </div>
+    </aside>
+
+    <!-- Main Section -->
+    <section>
+      <div>
+        <!-- Header -->
+        <div>
+          <!-- Title -->
+          <div></div>
+
+          <!-- Buttons -->
+          <div></div>
+        </div>
+
+        <!-- Container -->
+        <div>
+          <!-- Header -->
+          <div>
+            <!-- Title -->
+            <div></div>
+
+            <!-- Button -->
+            <div></div>
+          </div>
+
+          <!-- Content -->
+          <div></div>
+        </div>
+      </div>
+    </section>
+  </div>
 </main>
