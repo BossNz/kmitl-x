@@ -41,6 +41,7 @@ export const pages: PageDefinition[] = [
       import("../scraper/report-examtable.scraper").then(
         (m) => new m.ReportExamtableScraper()
       ),
+    component: () => import("../../pages/ExamTable.svelte"),
   },
   {
     name: "midterm-score",
