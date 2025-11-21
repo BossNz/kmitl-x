@@ -34,8 +34,11 @@
 
     <!-- Location -->
     <p class="truncate">
-      {subject.building}
-      {subject.room === "" ? "" : ` ( ${subject.room} )`}
+        <!-- this logic is only work for now, in the future will improve -->
+      {subject.building.match(/^(.+)\1$/)?.[1] ?? subject.building}
+      {subject.room === ""
+        ? ""
+        : ` ( ${subject.room.match(/^(.+)\1$/)?.[1] ?? subject.room} )`}
     </p>
   </div>
 </div>
