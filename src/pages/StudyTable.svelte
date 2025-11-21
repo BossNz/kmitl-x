@@ -81,11 +81,11 @@
       <Button on:click={toggleTheme}>
         <Icon
           icon={theme === "dark"
-            ? "mdi:weather-night"
-            : "mdi:white-balance-sunny"}
+            ? "mdi:white-balance-sunny"
+            : "mdi:weather-night"}
           class="my-auto text-2xl inline"
         />
-        <span class="font-semibold">{theme === "dark" ? "Dark" : "Light"}</span>
+        <span class="font-semibold">{theme === "dark" ? "Light" : "Dark"}</span>
       </Button>
     </div>
 
