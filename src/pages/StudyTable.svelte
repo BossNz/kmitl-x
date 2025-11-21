@@ -6,12 +6,25 @@
   import Icon from "@iconify/svelte";
   import Button from "../libs/components/studytable/Button.svelte";
   import { downloadBlob } from "../libs/utils/studytable/exporter";
+  import { onMount } from "svelte";
+  import { getTheme, setTheme } from "../libs/utils/themeManager";
 
   export let studentInfo: StudyTable["studentInfo"];
   export let studySchedules: StudyTable["studySchedules"];
 
   let captureScreen: any;
   let copyPngToggle: boolean = false;
+  let theme: "light" | "dark" = "dark";
+
+  onMount(() => {
+    theme = getTheme();
+    setTheme(theme);
+  });
+
+  function toggleTheme() {
+    theme = theme === "dark" ? "light" : "dark";
+    setTheme(theme);
+  }
 
   const exportPng = async () => {
     const blob = await toBlob(captureScreen);
@@ -64,6 +77,15 @@
         <span class="font-semibold"
           >{copyPngToggle ? "Copied!" : "Copy to Clipboard"}</span
         >
+      </Button>
+      <Button on:click={toggleTheme}>
+        <Icon
+          icon={theme === "dark"
+            ? "mdi:weather-night"
+            : "mdi:white-balance-sunny"}
+          class="my-auto text-2xl inline"
+        />
+        <span class="font-semibold">{theme === "dark" ? "Dark" : "Light"}</span>
       </Button>
     </div>
 
