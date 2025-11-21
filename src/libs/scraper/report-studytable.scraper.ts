@@ -59,7 +59,7 @@ export class ReportStudytableScraper extends BaseScraper {
     const cells = rows.map((row) =>
       Array.from(row.querySelectorAll("td"))
         .filter((cell) => cell.cellIndex % 2 === 0)
-        .map((cell) => cell.textContent)
+        .map((cell) => (cell.textContent || "").trim())
     );
 
     return cells;

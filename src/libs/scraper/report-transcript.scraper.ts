@@ -28,7 +28,9 @@ export class ReportTranscriptScraper extends BaseScraper {
       .slice(1);
 
     const data = rows.map((row) =>
-      row.textContent?.replace(/\s+/g, " ").trim().split(" ")
+      row.textContent
+        ? row.textContent.replace(/\s+/g, " ").trim().split(" ")
+        : []
     );
 
     // this looks ugly but works for now
@@ -42,8 +44,10 @@ export class ReportTranscriptScraper extends BaseScraper {
       },
       studentId: data[2] ? data[2].slice(2).toString() : "",
       // this is only year but its ok for now
-      dateOfAdmission: data[3] ? data[3].slice(-1).toString() : "",
-      dateOfGraduation: data[4].slice(3).join(" "),
+      dateOfAdmission:
+        data[3] && data[3].length ? data[3].slice(-1).toString() : "",
+      dateOfGraduation:
+        data[4] && data[4].length ? data[4].slice(3).join(" ") : "",
       degree: data[5] ? data[5].slice(1).join(" ") : "",
       major: data[6] ? data[6].slice(1).join(" ") : "",
     };
