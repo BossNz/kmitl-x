@@ -97,7 +97,6 @@
           class="inline"
         />
       </p>
-      <p>Powered by Computer Science, KMITL</p>
     </div>
   </footer>
 </main>
