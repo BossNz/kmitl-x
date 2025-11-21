@@ -45,4 +45,5 @@ export interface ExamTable {
   studentInfo: StudentInfo;
   exams: ExamObject[];
   pdf: string;
+  type: "M" | "F";
 }

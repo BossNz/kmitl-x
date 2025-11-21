@@ -15,7 +15,15 @@ export class ReportExamtableScraper extends BaseScraper {
       exams,
       studentInfo,
       pdf: this.extractPdfLink(document),
+      type: this.extractExamType(document),
     };
+  }
+
+  private extractExamType(document: Document): ExamTable["type"] {
+    const typeElement =
+      document.querySelector<HTMLSelectElement>("#mid_or_final");
+    if (!typeElement) return "M";
+    return typeElement.value === "M" ? "M" : "F";
   }
 
   private extractPdfLink(document: Document): string {
