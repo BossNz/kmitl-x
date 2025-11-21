@@ -21,7 +21,7 @@
 </script>
 
 <div>
-  <table class="w-full rounded-2xl" cellspacing={4 * (endHour - startHour)}>
+  <table class="w-full rounded-2xl border-collapse table-fixed">
     <!-- Time Slots -->
     <thead>
       <tr>
@@ -51,11 +51,10 @@
           <!-- Subject Card -->
           {#each createTimeSlot(studySchedules, day, startHour, endHour) as slot}
             {#if slot == undefined}
-              <td
-                class="border-x dark:border-orange-100/10 border-orange-100 min-w-0"
+              <td class="border-x dark:border-orange-100/10 border-orange-100"
               ></td>
             {:else}
-              <td class="min-w-0 font-prompt p-1 h-28" colspan={slot.colSpan}>
+              <td class="font-prompt p-1 h-28" colspan={slot.colSpan}>
                 <CardSubject subject={slot} />
               </td>
             {/if}

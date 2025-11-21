@@ -11,7 +11,10 @@
   <div class="flex justify-between text-xs opacity-65 z-10">
     <!-- Type -->
     <p class="truncate">
-      {subject.time[0]?.type === "lecture" ? "Lecture" : "Practical"}
+      {subject.time[0]?.type === "lecture" ? "Lecture" : "Practical"} ({subject
+        .time[0]?.type === "lecture"
+        ? `Sec ${subject.lectureSection ?? subject.practiceSection ?? "-"}`
+        : `Sec ${subject.practiceSection ?? subject.lectureSection ?? "-"}`})
     </p>
 
     <!-- Time -->
@@ -27,11 +30,7 @@
   <!-- Bottom -->
   <div class="flex justify-between text-xs opacity-65">
     <!-- Section -->
-    <p class="truncate">
-      section({subject.time[0]?.type === "lecture"
-        ? subject.lectureSection
-        : subject.practiceSection})
-    </p>
+    <p class="truncate"></p>
 
     <!-- Location -->
     <p class="truncate">
