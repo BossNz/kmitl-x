@@ -1,5 +1,6 @@
 import { mount } from "svelte";
 import tailwind from "../../assets/css/tailwind.css?inline";
+import { getTheme } from "../utils/themeManager";
 
 // Wait for DOM to be ready
 export function onDOMReady(): Promise<void> {
@@ -66,9 +67,39 @@ export async function mountUI(
   style.textContent = tailwind;
   shadowRoot.appendChild(style);
 
+  const appRoot = document.createElement("div");
+
+  let theme: string = getTheme();
+
+  if (theme === "dark") appRoot.classList.add("dark");
+  else if (theme === "light") appRoot.classList.add("light");
+
+  shadowRoot.appendChild(appRoot);
+
+  const onThemeChange = (ev: Event) => {
+    try {
+      const e = ev as CustomEvent<string>;
+      const newTheme = e.detail;
+      if (!appRoot) return;
+      appRoot.classList.remove("light", "dark");
+      if (newTheme === "dark") appRoot.classList.add("dark");
+      else if (newTheme === "light") appRoot.classList.add("light");
+
+      // persist to localStorage so future mounts respect it
+      try {
+        localStorage.setItem("kmitlx:theme", newTheme);
+      } catch (e) {}
+    } catch (e) {}
+  };
+
+  window.addEventListener(
+    "kmitlx:theme-change",
+    onThemeChange as EventListener
+  );
+
   return new Promise((resolve) => {
     mount(componentImport.default, {
-      target: shadowRoot,
+      target: appRoot,
       props,
     });
     resolve();

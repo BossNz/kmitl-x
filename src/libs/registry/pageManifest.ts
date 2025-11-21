@@ -32,6 +32,7 @@ export const pages: PageDefinition[] = [
       import("../scraper/report-studytable.scraper").then(
         (m) => new m.ReportStudytableScraper()
       ),
+    component: () => import("../../pages/StudyTable.svelte"),
   },
   {
     name: "report-examtable",
