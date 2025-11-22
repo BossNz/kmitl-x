@@ -190,11 +190,9 @@
         </div>
 
         <!-- Calendar Grid -->
-        <div
-          class="flex-1 flex flex-col w-full p-4 border border-pink-500 min-h-0"
-        >
+        <div class="flex-1 flex flex-col w-full border border-pink-500 min-h-0">
           <!-- Day Headers -->
-          <div class="grid grid-cols-7 gap-1.5 mb-2 border border-blue-500">
+          <div class="grid grid-cols-7 gap-1.5 mb-2 border border-blue-500 p-4">
             {#each ["อา.", "จ.", "อ.", "พ.", "พฤ.", "ศ.", "ส."] as day}
               <div
                 class="text-center text-sm font-semibold text-gray-500 dark:text-orange-300 py-1 border border-green-400"
@@ -206,22 +204,33 @@
 
           <!-- Calendar Days -->
           <div
-            class="grid grid-cols-7 gap-1.5 border border-yellow-500 flex-1 overflow-y-auto content-start auto-rows-min"
+            class="grid grid-cols-7 gap-1.5 border border-yellow-500 flex-1 overflow-y-auto content-start auto-rows-min p-4"
           >
             {#each calendarDays as calDay}
               <button
                 class="
-                  relative aspect-square rounded-lg p-1.5 transition-all duration-150 flex flex-col
+                  relative aspect-square rounded-lg p-2 transition-all duration-150 flex flex-col
                   {calDay.isCurrentMonth
-                  ? 'bg-white/60 dark:bg-gray-800/50'
-                  : 'bg-gray-100/40 dark:bg-gray-900/20'}
+                  ? 'bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100'
+                  : 'bg-gray-100 dark:bg-gray-900 text-gray-500 dark:text-gray-400'}
                   {calDay.isToday
-                  ? 'ring-1 ring-blue-400 dark:ring-blue-400 bg-blue-50/50 dark:bg-blue-900/20'
+                  ? 'ring-2 ring-orange-200 dark:ring-orange-500 dark:bg-orange-500/20 bg-orange-200/40 text-orange-600 dark:text-orange-300 font-semibold'
                   : ''}
-                  {!calDay.isCurrentMonth ? 'opacity-30' : ''}
-                  hover:shadow-sm backdrop-blur-sm
-                ">{calDay.day}</button
+                  {!calDay.isCurrentMonth ? 'opacity-40' : 'opacity-100'}
+                  hover:shadow-md hover:scale-105"
               >
+                <!-- Day Number -->
+                <div
+                  class="text-xs font-medium {calDay.isToday
+                    ? 'text-orange-400 dark:text-orange-300'
+                    : // TODO: Change condition to highlight exam days
+                      0 > 0
+                      ? 'text-gray-900 dark:text-gray-100'
+                      : 'text-gray-500 dark:text-gray-500'}"
+                >
+                  {calDay.day}
+                </div>
+              </button>
             {/each}
           </div>
         </div>
