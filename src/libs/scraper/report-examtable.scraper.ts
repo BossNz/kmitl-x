@@ -146,9 +146,7 @@ export class ReportExamtableScraper extends BaseScraper {
     let year: string;
     if (!rawYear) year = "";
     else {
-      weekDay.match(/[ก-ฮ]/)
-        ? (year = (parseInt(rawYear, 10) + 2543).toString())
-        : (year = (parseInt(rawYear, 10) + 2000).toString());
+      year = (parseInt(rawYear, 10) + 2000).toString();
     }
     return {
       weekDay,
