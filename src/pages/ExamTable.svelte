@@ -551,7 +551,7 @@
       </Button> -->
 
       <!-- PDF Download -->
-      <Button on:click>
+      <Button on:click={() => window.open(pdf, "_blank")}>
         <Icon icon="ph:file-pdf" class="my-auto text-2xl inline" />
         <span class="font-semibold">Download PDF</span>
       </Button>
