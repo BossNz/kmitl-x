@@ -23,25 +23,99 @@
     theme = theme === "dark" ? "light" : "dark";
     setTheme(theme);
   }
+
+  // Calendar
+  let currentMonth: Date = new Date();
+
+  function changeMonth(direction: number) {
+    currentMonth = new Date(
+      currentMonth.getFullYear(),
+      currentMonth.getMonth() + direction,
+      1
+    );
+  }
 </script>
 
 <main
-  class="min-h-screen p-2 flex flex-col justify-between dark:bg-gray-900 bg-white"
+  class="min-h-screen p-2 flex flex-col justify-between dark:bg-gray-900 bg-white font-prompt"
 >
   <!-- Main Container -->
-  <div>
+  <div class="p-1">
     <!-- Header -->
     <Head {studentInfo} {type} />
 
     <!-- Content -->
-    <div>
+    <div class="flex w-full h-40 border-2 border-dashed border-gray-400">
       <!-- Calendar -->
-      <div>
+      <div
+        class="flex flex-col justify-center items-center w-1/2 border border-red-500 p-4"
+      >
         <!-- Calendar Header -->
-        <div></div>
+        <div class="p-4 mb-4 border-orange-400 border w-full">
+          <div
+            class="flex items-center justify-between w-full border border-green-500"
+          >
+            <!-- Previous Month -->
+            <button
+              on:click={() => changeMonth(-1)}
+              class="p-1.5 rounded-lg hover:bg-white/10 dark:hover:bg-white/5 transition-colors"
+              aria-label="Previous Month"
+            >
+              <svg
+                class="w-4 h-4 text-gray-600 dark:text-gray-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M15 19l-7-7 7-7"
+                />
+              </svg>
+            </button>
+
+            <!-- Title -->
+            <div class="text-center w-full">
+              <!-- Month -->
+              <h2 class="text-lg font-bold text-gray-900 dark:text-white">
+                {new Intl.DateTimeFormat("th-TH", {
+                  month: "long",
+                  year: "numeric",
+                }).format(currentMonth)}
+              </h2>
+              <!-- Number of Subjects -->
+              <p class="text-xs text-gray-500 dark:text-gray-400">
+                {exams.length} วิชา
+              </p>
+            </div>
+
+            <!-- Next Month -->
+            <button
+              on:click={() => changeMonth(1)}
+              class="p-1.5 rounded-lg hover:bg-white/10 dark:hover:bg-white/5 transition-colors"
+              aria-label="Next Month"
+            >
+              <svg
+                class="w-4 h-4 text-gray-600 dark:text-gray-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 5l7 7-7 7"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
 
         <!-- Calendar Grid -->
-        <div>
+        <div class="w-full border border-yellow-500">
           <!-- Day Headers -->
           <div></div>
 
@@ -51,7 +125,11 @@
       </div>
 
       <!-- Exam List -->
-      <div></div>
+      <div
+        class="flex justify-center items-center w-1/2 border border-blue-500 p-4"
+      >
+        <p>Exam List</p>
+      </div>
     </div>
   </div>
 
@@ -85,6 +163,3 @@
 
 <!-- Modal -->
 <div></div>
-
-<!-- TODO: ทำ header กับ footer ก่อน -->
-<!-- TODO: สร้างปฏิทินและรายการสอบ -->
