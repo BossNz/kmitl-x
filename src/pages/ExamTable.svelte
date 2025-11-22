@@ -74,11 +74,17 @@
   function buildCalendarFromExams() {
     // Find first exam date and set currentMonth accordingly
     const examDates = exams
-      .map((exam) => parseExamDateToDate(exam.date?.raw || ""))
+      .map((exam) =>
+        parseExamDateToDate(exam.date.day, exam.date.month, exam.date.year)
+      )
       .filter((d) => d !== null) as Date[];
 
     if (examDates.length > 0) {
-      currentMonth = new Date(examDates[0].getFullYear(), examDates[0].getMonth(), 1);
+      currentMonth = new Date(
+        examDates[0].getFullYear(),
+        examDates[0].getMonth(),
+        1
+      );
     }
   }
 
@@ -133,7 +139,11 @@
 
       // Collect exams for this date
       const dayExams = exams.filter((exam) => {
-        const examDate = parseExamDateToDate(exam.date?.raw || "");
+        const examDate = parseExamDateToDate(
+          exam.date.day,
+          exam.date.month,
+          exam.date.year
+        );
         if (!examDate) return false;
 
         return (
@@ -158,14 +168,13 @@
     calendarDays = days;
   }
 
-  function parseExamDateToDate(dateStr: string): Date | null {
+  function parseExamDateToDate(
+    day: string,
+    month: string,
+    year: string
+  ): Date | null {
     try {
-      const parts = dateStr.trim().split(/\s+/);
-      if (parts.length < 3) return null;
-
-      const day = parseInt(parts[1]);
-      const monthStr = parts[2];
-      const monthMap: Record<string, number> = {
+      const monthMapThai: Record<string, number> = {
         "ม.ค.": 0,
         "ก.พ.": 1,
         "มี.ค.": 2,
@@ -179,115 +188,74 @@
         "พ.ย.": 10,
         "ธ.ค.": 11,
       };
-      const month = monthMap[monthStr];
-      if (month === undefined) return null;
+      const monthMapEng: Record<string, number> = {
+        Jan: 0,
+        Feb: 1,
+        Mar: 2,
+        Apr: 3,
+        May: 4,
+        Jun: 5,
+        Jul: 6,
+        Aug: 7,
+        Sep: 8,
+        Oct: 9,
+        Nov: 10,
+        Dec: 11,
+      };
+      const monthIndex = monthMapThai[month] ?? monthMapEng[month];
+      if (monthIndex === undefined) return null;
 
-      let fullBuddhistYear: number;
-      if (parts.length >= 4 && parts[3]) {
-        const yearShort = parseInt(parts[3]);
-        const fullGregorianYear = 2000 + yearShort;
-        fullBuddhistYear = fullGregorianYear + 543;
-      } else {
-        fullBuddhistYear = new Date().getFullYear() + 543;
-      }
-
-      const gregorianYear = fullBuddhistYear - 543;
-      return new Date(gregorianYear, month, day);
+      return new Date(parseInt(year), monthIndex, parseInt(day));
     } catch {
       return null;
     }
   }
 
-  function parseDateInfo(dateStr: string, today: Date): { fullDate: string; daysUntil: number } {
-    if (!dateStr || dateStr.trim() === "") {
+  function calculateDateDifference(date1: Date, date2: Date): number {
+    const diffTime = date2.getTime() - date1.getTime();
+    return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  }
+
+  function parseDateInfo(
+    raw: string,
+    today: Date,
+    date: Date | null
+  ): { fullDate: string; daysUntil: number } {
+    if (!date) {
       return { fullDate: "ไม่ระบุวันที่", daysUntil: 999 };
     }
 
-    if (dateStr === "อื่นๆ" || dateStr === "จัดสอบเอง" || dateStr.includes("จัดสอบเอง")) {
+    if (raw === "อื่นๆ" || (raw && raw.includes("จัดสอบเอง"))) {
       return { fullDate: "จัดสอบเอง", daysUntil: 999 };
     }
 
-    try {
-      const parts = dateStr.trim().split(/\s+/);
-      if (parts.length < 3) return { fullDate: dateStr, daysUntil: 999 };
+    const thaiMonths = [
+      "มกราคม",
+      "กุมภาพันธ์",
+      "มีนาคม",
+      "เมษายน",
+      "พฤษภาคม",
+      "มิถุนายน",
+      "กรกฎาคม",
+      "สิงหาคม",
+      "กันยายน",
+      "ตุลาคม",
+      "พฤศจิกายน",
+      "ธันวาคม",
+    ];
 
-      const day = parseInt(parts[1]);
-      const monthStr = parts[2];
+    const fullDate = `${date?.getDate() || ""} ${thaiMonths[date?.getMonth() || 0]} ${date ? date.getFullYear() + 543 : ""}`;
 
-      let fullBuddhistYear: number;
-      if (parts.length >= 4 && parts[3]) {
-        const yearShort = parseInt(parts[3]);
-        const fullGregorianYear = 2000 + yearShort;
-        fullBuddhistYear = fullGregorianYear + 543;
-      } else {
-        fullBuddhistYear = new Date().getFullYear() + 543;
-      }
+    const todayStart = new Date(today);
+    todayStart.setHours(0, 0, 0, 0);
+    date.setHours(0, 0, 0, 0);
 
-      const monthMap: Record<string, number> = {
-        "ม.ค.": 0,
-        "ก.พ.": 1,
-        "มี.ค.": 2,
-        "เม.ย.": 3,
-        "พ.ค.": 4,
-        "มิ.ย.": 5,
-        "ก.ค.": 6,
-        "ส.ค.": 7,
-        "ก.ย.": 8,
-        "ต.ค.": 9,
-        "พ.ย.": 10,
-        "ธ.ค.": 11,
-      };
-
-      const month = monthMap[monthStr];
-      if (month === undefined) return { fullDate: dateStr, daysUntil: 999 };
-
-      const gregorianYear = fullBuddhistYear - 543;
-      const examDate = new Date(gregorianYear, month, day);
-      examDate.setHours(0, 0, 0, 0);
-
-      const todayStart = new Date(today);
-      todayStart.setHours(0, 0, 0, 0);
-
-      const diffTime = examDate.getTime() - todayStart.getTime();
-      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-      const thaiMonths = [
-        "มกราคม",
-        "กุมภาพันธ์",
-        "มีนาคม",
-        "เมษายน",
-        "พฤษภาคม",
-        "มิถุนายน",
-        "กรกฎาคม",
-        "สิงหาคม",
-        "กันยายน",
-        "ตุลาคม",
-        "พฤศจิกายน",
-        "ธันวาคม",
-      ];
-      const fullDate = `${day} ${thaiMonths[month]} ${fullBuddhistYear}`;
-
-      return { fullDate, daysUntil: diffDays };
-    } catch (err) {
-      return { fullDate: dateStr, daysUntil: 999 };
-    }
+    return { fullDate, daysUntil: calculateDateDifference(date, todayStart) };
   }
 
-  function getDayName(dateStr: string): string {
-    if (!dateStr || dateStr === "อื่นๆ" || dateStr === "จัดสอบเอง" || dateStr.includes("จัดสอบเอง")) return "";
-
-    const dayAbbrev = dateStr.split(" ")[0];
-    const dayMap: Record<string, string> = {
-      "จ.": "จันทร์",
-      "อ.": "อังคาร",
-      "พ.": "พุธ",
-      "พฤ.": "พฤหัสบดี",
-      "ศ.": "ศุกร์",
-      "ส.": "เสาร์",
-      "อา.": "อาทิตย์",
-    };
-
-    return dayMap[dayAbbrev] || "";
+  function getDayName(date: Date | null): string {
+    if (!date) return "";
+    return new Intl.DateTimeFormat("th-TH", { weekday: "long" }).format(date);
   }
 
   function viewExamDetail(exam: ExamObject) {
@@ -301,20 +269,47 @@
   }
 
   function groupExamsByDate() {
-    const groups = new Map<string, ExamObject[]>();
+    const groups = new Map<
+      string,
+      {
+        date: {
+          day: string;
+          month: string;
+          year: string;
+          raw: string;
+        };
+        items: ExamObject[];
+      }
+    >();
     const today = new Date();
 
     exams.forEach((exam) => {
-      const key = exam.date?.raw && exam.date.raw.trim() !== "" ? exam.date.raw : "อื่นๆ";
-      if (!groups.has(key)) groups.set(key, []);
-      groups.get(key)!.push(exam);
+      const key =
+        exam.date.raw && exam.date.raw.trim() !== "" ? exam.date.raw : "อื่นๆ";
+
+      if (!groups.has(key)) {
+        groups.set(key, {
+          date: {
+            day: exam.date.day,
+            month: exam.date.month,
+            year: exam.date.year,
+            raw: exam.date.raw,
+          },
+          items: [],
+        });
+      }
+
+      groups.get(key)!.items.push(exam);
     });
 
-    groupedExams = Array.from(groups.entries()).map(([date, items]) => {
-      const { fullDate, daysUntil } = parseDateInfo(date, today);
+    // Convert the grouped map to the array structure used by the UI
+    groupedExams = Array.from(groups.entries()).map(([, { date, items }]) => {
+      const realDate = parseExamDateToDate(date.day, date.month, date.year);
+      const { fullDate, daysUntil } = parseDateInfo(date.raw, today, realDate);
+
       return {
-        date,
-        dayName: getDayName(date),
+        date: date.raw,
+        dayName: getDayName(realDate),
         fullDate,
         daysUntil,
         items: items.sort((a, b) => (a.order || 0) - (b.order || 0)),
@@ -478,8 +473,7 @@
                 <div
                   class="text-xs font-medium {calDay.isToday
                     ? 'text-orange-400 dark:text-orange-300'
-                    : // TODO: Change condition to highlight exam days
-                      0 > 0
+                    : (calDay.exams?.length ?? 0) > 0
                       ? 'text-gray-900 dark:text-gray-100'
                       : 'text-gray-500 dark:text-gray-500'}"
                 >
