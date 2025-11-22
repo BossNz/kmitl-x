@@ -1,22 +1,39 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { getTheme, setTheme } from "../libs/utils/themeManager";
-  import type { ExamTable } from "../libs/types/report-examtable.types";
+  import type {
+    ExamObject,
+    ExamTable,
+  } from "../libs/types/report-examtable.types";
   import Head from "../libs/components/examtable/Head.svelte";
   import Button from "../libs/components/examtable/Button.svelte";
   import Icon from "@iconify/svelte";
 
   export let studentInfo: ExamTable["studentInfo"];
-  export let exams: ExamTable["exams"];
+  export let exams: ExamTable["exams"] = [];
   export let pdf: ExamTable["pdf"];
   export let type: ExamTable["type"];
 
   let theme: "light" | "dark" = "dark";
 
+  // UI state
+  let loading = false;
+  let error = "";
+  let selectedExam: ExamObject | null = null;
+  let showExamDetail = false;
+
   onMount(() => {
     theme = getTheme();
     setTheme(theme);
-    console.log(studentInfo, exams, pdf, type);
+
+    // Initialize calendar and groups from passed exams
+    try {
+      buildCalendarFromExams();
+      groupExamsByDate();
+      generateCalendarDays();
+    } catch (err) {
+      console.error(err);
+    }
   });
 
   function toggleTheme() {
@@ -27,6 +44,7 @@
   // Calendar
   let currentMonth: Date = new Date();
   let calendarDays: CalendarDay[] = [];
+  let groupedExams: ExamGroup[] = [];
 
   interface CalendarDay {
     day: number;
@@ -34,6 +52,14 @@
     isToday: boolean;
     daysUntil: number;
     fullDate: string;
+    exams?: ExamObject[];
+  }
+  interface ExamGroup {
+    date: string;
+    dayName?: string;
+    fullDate?: string;
+    daysUntil?: number;
+    items: ExamObject[];
   }
 
   function changeMonth(direction: number) {
@@ -43,6 +69,17 @@
       1
     );
     generateCalendarDays();
+  }
+
+  function buildCalendarFromExams() {
+    // Find first exam date and set currentMonth accordingly
+    const examDates = exams
+      .map((exam) => parseExamDateToDate(exam.date?.raw || ""))
+      .filter((d) => d !== null) as Date[];
+
+    if (examDates.length > 0) {
+      currentMonth = new Date(examDates[0].getFullYear(), examDates[0].getMonth(), 1);
+    }
   }
 
   function generateCalendarDays() {
@@ -94,18 +131,236 @@
       ];
       const fullDate = `${current.getDate()} ${thaiMonths[current.getMonth()]} ${current.getFullYear() + 543}`;
 
+      // Collect exams for this date
+      const dayExams = exams.filter((exam) => {
+        const examDate = parseExamDateToDate(exam.date?.raw || "");
+        if (!examDate) return false;
+
+        return (
+          examDate.getDate() === current.getDate() &&
+          examDate.getMonth() === current.getMonth() &&
+          examDate.getFullYear() === current.getFullYear()
+        );
+      });
+
       days.push({
         day: current.getDate(),
         isCurrentMonth,
         isToday,
         daysUntil,
         fullDate,
+        exams: dayExams,
       });
 
       current.setDate(current.getDate() + 1);
     }
 
     calendarDays = days;
+  }
+
+  function parseExamDateToDate(dateStr: string): Date | null {
+    try {
+      const parts = dateStr.trim().split(/\s+/);
+      if (parts.length < 3) return null;
+
+      const day = parseInt(parts[1]);
+      const monthStr = parts[2];
+      const monthMap: Record<string, number> = {
+        "ม.ค.": 0,
+        "ก.พ.": 1,
+        "มี.ค.": 2,
+        "เม.ย.": 3,
+        "พ.ค.": 4,
+        "มิ.ย.": 5,
+        "ก.ค.": 6,
+        "ส.ค.": 7,
+        "ก.ย.": 8,
+        "ต.ค.": 9,
+        "พ.ย.": 10,
+        "ธ.ค.": 11,
+      };
+      const month = monthMap[monthStr];
+      if (month === undefined) return null;
+
+      let fullBuddhistYear: number;
+      if (parts.length >= 4 && parts[3]) {
+        const yearShort = parseInt(parts[3]);
+        const fullGregorianYear = 2000 + yearShort;
+        fullBuddhistYear = fullGregorianYear + 543;
+      } else {
+        fullBuddhistYear = new Date().getFullYear() + 543;
+      }
+
+      const gregorianYear = fullBuddhistYear - 543;
+      return new Date(gregorianYear, month, day);
+    } catch {
+      return null;
+    }
+  }
+
+  function parseDateInfo(dateStr: string, today: Date): { fullDate: string; daysUntil: number } {
+    if (!dateStr || dateStr.trim() === "") {
+      return { fullDate: "ไม่ระบุวันที่", daysUntil: 999 };
+    }
+
+    if (dateStr === "อื่นๆ" || dateStr === "จัดสอบเอง" || dateStr.includes("จัดสอบเอง")) {
+      return { fullDate: "จัดสอบเอง", daysUntil: 999 };
+    }
+
+    try {
+      const parts = dateStr.trim().split(/\s+/);
+      if (parts.length < 3) return { fullDate: dateStr, daysUntil: 999 };
+
+      const day = parseInt(parts[1]);
+      const monthStr = parts[2];
+
+      let fullBuddhistYear: number;
+      if (parts.length >= 4 && parts[3]) {
+        const yearShort = parseInt(parts[3]);
+        const fullGregorianYear = 2000 + yearShort;
+        fullBuddhistYear = fullGregorianYear + 543;
+      } else {
+        fullBuddhistYear = new Date().getFullYear() + 543;
+      }
+
+      const monthMap: Record<string, number> = {
+        "ม.ค.": 0,
+        "ก.พ.": 1,
+        "มี.ค.": 2,
+        "เม.ย.": 3,
+        "พ.ค.": 4,
+        "มิ.ย.": 5,
+        "ก.ค.": 6,
+        "ส.ค.": 7,
+        "ก.ย.": 8,
+        "ต.ค.": 9,
+        "พ.ย.": 10,
+        "ธ.ค.": 11,
+      };
+
+      const month = monthMap[monthStr];
+      if (month === undefined) return { fullDate: dateStr, daysUntil: 999 };
+
+      const gregorianYear = fullBuddhistYear - 543;
+      const examDate = new Date(gregorianYear, month, day);
+      examDate.setHours(0, 0, 0, 0);
+
+      const todayStart = new Date(today);
+      todayStart.setHours(0, 0, 0, 0);
+
+      const diffTime = examDate.getTime() - todayStart.getTime();
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+      const thaiMonths = [
+        "มกราคม",
+        "กุมภาพันธ์",
+        "มีนาคม",
+        "เมษายน",
+        "พฤษภาคม",
+        "มิถุนายน",
+        "กรกฎาคม",
+        "สิงหาคม",
+        "กันยายน",
+        "ตุลาคม",
+        "พฤศจิกายน",
+        "ธันวาคม",
+      ];
+      const fullDate = `${day} ${thaiMonths[month]} ${fullBuddhistYear}`;
+
+      return { fullDate, daysUntil: diffDays };
+    } catch (err) {
+      return { fullDate: dateStr, daysUntil: 999 };
+    }
+  }
+
+  function getDayName(dateStr: string): string {
+    if (!dateStr || dateStr === "อื่นๆ" || dateStr === "จัดสอบเอง" || dateStr.includes("จัดสอบเอง")) return "";
+
+    const dayAbbrev = dateStr.split(" ")[0];
+    const dayMap: Record<string, string> = {
+      "จ.": "จันทร์",
+      "อ.": "อังคาร",
+      "พ.": "พุธ",
+      "พฤ.": "พฤหัสบดี",
+      "ศ.": "ศุกร์",
+      "ส.": "เสาร์",
+      "อา.": "อาทิตย์",
+    };
+
+    return dayMap[dayAbbrev] || "";
+  }
+
+  function viewExamDetail(exam: ExamObject) {
+    selectedExam = exam;
+    showExamDetail = true;
+  }
+
+  function closeExamDetail() {
+    showExamDetail = false;
+    setTimeout(() => (selectedExam = null), 300);
+  }
+
+  function groupExamsByDate() {
+    const groups = new Map<string, ExamObject[]>();
+    const today = new Date();
+
+    exams.forEach((exam) => {
+      const key = exam.date?.raw && exam.date.raw.trim() !== "" ? exam.date.raw : "อื่นๆ";
+      if (!groups.has(key)) groups.set(key, []);
+      groups.get(key)!.push(exam);
+    });
+
+    groupedExams = Array.from(groups.entries()).map(([date, items]) => {
+      const { fullDate, daysUntil } = parseDateInfo(date, today);
+      return {
+        date,
+        dayName: getDayName(date),
+        fullDate,
+        daysUntil,
+        items: items.sort((a, b) => (a.order || 0) - (b.order || 0)),
+      };
+    });
+
+    groupedExams.sort((a, b) => {
+      if (a.date === "อื่นๆ") return 1;
+      if (b.date === "อื่นๆ") return -1;
+      return (a.daysUntil || 0) - (b.daysUntil || 0);
+    });
+  }
+
+  // Location formatting helpers
+  function formatLocation(venue: ExamObject["venue"]) {
+    if (!venue) return "-";
+    const { building, room, seat, raw } = venue as any;
+    if (!building && !room && !seat) return raw || "-";
+
+    const parts: string[] = [];
+    if (building) parts.push(`อาคาร ${building}`);
+    if (room) parts.push(`ห้อง ${room}`);
+    if (seat) parts.push(`ที่นั่ง ${seat}`);
+    return parts.length > 0 ? parts.join(" · ") : raw || "-";
+  }
+
+  function openSeatMap(url: string) {
+    if (url) window.open(url, "_blank");
+  }
+
+  function getDaysText(days: number): string {
+    if (days >= 999) return "ไม่ระบุวันที่";
+    if (days < 0) return "สอบไปแล้ว";
+    if (days === 0) return "สอบวันนี้!";
+    if (days === 1) return "สอบพรุ่งนี้";
+    return `อีก ${days} วัน`;
+  }
+
+  function getDaysColor(days: number): string {
+    if (days >= 999) return "text-gray-500";
+    if (days < 0) return "text-gray-400";
+    if (days === 0) return "text-red-500";
+    if (days === 1) return "text-orange-500";
+    if (days <= 3) return "text-yellow-500";
+    if (days <= 7) return "text-blue-500";
+    return "text-green-500";
   }
 </script>
 
