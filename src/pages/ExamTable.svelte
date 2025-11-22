@@ -367,18 +367,12 @@
     <Head {studentInfo} {type} />
 
     <!-- Content -->
-    <div
-      class="flex w-full h-full min-h-0 border-2 border-dashed border-gray-400"
-    >
+    <div class="flex w-full h-full min-h-0">
       <!-- Calendar -->
-      <div
-        class="flex flex-col justify-start items-center w-1/2 border border-red-500 p-4 min-h-0"
-      >
+      <div class="flex flex-col justify-start items-center w-1/2 p-4 min-h-0">
         <!-- Calendar Header -->
-        <div class="p-4 border-orange-400 border w-full">
-          <div
-            class="flex items-center justify-between w-full border border-green-500"
-          >
+        <div class="p-4 w-full">
+          <div class="flex items-center justify-between w-full">
             <!-- Previous Month -->
             <button
               on:click={() => changeMonth(-1)}
@@ -439,12 +433,12 @@
         </div>
 
         <!-- Calendar Grid -->
-        <div class="flex-1 flex flex-col w-full border border-pink-500 min-h-0">
+        <div class="flex-1 flex flex-col w-full min-h-0">
           <!-- Day Headers -->
-          <div class="grid grid-cols-7 gap-1.5 mb-2 border border-blue-500 p-4">
+          <div class="grid grid-cols-7 gap-1.5 mb-2 p-4">
             {#each ["อา.", "จ.", "อ.", "พ.", "พฤ.", "ศ.", "ส."] as day}
               <div
-                class="text-center text-sm font-semibold text-gray-500 dark:text-orange-300 py-1 border border-green-400"
+                class="text-center text-sm font-semibold text-gray-500 dark:text-orange-300 py-1"
               >
                 {day}
               </div>
@@ -453,7 +447,7 @@
 
           <!-- Calendar Days -->
           <div
-            class="grid grid-cols-7 gap-1.5 border border-yellow-500 flex-1 overflow-y-auto content-start auto-rows-min p-4"
+            class="grid grid-cols-7 gap-1.5 flex-1 overflow-y-auto content-start auto-rows-min p-4"
           >
             {#each calendarDays as calDay}
               <button
