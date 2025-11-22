@@ -2,6 +2,9 @@
   import { onMount } from "svelte";
   import { getTheme, setTheme } from "../libs/utils/themeManager";
   import type { ExamTable } from "../libs/types/report-examtable.types";
+  import Head from "../libs/components/examtable/Head.svelte";
+  import Button from "../libs/components/examtable/Button.svelte";
+  import Icon from "@iconify/svelte";
 
   export let studentInfo: ExamTable["studentInfo"];
   export let exams: ExamTable["exams"];
@@ -28,7 +31,7 @@
   <!-- Main Container -->
   <div>
     <!-- Header -->
-    <div></div>
+    <Head {studentInfo} {type} />
 
     <!-- Content -->
     <div>
@@ -53,8 +56,35 @@
   </div>
 
   <!-- Footer -->
-  <footer></footer>
+  <footer class="flex justify-between items-end">
+    <!-- Left -->
+    <div class="space-x-2">
+      <!-- Export PNG -->
+      <!-- <Button on:click={exportPng}>
+        <Icon icon="ph:file-png-light" class="my-auto text-2xl inline" />
+        <span class="font-semibold">Download PNG</span>
+      </Button> -->
+
+      <!-- PDF Download -->
+      <Button on:click>
+        <Icon icon="ph:file-pdf" class="my-auto text-2xl inline" />
+        <span class="font-semibold">Download PDF</span>
+      </Button>
+
+      <!-- Theme Toggle -->
+      <Button on:click={toggleTheme}>
+        <Icon
+          icon={theme === "dark" ? "ph:sun-duotone" : "ph:moon-duotone"}
+          class="my-auto text-2xl inline"
+        />
+        <span class="font-semibold">{theme === "dark" ? "Light" : "Dark"}</span>
+      </Button>
+    </div>
+  </footer>
 </main>
 
 <!-- Modal -->
 <div></div>
+
+<!-- TODO: ทำ header กับ footer ก่อน -->
+<!-- TODO: สร้างปฏิทินและรายการสอบ -->
