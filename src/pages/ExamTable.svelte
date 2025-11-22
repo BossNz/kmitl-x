@@ -123,7 +123,7 @@
     >
       <!-- Calendar -->
       <div
-        class="flex flex-col justify-start items-center w-1/2 border border-red-500 p-4 h-full"
+        class="flex flex-col justify-start items-center w-1/2 border border-red-500 p-4 min-h-0"
       >
         <!-- Calendar Header -->
         <div class="p-4 border-orange-400 border w-full">
@@ -191,7 +191,7 @@
 
         <!-- Calendar Grid -->
         <div
-          class="h-full flex flex-col w-full p-4 border border-pink-500 overflow-y-auto"
+          class="flex-1 flex flex-col w-full p-4 border border-pink-500 min-h-0"
         >
           <!-- Day Headers -->
           <div class="grid grid-cols-7 gap-1.5 mb-2 border border-blue-500">
@@ -205,7 +205,9 @@
           </div>
 
           <!-- Calendar Days -->
-          <div class="grid grid-cols-7 gap-1.5 border border-yellow-500">
+          <div
+            class="grid grid-cols-7 gap-1.5 border border-yellow-500 flex-1 overflow-y-auto content-start auto-rows-min"
+          >
             {#each calendarDays as calDay}
               <button
                 class="
