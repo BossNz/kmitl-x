@@ -51,7 +51,7 @@
         class="flex flex-col justify-center items-center w-1/2 border border-red-500 p-4"
       >
         <!-- Calendar Header -->
-        <div class="p-4 mb-4 border-orange-400 border w-full">
+        <div class="p-4 border-orange-400 border w-full">
           <div
             class="flex items-center justify-between w-full border border-green-500"
           >
@@ -62,7 +62,7 @@
               aria-label="Previous Month"
             >
               <svg
-                class="w-4 h-4 text-gray-600 dark:text-gray-400"
+                class="w-4 h-4 text-gray-600 dark:text-orange-300"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -79,14 +79,14 @@
             <!-- Title -->
             <div class="text-center w-full">
               <!-- Month -->
-              <h2 class="text-lg font-bold text-gray-900 dark:text-white">
+              <h2 class="text-lg font-bold text-orange-400">
                 {new Intl.DateTimeFormat("th-TH", {
                   month: "long",
                   year: "numeric",
                 }).format(currentMonth)}
               </h2>
               <!-- Number of Subjects -->
-              <p class="text-xs text-gray-500 dark:text-gray-400">
+              <p class="text-xs text-gray-500 dark:text-orange-300">
                 {exams.length} วิชา
               </p>
             </div>
@@ -98,7 +98,7 @@
               aria-label="Next Month"
             >
               <svg
-                class="w-4 h-4 text-gray-600 dark:text-gray-400"
+                class="w-4 h-4 text-gray-600 dark:text-orange-300"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -115,9 +115,17 @@
         </div>
 
         <!-- Calendar Grid -->
-        <div class="w-full border border-yellow-500">
+        <div class="p-4 w-full border border-pink-500">
           <!-- Day Headers -->
-          <div></div>
+          <div class="grid grid-cols-7 gap-1.5 mb-2 border border-blue-500">
+            {#each ["อา.", "จ.", "อ.", "พ.", "พฤ.", "ศ.", "ส."] as day}
+              <div
+                class="text-center text-sm font-semibold text-gray-500 dark:text-orange-300 py-1 border border-green-400"
+              >
+                {day}
+              </div>
+            {/each}
+          </div>
 
           <!-- Calendar Days -->
           <div></div>
