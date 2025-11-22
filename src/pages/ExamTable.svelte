@@ -348,7 +348,7 @@
   }
 
   function getDaysColor(days: number): string {
-    if (days >= 999) return "text-gray-500";
+    if (days >= 999) return "text-gray-600";
     if (days < 0) return "text-gray-400";
     if (days === 0) return "text-red-500";
     if (days === 1) return "text-orange-500";
@@ -359,7 +359,7 @@
 </script>
 
 <main
-  class="h-screen p-2 flex flex-col justify-between dark:bg-gray-900 bg-white font-prompt"
+  class="h-screen p-2 flex flex-col justify-between dark:bg-gray-900 bg-white font-prompt text-gray-800 dark:text-white"
 >
   <!-- Main Container -->
   <div class="flex flex-col flex-grow p-1 min-h-0">
@@ -380,7 +380,7 @@
               aria-label="Previous Month"
             >
               <svg
-                class="w-4 h-4 text-gray-600 dark:text-orange-300"
+                class="w-4 h-4 text-orange-500 dark:text-orange-300"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -404,7 +404,7 @@
                 }).format(currentMonth)}
               </h2>
               <!-- Number of Subjects -->
-              <p class="text-xs text-gray-500 dark:text-orange-300">
+              <p class="text-xs text-orange-500 dark:text-orange-300">
                 {exams.length} วิชา
               </p>
             </div>
@@ -416,7 +416,7 @@
               aria-label="Next Month"
             >
               <svg
-                class="w-4 h-4 text-gray-600 dark:text-orange-300"
+                class="w-4 h-4 text-orange-500 dark:text-orange-300"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -438,7 +438,7 @@
           <div class="grid grid-cols-7 gap-1.5 mb-2 p-4">
             {#each ["อา.", "จ.", "อ.", "พ.", "พฤ.", "ศ.", "ส."] as day}
               <div
-                class="text-center text-sm font-semibold text-gray-500 dark:text-orange-300 py-1"
+                class="text-center text-sm font-semibold text-orange-500 dark:text-orange-300 py-1"
               >
                 {day}
               </div>
@@ -454,8 +454,8 @@
                 class="
                   relative aspect-square rounded-lg p-2 transition-all duration-150 flex flex-col
                   {calDay.isCurrentMonth
-                  ? 'bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100'
-                  : 'bg-gray-100 dark:bg-gray-900 text-gray-500 dark:text-gray-400'}
+                  ? 'bg-gray-100/50 dark:bg-gray-800 text-gray-900 dark:text-gray-100'
+                  : 'bg-gray-50 dark:bg-gray-900 text-gray-700 dark:text-gray-400'}
                   {calDay.isToday
                   ? 'ring-2 ring-orange-200 dark:ring-orange-500 dark:bg-orange-500/20 bg-orange-200/40 text-orange-600 dark:text-orange-300 font-semibold'
                   : ''}
@@ -478,7 +478,7 @@
                     ? 'text-orange-400 dark:text-orange-300'
                     : (calDay.exams?.length ?? 0) > 0
                       ? 'text-gray-900 dark:text-gray-100'
-                      : 'text-gray-500 dark:text-gray-500'}"
+                      : 'text-gray-700 dark:text-gray-500'}"
                 >
                   {calDay.day}
                 </div>
@@ -505,7 +505,7 @@
                     <!-- remove extra subject -->
                     {#each calDay.exams.slice(0, 1) as exam}
                       <div
-                        class="text-xs leading-tight text-gray-700 dark:text-gray-300 font-medium line-clamp-3"
+                        class="text-xs leading-tight text-gray-800 dark:text-gray-300 font-medium line-clamp-3"
                       >
                         {exam.subjectName}
                       </div>
