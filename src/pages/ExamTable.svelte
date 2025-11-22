@@ -107,7 +107,6 @@
     const days: CalendarDay[] = [];
     const current = new Date(startDate);
     const today = new Date();
-    today.setHours(0, 0, 0, 0);
 
     while (current <= endDate) {
       const isCurrentMonth = current.getMonth() === month;
@@ -466,9 +465,19 @@
                   {calDay.isToday
                   ? 'ring-2 ring-orange-200 dark:ring-orange-500 dark:bg-orange-500/20 bg-orange-200/40 text-orange-600 dark:text-orange-300 font-semibold'
                   : ''}
+                  {calDay.exams && calDay.exams.length > 0
+                  ? 'ring-1 ring-orange-400 dark:ring-orange-500'
+                  : ''}
                   {!calDay.isCurrentMonth ? 'opacity-40' : 'opacity-100'}
                   hover:shadow-md hover:scale-105"
               >
+                <!-- Today Indicator - Minimal dot -->
+                {#if calDay.isToday}
+                  <div
+                    class="absolute top-1 right-1 w-2 h-2 rounded-full bg-orange-400 dark:bg-orange-300"
+                  ></div>
+                {/if}
+
                 <!-- Day Number -->
                 <div
                   class="text-xs font-medium {calDay.isToday
@@ -479,6 +488,43 @@
                 >
                   {calDay.day}
                 </div>
+
+                {#if calDay.exams && calDay.exams.length > 0}
+                  <!-- Countdown Badge -->
+                  {#if calDay.daysUntil > 0}
+                    <div
+                      class="text-[10px] font-semibold {getDaysColor(
+                        calDay.daysUntil
+                      )}"
+                    >
+                      อีก {calDay.daysUntil} วัน
+                    </div>
+                  {/if}
+
+                  <!-- Exam Info -->
+                  <div
+                    class="space-y-0.5 flex-1 flex flex-col {calDay.daysUntil >
+                    0
+                      ? 'justify-start mt-1'
+                      : 'justify-center'}"
+                  >
+                    <!-- remove extra subject -->
+                    {#each calDay.exams.slice(0, 1) as exam}
+                      <div
+                        class="text-xs leading-tight text-gray-700 dark:text-gray-300 font-medium line-clamp-3"
+                      >
+                        {exam.subjectName}
+                      </div>
+                    {/each}
+                    {#if calDay.exams.length > 1}
+                      <div
+                        class="text-xs text-orange-600 dark:text-orange-400 font-medium"
+                      >
+                        และอีก {calDay.exams.length - 1} วิชา
+                      </div>
+                    {/if}
+                  </div>
+                {/if}
               </button>
             {/each}
           </div>
