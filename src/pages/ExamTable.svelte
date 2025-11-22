@@ -113,12 +113,14 @@
   class="h-screen p-2 flex flex-col justify-between dark:bg-gray-900 bg-white font-prompt"
 >
   <!-- Main Container -->
-  <div class="flex flex-col flex-grow p-1">
+  <div class="flex flex-col flex-grow p-1 min-h-0">
     <!-- Header -->
     <Head {studentInfo} {type} />
 
     <!-- Content -->
-    <div class="flex w-full h-full border-2 border-dashed border-gray-400">
+    <div
+      class="flex w-full h-full min-h-0 border-2 border-dashed border-gray-400"
+    >
       <!-- Calendar -->
       <div
         class="flex flex-col justify-start items-center w-1/2 border border-red-500 p-4 h-full"
@@ -189,7 +191,7 @@
 
         <!-- Calendar Grid -->
         <div
-          class="flex flex-col h-full w-full p-4 border border-pink-500 overflow-y-auto"
+          class="h-full flex flex-col w-full p-4 border border-pink-500 overflow-y-auto"
         >
           <!-- Day Headers -->
           <div class="grid grid-cols-7 gap-1.5 mb-2 border border-blue-500">
@@ -203,7 +205,7 @@
           </div>
 
           <!-- Calendar Days -->
-          <div class="grid grid-cols-7 gap-1.5 border border-yellow-500 p-4">
+          <div class="grid grid-cols-7 gap-1.5 border border-yellow-500">
             {#each calendarDays as calDay}
               <button
                 class="
