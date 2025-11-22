@@ -26,6 +26,15 @@
 
   // Calendar
   let currentMonth: Date = new Date();
+  let calendarDays: CalendarDay[] = [];
+
+  interface CalendarDay {
+    day: number;
+    isCurrentMonth: boolean;
+    isToday: boolean;
+    daysUntil: number;
+    fullDate: string;
+  }
 
   function changeMonth(direction: number) {
     currentMonth = new Date(
@@ -33,22 +42,86 @@
       currentMonth.getMonth() + direction,
       1
     );
+    generateCalendarDays();
+  }
+
+  function generateCalendarDays() {
+    const year = currentMonth.getFullYear();
+    const month = currentMonth.getMonth();
+
+    // First day of month
+    const firstDay = new Date(year, month, 1);
+    const lastDay = new Date(year, month + 1, 0);
+
+    // Start from Sunday of the week containing the 1st
+    const startDate = new Date(firstDay);
+    startDate.setDate(startDate.getDate() - firstDay.getDay());
+
+    // End on Saturday of the week containing the last day
+    const endDate = new Date(lastDay);
+    endDate.setDate(endDate.getDate() + (6 - lastDay.getDay()));
+
+    const days: CalendarDay[] = [];
+    const current = new Date(startDate);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    while (current <= endDate) {
+      const isCurrentMonth = current.getMonth() === month;
+
+      // Check if this is today
+      const isToday =
+        current.getDate() === today.getDate() &&
+        current.getMonth() === today.getMonth() &&
+        current.getFullYear() === today.getFullYear();
+
+      const diffTime = current.getTime() - today.getTime();
+      const daysUntil = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+      const thaiMonths = [
+        "มกราคม",
+        "กุมภาพันธ์",
+        "มีนาคม",
+        "เมษายน",
+        "พฤษภาคม",
+        "มิถุนายน",
+        "กรกฎาคม",
+        "สิงหาคม",
+        "กันยายน",
+        "ตุลาคม",
+        "พฤศจิกายน",
+        "ธันวาคม",
+      ];
+      const fullDate = `${current.getDate()} ${thaiMonths[current.getMonth()]} ${current.getFullYear() + 543}`;
+
+      days.push({
+        day: current.getDate(),
+        isCurrentMonth,
+        isToday,
+        daysUntil,
+        fullDate,
+      });
+
+      current.setDate(current.getDate() + 1);
+    }
+
+    calendarDays = days;
   }
 </script>
 
 <main
-  class="min-h-screen p-2 flex flex-col justify-between dark:bg-gray-900 bg-white font-prompt"
+  class="h-screen p-2 flex flex-col justify-between dark:bg-gray-900 bg-white font-prompt"
 >
   <!-- Main Container -->
-  <div class="p-1">
+  <div class="flex flex-col flex-grow p-1">
     <!-- Header -->
     <Head {studentInfo} {type} />
 
     <!-- Content -->
-    <div class="flex w-full h-40 border-2 border-dashed border-gray-400">
+    <div class="flex w-full h-full border-2 border-dashed border-gray-400">
       <!-- Calendar -->
       <div
-        class="flex flex-col justify-center items-center w-1/2 border border-red-500 p-4"
+        class="flex flex-col justify-start items-center w-1/2 border border-red-500 p-4 h-full"
       >
         <!-- Calendar Header -->
         <div class="p-4 border-orange-400 border w-full">
@@ -115,7 +188,9 @@
         </div>
 
         <!-- Calendar Grid -->
-        <div class="p-4 w-full border border-pink-500">
+        <div
+          class="flex flex-col h-full w-full p-4 border border-pink-500 overflow-y-auto"
+        >
           <!-- Day Headers -->
           <div class="grid grid-cols-7 gap-1.5 mb-2 border border-blue-500">
             {#each ["อา.", "จ.", "อ.", "พ.", "พฤ.", "ศ.", "ส."] as day}
@@ -128,7 +203,23 @@
           </div>
 
           <!-- Calendar Days -->
-          <div></div>
+          <div class="grid grid-cols-7 gap-1.5 border border-yellow-500 p-4">
+            {#each calendarDays as calDay}
+              <button
+                class="
+                  relative aspect-square rounded-lg p-1.5 transition-all duration-150 flex flex-col
+                  {calDay.isCurrentMonth
+                  ? 'bg-white/60 dark:bg-gray-800/50'
+                  : 'bg-gray-100/40 dark:bg-gray-900/20'}
+                  {calDay.isToday
+                  ? 'ring-1 ring-blue-400 dark:ring-blue-400 bg-blue-50/50 dark:bg-blue-900/20'
+                  : ''}
+                  {!calDay.isCurrentMonth ? 'opacity-30' : ''}
+                  hover:shadow-sm backdrop-blur-sm
+                ">{calDay.day}</button
+              >
+            {/each}
+          </div>
         </div>
       </div>
 
