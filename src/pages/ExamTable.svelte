@@ -568,4 +568,34 @@
 </main>
 
 <!-- Modal -->
-<div></div>
+{#if showExamDetail && selectedExam}
+  <div>
+    <!-- Modal Container -->
+    <div>
+      <!-- Modal Header -->
+      <div>
+        <!-- Modal Header Container -->
+        <div>
+          <!-- Modal Header Content -->
+          <div></div>
+
+          <!-- Close Button -->
+          <!-- svelte-ignore a11y_consider_explicit_label -->
+          <button></button>
+        </div>
+      </div>
+
+      <!-- Modal Content -->
+      <div>
+        <!-- Date & Time -->
+        <div></div>
+
+        <!-- Location -->
+        <div></div>
+
+        <!-- Seat Map Button -->
+        <div></div>
+      </div>
+    </div>
+  </div>
+{/if}
