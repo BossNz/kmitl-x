@@ -464,6 +464,11 @@
                   : ''}
                   {!calDay.isCurrentMonth ? 'opacity-40' : 'opacity-100'}
                   hover:shadow-md hover:scale-105"
+                on:click={() =>
+                  calDay.exams &&
+                  calDay.exams.length > 0 &&
+                  viewExamDetail(calDay.exams[0])}
+                disabled={(calDay.exams?.length ?? 0) === 0}
               >
                 <!-- Today Indicator - Minimal dot -->
                 {#if calDay.isToday}
