@@ -8,6 +8,7 @@
   import Head from "../libs/components/examtable/Head.svelte";
   import Button from "../libs/components/examtable/Button.svelte";
   import Icon from "@iconify/svelte";
+  import { fade, slide } from "svelte/transition";
 
   export let studentInfo: ExamTable["studentInfo"];
   export let exams: ExamTable["exams"] = [];
@@ -569,19 +570,77 @@
 
 <!-- Modal -->
 {#if showExamDetail && selectedExam}
-  <div>
+  <!-- Blur Background -->
+  <!-- svelte-ignore a11y-click-events-have-key-events -->
+  <!-- svelte-ignore a11y-no-static-element-interactions -->
+  <div
+    class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
+    transition:fade={{ duration: 200 }}
+    on:click={closeExamDetail}
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="exam-detail-title"
+    tabindex="-1"
+  >
     <!-- Modal Container -->
-    <div>
+    <!-- svelte-ignore a11y-click-events-have-key-events -->
+    <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
+    <div
+      class="bg-white/95 dark:bg-gray-800/95 rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl backdrop-blur-md border border-gray-200/60 dark:border-gray-700/50 font-prompt"
+      transition:slide={{ duration: 300 }}
+      on:click|stopPropagation
+      role="document"
+    >
       <!-- Modal Header -->
-      <div>
+      <div
+        class="sticky top-0 bg-orange-500/95 dark:bg-orange-600/95 border-orange-400/60 dark:border-orange-700/50 p-6 rounded-t-2xl shadow-lg"
+      >
         <!-- Modal Header Container -->
-        <div>
+        <div class="flex items-start justify-between gap-4">
           <!-- Modal Header Content -->
-          <div></div>
+          <div class="flex-1 min-w-0">
+            <!-- Subject Code -->
+            <div
+              class="inline-block px-3 py-1 bg-white/20 backdrop-blur-sm rounded-full text-sm font-semibold text-white mb-2"
+            >
+              {selectedExam.subjectCode}
+            </div>
+
+            <!-- Subject Name -->
+            <h2
+              id="exam-detail-title"
+              class="text-2xl font-bold text-white mb-1"
+            >
+              {selectedExam.subjectName}
+            </h2>
+
+            <!-- Subject Detail -->
+            <p class="text-white/90 text-sm">
+              {selectedExam.type.toUpperCase()} · Section {selectedExam.section}
+              · {selectedExam.credit} หน่วยกิต
+            </p>
+          </div>
 
           <!-- Close Button -->
-          <!-- svelte-ignore a11y_consider_explicit_label -->
-          <button></button>
+          <button
+            on:click={closeExamDetail}
+            class="flex-shrink-0 p-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors"
+            aria-label="Close Modal"
+          >
+            <svg
+              class="w-5 h-5 text-white"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
         </div>
       </div>
 
