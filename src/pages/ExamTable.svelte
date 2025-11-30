@@ -221,12 +221,16 @@
     today: Date,
     date: Date | null
   ): { fullDate: string; daysUntil: number } {
-    if (!date) {
+    if (raw === "อื่นๆ") {
       return { fullDate: "ไม่ระบุวันที่", daysUntil: 999 };
     }
 
-    if (raw === "อื่นๆ" || (raw && raw.includes("จัดสอบเอง"))) {
+    if (raw === "จัดสอบเอง") {
       return { fullDate: "จัดสอบเอง", daysUntil: 999 };
+    }
+
+    if (!date) {
+      return { fullDate: "ไม่ระบุวันที่", daysUntil: 999 };
     }
 
     const thaiMonths = [
@@ -250,7 +254,7 @@
     todayStart.setHours(0, 0, 0, 0);
     date.setHours(0, 0, 0, 0);
 
-    return { fullDate, daysUntil: calculateDateDifference(date, todayStart) };
+    return { fullDate, daysUntil: calculateDateDifference(todayStart, date) };
   }
 
   function getDayName(date: Date | null): string {
@@ -284,8 +288,14 @@
     const today = new Date();
 
     exams.forEach((exam) => {
-      const key =
+      let key =
         exam.date.raw && exam.date.raw.trim() !== "" ? exam.date.raw : "อื่นๆ";
+
+      if (key === "อื่นๆ") {
+        key = "อื่นๆ";
+      } else if (key === "จัดสอบเอง") {
+        key = "จัดสอบเอง";
+      }
 
       if (!groups.has(key)) {
         groups.set(key, {
@@ -293,7 +303,7 @@
             day: exam.date.day,
             month: exam.date.month,
             year: exam.date.year,
-            raw: exam.date.raw,
+            raw: key,
           },
           items: [],
         });
@@ -317,8 +327,8 @@
     });
 
     groupedExams.sort((a, b) => {
-      if (a.date === "อื่นๆ") return 1;
-      if (b.date === "อื่นๆ") return -1;
+      if (a.date === "อื่นๆ" || a.date === "จัดสอบเอง") return 1;
+      if (b.date === "อื่นๆ" || b.date === "จัดสอบเอง") return -1;
       return (a.daysUntil || 0) - (b.daysUntil || 0);
     });
   }
@@ -532,10 +542,170 @@
       </div>
 
       <!-- Exam List -->
-      <div
-        class="flex justify-center items-center w-1/2 border border-blue-500 p-4"
-      >
-        <p>Exam List</p>
+      <div class="flex flex-col w-1/2 p-4 overflow-y-auto space-y-4">
+        <div class="mt-2 space-y-6">
+          {#each groupedExams as group}
+            <div
+              class="relative {(group.daysUntil ?? 999) < 0
+                ? 'opacity-60 grayscale'
+                : ''}"
+            >
+              <!-- Date Header -->
+              <div
+                class="sticky top-0 z-10 flex items-center gap-3 mb-3 bg-white/95 dark:bg-gray-900/95 py-2 backdrop-blur-sm"
+              >
+                <div class="flex items-baseline gap-2">
+                  <h3
+                    class="text-xl font-bold text-orange-600 dark:text-orange-400 tracking-tight"
+                  >
+                    {group.fullDate}
+                  </h3>
+                  {#if group.dayName}
+                    <span
+                      class="text-sm font-medium text-gray-500 dark:text-gray-400"
+                    >
+                      ({group.dayName})
+                    </span>
+                  {/if}
+                </div>
+                <div class="h-px flex-1 bg-gray-200 dark:bg-gray-800"></div>
+                <span
+                  class="{getDaysColor(
+                    group.daysUntil ?? 999
+                  )} text-xs font-bold px-2 py-1 rounded-full bg-gray-100 dark:bg-gray-800"
+                >
+                  {group.date === "จัดสอบเอง"
+                    ? "จัดสอบเอง"
+                    : getDaysText(group.daysUntil ?? 999)}
+                </span>
+              </div>
+
+              <div class="space-y-3 pl-2">
+                {#each group.items as exam}
+                  <button
+                    on:click={() => viewExamDetail(exam)}
+                    class="group w-full text-left relative overflow-hidden rounded-2xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:border-orange-400 dark:hover:border-orange-500 hover:shadow-lg hover:shadow-orange-500/10 transition-all duration-200"
+                  >
+                    <div class="p-4">
+                      <div class="flex items-start gap-4">
+                        <!-- Time Column -->
+                        <div
+                          class="flex-shrink-0 w-24 flex flex-col items-center justify-center p-3 rounded-xl bg-orange-50 dark:bg-orange-900/10 border border-orange-100 dark:border-orange-900/20 group-hover:bg-orange-100 dark:group-hover:bg-orange-900/20 transition-colors"
+                        >
+                          <span
+                            class="text-lg font-bold text-orange-600 dark:text-orange-400 leading-none"
+                          >
+                            {exam.date.time.start}
+                          </span>
+                          <div
+                            class="w-8 h-px bg-orange-200 dark:bg-orange-700 my-1"
+                          ></div>
+                          <span
+                            class="text-sm font-medium text-orange-600/80 dark:text-orange-400/80 leading-none"
+                          >
+                            {exam.date.time.end}
+                          </span>
+                        </div>
+
+                        <!-- Info Column -->
+                        <div class="flex-1 min-w-0 py-0.5">
+                          <div
+                            class="flex items-start justify-between gap-2 mb-2"
+                          >
+                            <div>
+                              <div class="flex items-center gap-2 mb-1">
+                                <span
+                                  class="text-xs font-bold px-1.5 py-0.5 rounded text-gray-500 bg-gray-100 dark:text-gray-400 dark:bg-gray-700/50"
+                                >
+                                  {exam.subjectCode}
+                                </span>
+                                {#if exam.section}
+                                  <span
+                                    class="text-[10px] font-medium text-gray-500"
+                                    >Sec {exam.section}</span
+                                  >
+                                {/if}
+                              </div>
+                              <h4
+                                class="text-base font-bold text-gray-900 dark:text-white leading-tight group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors"
+                              >
+                                {exam.subjectName}
+                              </h4>
+                            </div>
+                          </div>
+
+                          <!-- Footer Info -->
+                          <div class="flex items-center justify-between mt-3">
+                            <!-- Location -->
+                            <div
+                              class="flex items-center gap-1.5 text-xs text-gray-600 dark:text-gray-400"
+                            >
+                              <svg
+                                class="w-3.5 h-3.5"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                                ><path
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                  stroke-width="2"
+                                  d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                                /><path
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                  stroke-width="2"
+                                  d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                                /></svg
+                              >
+                              {#if exam.venue.building || exam.venue.room || exam.venue.seat}
+                                <span
+                                  class="font-medium truncate max-w-[200px]"
+                                >
+                                  {#if exam.venue.building}{exam.venue
+                                      .building}{/if}
+                                  {#if exam.venue.room}
+                                    / {exam.venue.room}{/if}
+                                  {#if exam.venue.seat}
+                                    <span
+                                      class="text-orange-600 dark:text-orange-400 font-bold ml-1"
+                                      >ที่นั่ง {exam.venue.seat}</span
+                                    >{/if}
+                                </span>
+                              {:else if exam.venue.raw && (exam.venue.raw.includes("ปลายภาค") || exam.venue.raw.includes("final exam") || exam.venue.raw.includes("ในห้องสอบ") || exam.venue.raw.includes("examination room"))}
+                                <span class="text-amber-600 dark:text-amber-400"
+                                  >ไม่ระบุห้องสอบ</span
+                                >
+                              {:else}
+                                <span>{exam.venue.raw || "-"}</span>
+                              {/if}
+                            </div>
+
+                            <!-- Badges -->
+                            <div class="flex items-center gap-2">
+                              <span
+                                class="text-[10px] px-2 py-0.5 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300"
+                              >
+                                {exam.credit} หน่วยกิต
+                              </span>
+                              <span
+                                class="text-[10px] px-2 py-0.5 rounded-full {exam.type ===
+                                'lecture'
+                                  ? 'bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-300'
+                                  : 'bg-green-50 text-green-600 dark:bg-green-900/20 dark:text-green-300'}"
+                              >
+                                {exam.type === "lecture" ? "ทฤษฎี" : "ปฏิบัติ"}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </button>
+                {/each}
+              </div>
+            </div>
+          {/each}
+        </div>
       </div>
     </div>
   </div>
@@ -646,69 +816,75 @@
 
       <!-- Modal Content -->
       <div class="p-6 space-y-6">
-        <!-- Date & Time -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <!-- Date -->
-          <div
-            class="bg-white/60 dark:bg-gray-800/40 rounded-xl p-4 border border-gray-200/40 dark:border-gray-700/40 backdrop-blur-sm"
-          >
-            <!-- Title -->
+        {#if selectedExam.date.day}
+          <!-- Date & Time -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- Date -->
             <div
-              class="flex items-center gap-2 text-gray-600 dark:text-gray-400 mb-2"
+              class="bg-white/60 dark:bg-gray-800/40 rounded-xl p-4 border border-gray-200/40 dark:border-gray-700/40 backdrop-blur-sm"
             >
-              <svg
-                class="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
+              <!-- Title -->
+              <div
+                class="flex items-center gap-2 text-gray-600 dark:text-gray-400 mb-2"
               >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                />
-              </svg>
-              <span class="text-sm font-medium">วันที่สอบ</span>
+                <svg
+                  class="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                  />
+                </svg>
+                <span class="text-sm font-medium">วันที่สอบ</span>
+              </div>
+
+              <!-- Date Value-->
+              <p class="text-lg font-semibold text-gray-900 dark:text-white">
+                {selectedExam.date.raw}
+              </p>
             </div>
 
-            <!-- Date Value-->
-            <p class="text-lg font-semibold text-gray-900 dark:text-white">
-              {selectedExam.date.raw}
-            </p>
-          </div>
-
-          <!-- Time -->
-          <div class="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-4">
-            <!-- Title -->
-            <div
-              class="flex items-center gap-2 text-gray-600 dark:text-gray-400 mb-2"
-            >
-              <svg
-                class="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
+            <!-- Time -->
+            <div class="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-4">
+              <!-- Title -->
+              <div
+                class="flex items-center gap-2 text-gray-600 dark:text-gray-400 mb-2"
               >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
-              <span class="text-sm font-medium">เวลาสอบ</span>
-            </div>
+                <svg
+                  class="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+                <span class="text-sm font-medium">เวลาสอบ</span>
+              </div>
 
-            <!-- Time Value -->
-            <p class="text-lg font-semibold text-gray-900 dark:text-white">
-              {selectedExam.date.time.start} - {selectedExam.date.time.end} น.
-            </p>
+              <!-- Time Value -->
+              <p class="text-lg font-semibold text-gray-900 dark:text-white">
+                {selectedExam.date.time.start} - {selectedExam.date.time.end} น.
+              </p>
+            </div>
           </div>
-        </div>
+        {:else}
+          <p class="text-lg font-semibold text-gray-900 dark:text-white">
+            ไม่ระบุวันที่และเวลา
+          </p>
+        {/if}
 
         <!-- Location -->
-        {#if selectedExam.venue.room || selectedExam.venue.seat}
+        {#if selectedExam.venue.room && selectedExam.venue.seat}
           <!-- Case: Structured location data (building:room:seat format) -->
           <div class="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-4">
             <!-- Title -->
