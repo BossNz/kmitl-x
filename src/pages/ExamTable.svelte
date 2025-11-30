@@ -708,7 +708,191 @@
         </div>
 
         <!-- Location -->
-        <div></div>
+        {#if selectedExam.venue.room || selectedExam.venue.seat}
+          <!-- Case: Structured location data (building:room:seat format) -->
+          <div class="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-4">
+            <!-- Title -->
+            <div
+              class="flex items-center gap-2 text-gray-600 dark:text-gray-400 mb-3"
+            >
+              <svg
+                class="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                />
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                />
+              </svg>
+              <span class="text-sm font-medium">สถานที่สอบ</span>
+            </div>
+
+            <!-- Location Details -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <!-- Building -->
+              {#if selectedExam.venue.building}
+                <div class="bg-white dark:bg-gray-800/50 rounded-lg p-3">
+                  <div class="text-xs text-gray-500 dark:text-gray-400 mb-1">
+                    อาคาร
+                  </div>
+                  <div
+                    class="text-lg font-bold text-orange-600 dark:text-orange-400"
+                  >
+                    {selectedExam.venue.building}
+                  </div>
+                </div>
+              {/if}
+
+              <!-- Room -->
+              {#if selectedExam.venue.room}
+                <div class="bg-white dark:bg-gray-800/50 rounded-lg p-3">
+                  <div class="text-xs text-gray-500 dark:text-gray-400 mb-1">
+                    ห้อง
+                  </div>
+                  <div
+                    class="text-lg font-bold text-orange-600 dark:text-orange-400"
+                  >
+                    {selectedExam.venue.room}
+                  </div>
+                </div>
+              {/if}
+
+              <!-- Seat -->
+              {#if selectedExam.venue.seat}
+                <div class="bg-white dark:bg-gray-800/50 rounded-lg p-3">
+                  <div class="text-xs text-gray-500 dark:text-gray-400 mb-1">
+                    ที่นั่ง
+                  </div>
+                  <div
+                    class="text-lg font-bold text-orange-600 dark:text-orange-400"
+                  >
+                    {selectedExam.venue.seat}
+                  </div>
+                </div>
+              {:else}
+                <!-- Show placeholder if no seat number -->
+                <div
+                  class="bg-white dark:bg-gray-800/50 rounded-lg p-3 opacity-50"
+                >
+                  <div class="text-xs text-gray-500 dark:text-gray-400 mb-1">
+                    ที่นั่ง
+                  </div>
+                  <div
+                    class="text-lg font-bold text-gray-400 dark:text-gray-500"
+                  >
+                    -
+                  </div>
+                </div>
+              {/if}
+            </div>
+          </div>
+        {:else if selectedExam.venue.raw && (selectedExam.venue.raw.includes("ปลายภาค") || selectedExam.venue.raw.includes("final exam") || selectedExam.venue.raw.includes("ในห้องสอบ") || selectedExam.venue.raw.includes("examination room"))}
+          <!-- Case: Exam during final period without specific location -->
+          <div
+            class="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-xl p-4"
+          >
+            <div class="flex items-start gap-3">
+              <div class="flex-shrink-0">
+                <svg
+                  class="w-6 h-6 text-amber-600 dark:text-amber-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                  />
+                </svg>
+              </div>
+              <div class="flex-1">
+                <h3
+                  class="text-sm font-semibold text-amber-900 dark:text-amber-100 mb-1"
+                >
+                  ไม่ระบุสถานที่สอบ
+                </h3>
+                <p class="text-sm text-amber-700 dark:text-amber-300">
+                  วิชานี้จะจัดสอบในช่วงปลายภาค
+                  กรุณาตรวจสอบสถานที่สอบอีกครั้งก่อนวันสอบ
+                </p>
+              </div>
+            </div>
+          </div>
+        {:else if selectedExam.venue.raw}
+          <!-- Case: Other location format (raw text) -->
+          <div class="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-4">
+            <div
+              class="flex items-center gap-2 text-gray-600 dark:text-gray-400 mb-2"
+            >
+              <svg
+                class="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                />
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                />
+              </svg>
+              <span class="text-sm font-medium">สถานที่สอบ</span>
+            </div>
+            <p class="text-base text-gray-900 dark:text-white">
+              {selectedExam.venue.raw}
+            </p>
+          </div>
+        {:else}
+          <!-- Case: No location data at all -->
+          <div class="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-4">
+            <div
+              class="flex items-center gap-2 text-gray-600 dark:text-gray-400 mb-2"
+            >
+              <svg
+                class="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                />
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                />
+              </svg>
+              <span class="text-sm font-medium">สถานที่สอบ</span>
+            </div>
+            <p class="text-sm text-gray-500 dark:text-gray-400">
+              ยังไม่ได้ระบุสถานที่สอบ
+            </p>
+          </div>
+        {/if}
 
         <!-- Seat Map Button -->
         {#if selectedExam?.venue?.url}

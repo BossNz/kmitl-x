@@ -96,7 +96,6 @@ export class ReportExamtableScraper extends BaseScraper {
       texts.push(lastHref);
       return texts;
     });
-    console.log(cells);
 
     return cells;
   }
