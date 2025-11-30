@@ -367,6 +367,36 @@
     if (days <= 7) return "text-blue-500";
     return "text-green-500";
   }
+  function toggleExamType() {
+    const newType = type === "M" ? "F" : "M";
+
+    const form = document.createElement("form");
+    form.method = "post";
+    form.action = "report_examtable_show.php";
+
+    // Add hidden inputs
+    const yearInput = document.createElement("input");
+    yearInput.type = "hidden";
+    yearInput.name = "year";
+    yearInput.value = studentInfo.year;
+    form.appendChild(yearInput);
+
+    const semesterInput = document.createElement("input");
+    semesterInput.type = "hidden";
+    semesterInput.name = "semester";
+    semesterInput.value = studentInfo.semester;
+    form.appendChild(semesterInput);
+
+    const examTypeInput = document.createElement("input");
+    examTypeInput.type = "hidden";
+    examTypeInput.name = "mid_or_final";
+    examTypeInput.value = newType;
+    form.appendChild(examTypeInput);
+
+    document.body.appendChild(form);
+    form.submit();
+    document.body.removeChild(form);
+  }
 </script>
 
 <main
@@ -733,6 +763,14 @@
           class="my-auto text-2xl inline"
         />
         <span class="font-semibold">{theme === "dark" ? "Light" : "Dark"}</span>
+      </Button>
+
+      <!-- Exam Type Toggle -->
+      <Button on:click={toggleExamType}>
+        <Icon icon="ph:calendar-light" class="my-auto text-2xl inline" />
+        <span class="font-semibold"
+          >{type === "M" ? "ดูปลายภาค" : "ดูกลางภาค"}</span
+        >
       </Button>
     </div>
   </footer>
