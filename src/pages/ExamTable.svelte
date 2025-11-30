@@ -9,6 +9,15 @@
   import Button from "../libs/components/examtable/Button.svelte";
   import Icon from "@iconify/svelte";
   import { fade, slide } from "svelte/transition";
+  import {
+    parseExamDateToDate,
+    getCalendarDays,
+    groupExams,
+    getDaysText,
+    getDaysColor,
+    type CalendarDay,
+    type ExamGroup,
+  } from "../libs/utils/examtable";
 
   export let studentInfo: ExamTable["studentInfo"];
   export let exams: ExamTable["exams"] = [];
@@ -30,7 +39,7 @@
     // Initialize calendar and groups from passed exams
     try {
       buildCalendarFromExams();
-      groupExamsByDate();
+      groupedExams = groupExams(exams);
       generateCalendarDays();
     } catch (err) {
       console.error(err);
@@ -46,22 +55,6 @@
   let currentMonth: Date = new Date();
   let calendarDays: CalendarDay[] = [];
   let groupedExams: ExamGroup[] = [];
-
-  interface CalendarDay {
-    day: number;
-    isCurrentMonth: boolean;
-    isToday: boolean;
-    daysUntil: number;
-    fullDate: string;
-    exams?: ExamObject[];
-  }
-  interface ExamGroup {
-    date: string;
-    dayName?: string;
-    fullDate?: string;
-    daysUntil?: number;
-    items: ExamObject[];
-  }
 
   function changeMonth(direction: number) {
     currentMonth = new Date(
@@ -90,176 +83,7 @@
   }
 
   function generateCalendarDays() {
-    const year = currentMonth.getFullYear();
-    const month = currentMonth.getMonth();
-
-    // First day of month
-    const firstDay = new Date(year, month, 1);
-    const lastDay = new Date(year, month + 1, 0);
-
-    // Start from Sunday of the week containing the 1st
-    const startDate = new Date(firstDay);
-    startDate.setDate(startDate.getDate() - firstDay.getDay());
-
-    // End on Saturday of the week containing the last day
-    const endDate = new Date(lastDay);
-    endDate.setDate(endDate.getDate() + (6 - lastDay.getDay()));
-
-    const days: CalendarDay[] = [];
-    const current = new Date(startDate);
-    const today = new Date();
-
-    while (current <= endDate) {
-      const isCurrentMonth = current.getMonth() === month;
-
-      // Check if this is today
-      const isToday =
-        current.getDate() === today.getDate() &&
-        current.getMonth() === today.getMonth() &&
-        current.getFullYear() === today.getFullYear();
-
-      const diffTime = current.getTime() - today.getTime();
-      const daysUntil = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-      const thaiMonths = [
-        "มกราคม",
-        "กุมภาพันธ์",
-        "มีนาคม",
-        "เมษายน",
-        "พฤษภาคม",
-        "มิถุนายน",
-        "กรกฎาคม",
-        "สิงหาคม",
-        "กันยายน",
-        "ตุลาคม",
-        "พฤศจิกายน",
-        "ธันวาคม",
-      ];
-      const fullDate = `${current.getDate()} ${thaiMonths[current.getMonth()]} ${current.getFullYear() + 543}`;
-
-      // Collect exams for this date
-      const dayExams = exams.filter((exam) => {
-        const examDate = parseExamDateToDate(
-          exam.date.day,
-          exam.date.month,
-          exam.date.year
-        );
-        if (!examDate) return false;
-
-        return (
-          examDate.getDate() === current.getDate() &&
-          examDate.getMonth() === current.getMonth() &&
-          examDate.getFullYear() === current.getFullYear()
-        );
-      });
-
-      days.push({
-        day: current.getDate(),
-        isCurrentMonth,
-        isToday,
-        daysUntil,
-        fullDate,
-        exams: dayExams,
-      });
-
-      current.setDate(current.getDate() + 1);
-    }
-
-    calendarDays = days;
-  }
-
-  function parseExamDateToDate(
-    day: string,
-    month: string,
-    year: string
-  ): Date | null {
-    try {
-      const monthMapThai: Record<string, number> = {
-        "ม.ค.": 0,
-        "ก.พ.": 1,
-        "มี.ค.": 2,
-        "เม.ย.": 3,
-        "พ.ค.": 4,
-        "มิ.ย.": 5,
-        "ก.ค.": 6,
-        "ส.ค.": 7,
-        "ก.ย.": 8,
-        "ต.ค.": 9,
-        "พ.ย.": 10,
-        "ธ.ค.": 11,
-      };
-      const monthMapEng: Record<string, number> = {
-        Jan: 0,
-        Feb: 1,
-        Mar: 2,
-        Apr: 3,
-        May: 4,
-        Jun: 5,
-        Jul: 6,
-        Aug: 7,
-        Sep: 8,
-        Oct: 9,
-        Nov: 10,
-        Dec: 11,
-      };
-      const monthIndex = monthMapThai[month] ?? monthMapEng[month];
-      if (monthIndex === undefined) return null;
-
-      return new Date(parseInt(year), monthIndex, parseInt(day));
-    } catch {
-      return null;
-    }
-  }
-
-  function calculateDateDifference(date1: Date, date2: Date): number {
-    const diffTime = date2.getTime() - date1.getTime();
-    return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-  }
-
-  function parseDateInfo(
-    raw: string,
-    today: Date,
-    date: Date | null
-  ): { fullDate: string; daysUntil: number } {
-    if (raw === "อื่นๆ") {
-      return { fullDate: "ไม่ระบุวันที่", daysUntil: 999 };
-    }
-
-    if (raw === "จัดสอบเอง") {
-      return { fullDate: "จัดสอบเอง", daysUntil: 999 };
-    }
-
-    if (!date) {
-      return { fullDate: "ไม่ระบุวันที่", daysUntil: 999 };
-    }
-
-    const thaiMonths = [
-      "มกราคม",
-      "กุมภาพันธ์",
-      "มีนาคม",
-      "เมษายน",
-      "พฤษภาคม",
-      "มิถุนายน",
-      "กรกฎาคม",
-      "สิงหาคม",
-      "กันยายน",
-      "ตุลาคม",
-      "พฤศจิกายน",
-      "ธันวาคม",
-    ];
-
-    const fullDate = `${date?.getDate() || ""} ${thaiMonths[date?.getMonth() || 0]} ${date ? date.getFullYear() + 543 : ""}`;
-
-    const todayStart = new Date(today);
-    todayStart.setHours(0, 0, 0, 0);
-    date.setHours(0, 0, 0, 0);
-
-    return { fullDate, daysUntil: calculateDateDifference(todayStart, date) };
-  }
-
-  function getDayName(date: Date | null): string {
-    if (!date) return "";
-    return new Intl.DateTimeFormat("th-TH", { weekday: "long" }).format(date);
+    calendarDays = getCalendarDays(currentMonth, exams);
   }
 
   function viewExamDetail(exam: ExamObject) {
@@ -272,101 +96,10 @@
     setTimeout(() => (selectedExam = null), 300);
   }
 
-  function groupExamsByDate() {
-    const groups = new Map<
-      string,
-      {
-        date: {
-          day: string;
-          month: string;
-          year: string;
-          raw: string;
-        };
-        items: ExamObject[];
-      }
-    >();
-    const today = new Date();
-
-    exams.forEach((exam) => {
-      let key =
-        exam.date.raw && exam.date.raw.trim() !== "" ? exam.date.raw : "อื่นๆ";
-
-      if (key === "อื่นๆ") {
-        key = "อื่นๆ";
-      } else if (key === "จัดสอบเอง") {
-        key = "จัดสอบเอง";
-      }
-
-      if (!groups.has(key)) {
-        groups.set(key, {
-          date: {
-            day: exam.date.day,
-            month: exam.date.month,
-            year: exam.date.year,
-            raw: key,
-          },
-          items: [],
-        });
-      }
-
-      groups.get(key)!.items.push(exam);
-    });
-
-    // Convert the grouped map to the array structure used by the UI
-    groupedExams = Array.from(groups.entries()).map(([, { date, items }]) => {
-      const realDate = parseExamDateToDate(date.day, date.month, date.year);
-      const { fullDate, daysUntil } = parseDateInfo(date.raw, today, realDate);
-
-      return {
-        date: date.raw,
-        dayName: getDayName(realDate),
-        fullDate,
-        daysUntil,
-        items: items.sort((a, b) => (a.order || 0) - (b.order || 0)),
-      };
-    });
-
-    groupedExams.sort((a, b) => {
-      if (a.date === "อื่นๆ" || a.date === "จัดสอบเอง") return 1;
-      if (b.date === "อื่นๆ" || b.date === "จัดสอบเอง") return -1;
-      return (a.daysUntil || 0) - (b.daysUntil || 0);
-    });
-  }
-
-  // Location formatting helpers
-  function formatLocation(venue: ExamObject["venue"]) {
-    if (!venue) return "-";
-    const { building, room, seat, raw } = venue as any;
-    if (!building && !room && !seat) return raw || "-";
-
-    const parts: string[] = [];
-    if (building) parts.push(`อาคาร ${building}`);
-    if (room) parts.push(`ห้อง ${room}`);
-    if (seat) parts.push(`ที่นั่ง ${seat}`);
-    return parts.length > 0 ? parts.join(" · ") : raw || "-";
-  }
-
   function openSeatMap(url: string) {
     if (url) window.open(url, "_blank");
   }
 
-  function getDaysText(days: number): string {
-    if (days >= 999) return "ไม่ระบุวันที่";
-    if (days < 0) return "สอบไปแล้ว";
-    if (days === 0) return "สอบวันนี้!";
-    if (days === 1) return "สอบพรุ่งนี้";
-    return `อีก ${days} วัน`;
-  }
-
-  function getDaysColor(days: number): string {
-    if (days >= 999) return "text-gray-600";
-    if (days < 0) return "text-gray-400";
-    if (days === 0) return "text-red-500";
-    if (days === 1) return "text-orange-500";
-    if (days <= 3) return "text-yellow-500";
-    if (days <= 7) return "text-blue-500";
-    return "text-green-500";
-  }
   function toggleExamType() {
     const newType = type === "M" ? "F" : "M";
 
