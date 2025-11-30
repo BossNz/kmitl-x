@@ -79,11 +79,24 @@ export class ReportExamtableScraper extends BaseScraper {
       .filter((row) => row.rowIndex % 2 === 0)
       .slice(1);
 
-    const cells = rows.map((row) =>
-      Array.from(row.querySelectorAll("td"))
-        .filter((cell) => cell.cellIndex % 2 === 0)
-        .map((cell) => cell.textContent?.trim() || "")
-    );
+    const cells = rows.map((row) => {
+      const tds = Array.from(row.querySelectorAll("td")).filter(
+        (cell) => cell.cellIndex % 2 === 0
+      );
+
+      const texts = tds.map((cell) => cell.textContent?.trim() || "");
+
+      // Get href from last td if present and append it so each row contains both value and url
+      const lastHref =
+        tds.length > 0
+          ? (tds[tds.length - 1].querySelector("a") as HTMLAnchorElement)
+              ?.href || ""
+          : "";
+
+      texts.push(lastHref);
+      return texts;
+    });
+    console.log(cells);
 
     return cells;
   }
@@ -97,7 +110,7 @@ export class ReportExamtableScraper extends BaseScraper {
       credit: this.parseCreditData(row[4]),
       type: this.parseSubjectType(row[5]),
       date: this.parseDateData(row[6], row[7]),
-      venue: this.parseVenueData(row[8]),
+      venue: this.parseVenueData(row[8], row[9]),
     };
   }
 
@@ -113,13 +126,17 @@ export class ReportExamtableScraper extends BaseScraper {
   }
 
   // from format "อาคาร:ห้อง:ที่นั่ง"
-  private parseVenueData(venueString: string): ExamObject["venue"] {
+  private parseVenueData(
+    venueString: string,
+    venueUrl?: string
+  ): ExamObject["venue"] {
     const venueParts = venueString.split(":").map((part) => part.trim());
     return {
       building: venueParts[0] || "",
       room: venueParts[1] || "",
       seat: venueParts[2] || "",
       raw: venueString,
+      url: venueUrl || "",
     };
   }
 

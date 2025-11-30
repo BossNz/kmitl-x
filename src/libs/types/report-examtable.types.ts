@@ -29,6 +29,7 @@ export interface ExamVenue {
   building: string;
   seat: string;
   raw: string;
+  url?: string;
 }
 
 export interface StudentInfo {
