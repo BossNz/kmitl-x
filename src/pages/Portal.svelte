@@ -11,37 +11,73 @@
 </script>
 
 <main>
+  <!-- Page Content -->
   <div>
     <!-- Sidebar -->
     <aside>
+      <!-- Header with Logo -->
+      <div></div>
+
+      <!-- Navigation -->
       <div>
-        <!-- Header with Logo -->
-        <div></div>
-
-        <!-- Sidebar Content -->
-        <div>
-          <!-- Highlights Items -->
-          <div></div>
-
-          <!-- Menu Items -->
-          <div></div>
-        </div>
-
         <!-- Home Button -->
         <div></div>
+
+        <!-- Highlights Items -->
+        <div></div>
+
+        <!-- Menu Items -->
+        <div></div>
+      </div>
+
+      <!-- Sidebar Footer -->
+      <div>
+        <!-- Mode Switcher -->
+        <div></div>
+
+        <!-- Credit & Version -->
+        <div>
+          <!-- Credit -->
+          <div></div>
+
+          <!-- Version -->
+          <div></div>
+        </div>
       </div>
     </aside>
 
     <!-- Main Section -->
     <section>
+      <!-- Container -->
       <div>
         <!-- Header -->
         <div>
-          <!-- Title -->
-          <div></div>
+          <!-- Breadcrumb and Title -->
+          <div>
+            <!-- Breadcrumb -->
+            <div></div>
 
-          <!-- Buttons -->
-          <div></div>
+            <!-- Title -->
+            <div></div>
+          </div>
+
+          <!-- Buttons and Profile -->
+          <div>
+            <!-- Server Time -->
+            <div></div>
+
+            <!-- Buttons -->
+            <div></div>
+
+            <!-- Profile -->
+            <div>
+              <!-- On Screen -->
+              <div></div>
+
+              <!-- Hover -->
+              <div></div>
+            </div>
+          </div>
         </div>
 
         <!-- Container -->
