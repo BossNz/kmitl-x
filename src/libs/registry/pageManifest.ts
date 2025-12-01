@@ -32,6 +32,7 @@ export const pages: PageDefinition[] = [
       import("../scraper/report-studytable.scraper").then(
         (m) => new m.ReportStudytableScraper()
       ),
+    component: () => import("../../pages/StudyTable.svelte"),
   },
   {
     name: "report-examtable",
@@ -40,6 +41,7 @@ export const pages: PageDefinition[] = [
       import("../scraper/report-examtable.scraper").then(
         (m) => new m.ReportExamtableScraper()
       ),
+    component: () => import("../../pages/ExamTable.svelte"),
   },
   {
     name: "midterm-score",

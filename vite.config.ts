@@ -5,6 +5,9 @@ import manifest from "./src/manifest.config";
 
 export default defineConfig({
   plugins: [svelte(), crx({ manifest })],
+  build: {
+    modulePreload: false,
+  },
   server: {
     port: 5173,
     strictPort: true,

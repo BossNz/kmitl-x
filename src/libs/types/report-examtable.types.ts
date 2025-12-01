@@ -29,6 +29,7 @@ export interface ExamVenue {
   building: string;
   seat: string;
   raw: string;
+  url?: string;
 }
 
 export interface StudentInfo {
@@ -45,4 +46,5 @@ export interface ExamTable {
   studentInfo: StudentInfo;
   exams: ExamObject[];
   pdf: string;
+  type: "M" | "F";
 }

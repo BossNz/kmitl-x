@@ -12,13 +12,11 @@ export default defineManifest(async (env) => ({
   version: `${major}.${minor}.${patch}`,
   version_name: version,
   icons: {
-    "128": "src/assets/icons/icon-128.png",
+    "128": "public/icons/icon-128.png",
   },
   content_scripts: [
     {
-      matches: [
-        "https://*.reg.kmitl.ac.th/*",
-      ],
+      matches: ["https://*.reg.kmitl.ac.th/*"],
       js: ["src/content/index.ts"],
       run_at: "document_start",
     },
