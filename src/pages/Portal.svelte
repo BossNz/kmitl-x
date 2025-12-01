@@ -1,13 +1,23 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import type { PortalScraperResult } from "../libs/types/portal.types";
+  import { getTheme, setTheme } from "../libs/utils/themeManager";
 
-  export let meta: PortalScraperResult["meta"] | undefined;
-  export let sections: PortalScraperResult["sections"] | undefined;
+  export let meta: PortalScraperResult["meta"];
+  export let sections: PortalScraperResult["sections"];
+
+  let theme: "light" | "dark" = "dark";
+
   onMount(() => {
-    console.log("meta:", meta);
-    console.log("sections:", sections);
+    theme = getTheme();
+    setTheme(theme);
+    console.log(meta, sections);
   });
+
+  function toggleTheme() {
+    theme = theme === "dark" ? "light" : "dark";
+    setTheme(theme);
+  }
 </script>
 
 <main>
