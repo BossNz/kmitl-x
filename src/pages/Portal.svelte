@@ -2,21 +2,58 @@
   import { onMount } from "svelte";
   import type { PortalScraperResult } from "../libs/types/portal.types";
   import { getTheme, setTheme } from "../libs/utils/themeManager";
+  import Icon from "@iconify/svelte";
 
   export let meta: PortalScraperResult["meta"];
   export let sections: PortalScraperResult["sections"];
 
   let theme: "light" | "dark" = "dark";
+  const KMITLX_MODE_KEY = "kmitlx:view";
 
+  // State management for menu
+  let openSections: Record<string, boolean> = {};
+  let activeItem: string | null = null;
+
+  // Initialize open sections state
   onMount(() => {
     theme = getTheme();
     setTheme(theme);
     console.log(meta, sections);
+
+    // Initialize all sections as closed
+    sections.forEach((section) => {
+      openSections[section.title] = false;
+    });
   });
 
   function toggleTheme() {
     theme = theme === "dark" ? "light" : "dark";
     setTheme(theme);
+  }
+
+  // Switch to Original mode
+  function switchToOriginal() {
+    sessionStorage.setItem(KMITLX_MODE_KEY, "original");
+    window.location.reload();
+  }
+
+  // Toggle section open/close (accordion behavior - only one open at a time)
+  function toggleSection(sectionId: string) {
+    const isCurrentlyOpen = openSections[sectionId];
+
+    // Close all sections first
+    Object.keys(openSections).forEach((key) => {
+      openSections[key] = false;
+    });
+
+    // Toggle the clicked section (if it was closed, open it)
+    openSections[sectionId] = !isCurrentlyOpen;
+  }
+
+  // Handle item click
+  function handleItemClick(itemId: string) {
+    activeItem = itemId;
+    console.log(`Clicked on item with ID: ${itemId}`);
   }
 </script>
 
@@ -126,68 +163,98 @@
           <div
             class="text-[10px] font-bold text-slate-500 uppercase tracking-wider px-4 mb-3"
           >
-            ระบบทั้งหมด
+            เมนูทั้งหมด
           </div>
 
           <!-- Items -->
-          <!-- TODO: Update menu items dynamically -->
           <div class="space-y-2">
-            <div class="space-y-1">
-              <!-- Menu Item -->
-              <button
-                class="w-full flex items-center justify-between px-4 py-2.5 rounded-xl bg-white/5 text-white border border-white/5 transition-all cursor-pointer group"
-              >
-                <!-- Item Content -->
-                <div class="flex items-center gap-3">
-                  <!-- Item Icon -->
-                  <div
-                    class="p-1.5 rounded bg-blue-500/20 text-blue-400 group-hover:bg-blue-500 group-hover:text-white transition-colors"
-                  >
-                    <svg
-                      class="w-4 h-4"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                      ></path>
-                    </svg>
+            {#each sections as section}
+              {@const isOpen = openSections[section.id]}
+              {@const iconClasses = isOpen
+                ? `${section.color.open.bg} ${section.color.open.text} ${section.color.hover.bg} ${section.color.hover.text}`
+                : `${section.color.closed.bg} ${section.color.closed.text} ${section.color.hover.bg} ${section.color.hover.text}`}
+              <div class="space-y-1">
+                <!-- Menu Item -->
+                <button
+                  class="w-full flex items-center justify-between px-4 py-2.5 rounded-xl transition-all cursor-pointer group {openSections[
+                    section.id
+                  ]
+                    ? 'bg-white/5 text-white border border-white/5'
+                    : 'text-slate-400 hover:bg-white/5 hover:text-white'}"
+                  on:click={() => toggleSection(section.id)}
+                >
+                  <!-- Item Content -->
+                  <div class="flex items-center gap-3">
+                    <!-- Item Icon with dynamic color -->
+                    <div class="p-1.5 rounded transition-colors {iconClasses}">
+                      <Icon class="w-5 h-5" icon={section.icon} />
+                    </div>
+
+                    <!-- Item Label -->
+                    <span class="text-sm font-medium">{section.title}</span>
                   </div>
 
-                  <!-- Item Label -->
-                  <span class="text-sm font-medium">ข้อมูลนักศึกษา</span>
-                </div>
+                  <!-- Item Badge and Icon -->
+                  <div class="flex items-center gap-2">
+                    {#if section.items.length > 0 && !openSections[section.id]}
+                      <span
+                        class="w-5 h-5 rounded-full text-[10px] flex items-center justify-center transition-all bg-slate-800 text-slate-400 border border-slate-700 group-hover:bg-orange-500/20 group-hover:text-orange-400 group-hover:border-orange-500/30"
+                      >
+                        {section.items.length}
+                      </span>
+                    {/if}
 
-                <!-- Dropdown Icon -->
-                <svg
-                  class="w-4 h-4 text-slate-500 transform rotate-180 transition-transform"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M19 9l-7 7-7-7"
-                  ></path>
-                </svg>
-              </button>
-            </div>
+                    <!-- Dropdown Icon -->
+                    <Icon
+                      class="w-4 h-4 transition-all {openSections[section.id]
+                        ? 'text-white rotate-90'
+                        : 'text-slate-600 group-hover:text-slate-400'}"
+                      icon="mdi:chevron-right"
+                    />
+                  </div>
+                </button>
+
+                <!-- Sub Menu Items with animation -->
+                {#if openSections[section.id] && section.items.length > 0}
+                  <div
+                    class="relative pl-6 ml-3 space-y-1 border-l border-white/10 animate-in slide-in-from-top-2 duration-200"
+                  >
+                    {#each section.items as item}
+                      <!-- Sub Menu Item -->
+                      <button
+                        class="w-full flex items-center justify-between gap-2 px-4 py-2 rounded-lg text-sm transition-all {activeItem ===
+                        item.id
+                          ? 'text-orange-400 bg-orange-500/5 border border-orange-500/10'
+                          : 'text-slate-400 hover:text-white hover:bg-white/5'}"
+                        on:click={() => handleItemClick(item.id)}
+                      >
+                        <span
+                          class="text-sm truncate {activeItem === item.id
+                            ? 'font-medium'
+                            : ''}">{item.label}</span
+                        >
+                        {#if item.openInNewTab}
+                          <span
+                            class="text-[10px] px-1.5 py-0.5 rounded text-orange-400 flex-shrink-0"
+                          >
+                            <Icon class="w-3.5 h-auto" icon="mdi:open-in-new" />
+                          </span>
+                        {/if}
+                      </button>
+                    {/each}
+                  </div>
+                {/if}
+              </div>
+            {/each}
           </div>
         </div>
       </div>
-
       <!-- Sidebar Footer -->
       <div class="p-4 border-t border-white/5 bg-slate-900/30 mt-auto">
         <!-- Mode Switcher -->
         <button
           class="w-full mb-3 flex items-center justify-center gap-2 p-2 rounded-lg text-xs font-medium text-slate-500 hover:text-orange-400 hover:bg-white/5 transition-colors border border-dashed border-white/5"
-          on:click={() => alert("สลับไปใช้ Original")}
+          on:click={switchToOriginal}
         >
           <svg
             class="w-4 h-4"
