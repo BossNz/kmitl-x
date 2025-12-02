@@ -9,12 +9,16 @@
 
   let theme: "light" | "dark" = "dark";
   const KMITLX_MODE_KEY = "kmitlx:view";
+  const FAVORITES_KEY = "kmitlx:favorites";
 
   // State management for menu
   let openSections: Record<string, boolean> = {};
   let activeItem: string | null = null;
+  let favorites: string[] = [];
+  let isEditMode = false;
+  let hoveredItemId: string | null = null;
 
-  // Initialize open sections state
+  // Initialize open sections state and load favorites
   onMount(() => {
     theme = getTheme();
     setTheme(theme);
@@ -24,6 +28,9 @@
     sections.forEach((section) => {
       openSections[section.title] = false;
     });
+
+    // Load favorites from localStorage
+    loadFavorites();
   });
 
   function toggleTheme() {
@@ -55,6 +62,77 @@
     activeItem = itemId;
     console.log(`Clicked on item with ID: ${itemId}`);
   }
+
+  // Load favorites from localStorage
+  function loadFavorites() {
+    try {
+      const stored = localStorage.getItem(FAVORITES_KEY);
+      if (stored) {
+        favorites = JSON.parse(stored);
+      }
+    } catch (error) {
+      console.error("Failed to load favorites:", error);
+      favorites = [];
+    }
+  }
+
+  // Save favorites to localStorage
+  function saveFavorites() {
+    try {
+      localStorage.setItem(FAVORITES_KEY, JSON.stringify(favorites));
+    } catch (error) {
+      console.error("Failed to save favorites:", error);
+    }
+  }
+
+  // Toggle favorite status
+  function toggleFavorite(itemId: string, event: Event) {
+    event.stopPropagation();
+
+    const index = favorites.indexOf(itemId);
+    if (index > -1) {
+      favorites = favorites.filter((id) => id !== itemId);
+    } else {
+      favorites = [...favorites, itemId];
+    }
+
+    saveFavorites();
+  }
+
+  // Remove from favorites (in edit mode)
+  function removeFavorite(itemId: string, event: Event) {
+    event.stopPropagation();
+    favorites = favorites.filter((id) => id !== itemId);
+    saveFavorites();
+  }
+
+  // Toggle edit mode
+  function toggleEditMode() {
+    isEditMode = !isEditMode;
+  }
+
+  // Get favorite items - reactive based on favorites array
+  $: favoriteItems = (() => {
+    const items: Array<{
+      id: string;
+      label: string;
+      sectionTitle: string;
+    }> = [];
+
+    sections.forEach((section) => {
+      section.items.forEach((item) => {
+        if (favorites.includes(item.id)) {
+          items.push({
+            id: item.id,
+            label: item.label,
+            sectionTitle: section.title,
+          });
+        }
+      });
+    });
+
+    return items;
+  })();
 </script>
 
 <main
@@ -131,32 +209,65 @@
             <span>เมนูใช้บ่อย</span>
 
             <!-- Edit Button -->
-            <button on:click={() => alert("แก้ไขเมนู")}>
+            <button on:click={toggleEditMode}>
               <span
-                class="text-xs text-orange-500/50 cursor-pointer hover:text-orange-500"
-                >แก้ไข</span
+                class="text-xs cursor-pointer transition-colors {isEditMode
+                  ? 'text-orange-500 hover:text-orange-400'
+                  : 'text-orange-500/50 hover:text-orange-500'}"
+                >{isEditMode ? "ตกลง" : "แก้ไข"}</span
               >
             </button>
           </div>
-
           <!-- Items -->
-          <!-- TODO: Update menu items dynamically -->
           <div class="space-y-1">
-            <button
-              class="group flex items-center justify-between w-full px-4 py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 transition-colors"
-              on:click={() => alert("เมนูใช้บ่อย")}
-            >
-              <div class="flex items-center gap-3">
-                <span
-                  class="text-slate-600 text-sm group-hover:text-orange-400 transition-colors"
-                  >★</span
-                >
-                <span class="text-sm">ทดสอบ</span>
+            {#if favoriteItems.length === 0 && !isEditMode}
+              <div class="px-4 py-3 text-xs text-slate-500 text-center">
+                ยังไม่มีเมนูใช้บ่อย<br />
+                <span class="text-[10px]">กดดาวที่เมนูเพื่อเพิ่ม</span>
               </div>
-            </button>
+            {:else}
+              {#each favoriteItems as item}
+                <div
+                  class="group flex items-center justify-between w-full px-4 py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 transition-colors cursor-pointer"
+                  on:click={() => handleItemClick(item.id)}
+                  role="button"
+                  tabindex="0"
+                  on:keydown={(e) =>
+                    e.key === "Enter" && handleItemClick(item.id)}
+                >
+                  <div class="flex items-center gap-3 flex-1 min-w-0">
+                    <span
+                      class="text-orange-400 text-sm transition-colors flex-shrink-0"
+                      >★</span
+                    >
+                    <div class="flex flex-col items-start min-w-0 flex-1">
+                      <span class="text-sm truncate w-full">{item.label}</span>
+                      <span class="text-[10px] text-slate-600"
+                        >{item.sectionTitle}</span
+                      >
+                    </div>
+                  </div>
+
+                  {#if isEditMode}
+                    <div
+                      class="flex-shrink-0 p-1 rounded hover:bg-red-500/20 transition-colors"
+                      on:click={(e) => removeFavorite(item.id, e)}
+                      role="button"
+                      tabindex="0"
+                      on:keydown={(e) =>
+                        e.key === "Enter" && removeFavorite(item.id, e)}
+                    >
+                      <Icon
+                        class="w-4 h-4 text-red-400 hover:text-red-300"
+                        icon="mdi:close-circle"
+                      />
+                    </div>
+                  {/if}
+                </div>
+              {/each}
+            {/if}
           </div>
         </div>
-
         <!-- Menu Items -->
         <div>
           <!-- Title -->
@@ -222,24 +333,56 @@
                     {#each section.items as item}
                       <!-- Sub Menu Item -->
                       <button
-                        class="w-full flex items-center justify-between gap-2 px-4 py-2 rounded-lg text-sm transition-all {activeItem ===
+                        class="w-full flex items-center justify-between gap-2 px-4 py-2 rounded-lg text-sm transition-all relative group/item {activeItem ===
                         item.id
                           ? 'text-orange-400 bg-orange-500/5 border border-orange-500/10'
                           : 'text-slate-400 hover:text-white hover:bg-white/5'}"
                         on:click={() => handleItemClick(item.id)}
+                        on:mouseenter={() => (hoveredItemId = item.id)}
+                        on:mouseleave={() => (hoveredItemId = null)}
                       >
                         <span
                           class="text-sm truncate {activeItem === item.id
                             ? 'font-medium'
                             : ''}">{item.label}</span
                         >
-                        {#if item.openInNewTab}
-                          <span
-                            class="text-[10px] px-1.5 py-0.5 rounded text-orange-400 flex-shrink-0"
-                          >
-                            <Icon class="w-3.5 h-auto" icon="mdi:open-in-new" />
-                          </span>
-                        {/if}
+
+                        <div class="flex items-center gap-1 flex-shrink-0">
+                          <!-- Star Icon (visible on hover or when favorited) -->
+                          {#if hoveredItemId === item.id || favorites.includes(item.id)}
+                            <div
+                              class="p-1 rounded hover:bg-orange-500/10 transition-all"
+                              on:click={(e) => toggleFavorite(item.id, e)}
+                              role="button"
+                              tabindex="0"
+                              on:keydown={(e) =>
+                                e.key === "Enter" && toggleFavorite(item.id, e)}
+                            >
+                              <Icon
+                                class="w-3.5 h-3.5 transition-colors {favorites.includes(
+                                  item.id
+                                )
+                                  ? 'text-orange-400'
+                                  : 'text-slate-600 group-hover/item:text-orange-400'}"
+                                icon={favorites.includes(item.id)
+                                  ? "mdi:star"
+                                  : "mdi:star-outline"}
+                              />
+                            </div>
+                          {/if}
+
+                          <!-- Open in New Tab Icon -->
+                          {#if item.openInNewTab}
+                            <span
+                              class="text-[10px] px-1.5 py-0.5 rounded text-orange-400"
+                            >
+                              <Icon
+                                class="w-3.5 h-auto"
+                                icon="mdi:open-in-new"
+                              />
+                            </span>
+                          {/if}
+                        </div>
                       </button>
                     {/each}
                   </div>
