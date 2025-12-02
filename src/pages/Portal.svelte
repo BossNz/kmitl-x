@@ -11,6 +11,9 @@
   const KMITLX_MODE_KEY = "kmitlx:view";
   const FAVORITES_KEY = "kmitlx:favorites";
 
+  // Get version from Vite define
+  const appVersion = __APP_VERSION__ || "dev";
+
   // State management for menu
   let openSections: Record<string, boolean> = {};
   let activeItem: string | null = null;
@@ -435,12 +438,15 @@
               class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"
             ></div>
 
-            <!-- Version -->
             <button
               class="text-[10px] font-mono text-slate-600 hover:text-white transition-colors"
-              on:click={() => alert("Version 2.1.0")}
+              on:click={() =>
+                window.open(
+                  "https://github.com/BossNz/kmitl-x/releases",
+                  "_blank"
+                )}
             >
-              <span>2.1.0</span>
+              <span>{appVersion}</span>
             </button>
           </div>
         </div>
