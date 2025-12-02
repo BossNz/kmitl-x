@@ -209,7 +209,7 @@
             class="text-[10px] font-bold text-slate-500 uppercase tracking-wider px-4 mb-2 flex items-center justify-between"
           >
             <!-- Title -->
-            <span>เมนูใช้บ่อย</span>
+            <span>รายการโปรด</span>
 
             <!-- Edit Button -->
             <button on:click={toggleEditMode}>
@@ -225,7 +225,7 @@
           <div class="space-y-1">
             {#if favoriteItems.length === 0 && !isEditMode}
               <div class="px-4 py-3 text-xs text-slate-500 text-center">
-                ยังไม่มีเมนูใช้บ่อย<br />
+                ยังไม่มีรายการโปรด<br />
                 <span class="text-[10px]">กดดาวที่เมนูเพื่อเพิ่ม</span>
               </div>
             {:else}
@@ -305,7 +305,7 @@
                     </div>
 
                     <!-- Item Label -->
-                    <span class="text-sm font-medium">{section.title}</span>
+                    <span class="text-sm font-medium truncate">{section.title}</span>
                   </div>
 
                   <!-- Item Badge and Icon -->
@@ -425,7 +425,11 @@
             <span class="opacity-60">Powered by</span>
             <button
               class="text-orange-500 hover:text-orange-300 transition-colors"
-              on:click={() => alert("KMITL X")}
+              on:click={() =>
+                window.open(
+                  "https://chromewebstore.google.com/detail/lnhfadikffnjjhmoimkeinbbhcnkkcln",
+                  "_blank"
+                )}
             >
               <span> KMITL X </span>
             </button>
