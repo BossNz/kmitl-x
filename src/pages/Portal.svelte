@@ -20,24 +20,166 @@
   }
 </script>
 
-<main>
+<main
+  class="min-h-screen dark:bg-gray-950 bg-white font-prompt text-slate-200 selection:bg-orange-500 selection:text-white"
+>
+  <!-- Shadow -->
+  <!-- <div
+    class="fixed top-0 left-0 w-full h-full overflow-hidden -z-10 pointer-events-none"
+  ></div> -->
+
   <!-- Page Content -->
-  <div>
+  <div class="flex">
     <!-- Sidebar -->
-    <aside>
+    <aside
+      class="w-72 flex-shrink-0 bg-gray-950 border-r border-white/10 flex flex-col z-20"
+    >
       <!-- Header with Logo -->
-      <div></div>
+      <div
+        class="h-20 flex items-center px-6 gap-3 border-b border-white/5 bg-slate-900/50 backdrop-blur-md"
+      >
+        <!-- Logo -->
+        <div
+          class="w-12 h-auto rounded-full bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center shadow-lg shadow-orange-500/20"
+        >
+          <img
+            src="https://www.reg.kmitl.ac.th/index/new_index_assets/img/logo/main.png"
+            alt="kmitl logo"
+            class="w-40 my-auto transition-all"
+          />
+        </div>
+
+        <!-- Title -->
+        <div>
+          <h1 class="font-bold text-lg tracking-tight text-white leading-none">
+            KMITL <span class="text-orange-500">REG</span>
+          </h1>
+          <p class="text-[10px] text-slate-500 uppercase tracking-wider mt-1">
+            Student Infomation
+          </p>
+        </div>
+      </div>
 
       <!-- Navigation -->
-      <div>
+      <div class="flex-1 overflow-y-auto py-6 px-4 space-y-6">
         <!-- Home Button -->
-        <div></div>
+        <div class="space-y-1">
+          <button
+            class="flex items-center gap-3 px-4 py-2.5 w-full rounded-xl bg-orange-500 text-white font-medium shadow-md shadow-orange-500/20 hover:bg-orange-600 transition-all"
+            on:click={() => alert("หน้าหลัก")}
+            ><svg
+              class="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
+              ></path>
+            </svg>
+            <span class="text-sm">หน้าหลัก</span>
+          </button>
+        </div>
 
         <!-- Highlights Items -->
-        <div></div>
+        <div>
+          <!-- Header -->
+          <div
+            class="text-[10px] font-bold text-slate-500 uppercase tracking-wider px-4 mb-2 flex items-center justify-between"
+          >
+            <!-- Title -->
+            <span>เมนูใช้บ่อย</span>
+
+            <!-- Edit Button -->
+            <button on:click={() => alert("แก้ไขเมนู")}>
+              <span
+                class="text-xs text-orange-500/50 cursor-pointer hover:text-orange-500"
+                >แก้ไข</span
+              >
+            </button>
+          </div>
+
+          <!-- Items -->
+          <!-- TODO: Update menu items dynamically -->
+          <div class="space-y-1">
+            <button
+              class="group flex items-center justify-between w-full px-4 py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 transition-colors"
+              on:click={() => alert("เมนูใช้บ่อย")}
+            >
+              <div class="flex items-center gap-3">
+                <span
+                  class="text-slate-600 text-sm group-hover:text-orange-400 transition-colors"
+                  >★</span
+                >
+                <span class="text-sm">ทดสอบ</span>
+              </div>
+            </button>
+          </div>
+        </div>
 
         <!-- Menu Items -->
-        <div></div>
+        <div>
+          <!-- Title -->
+          <div
+            class="text-[10px] font-bold text-slate-500 uppercase tracking-wider px-4 mb-3"
+          >
+            ระบบทั้งหมด
+          </div>
+
+          <!-- Items -->
+          <!-- TODO: Update menu items dynamically -->
+          <div class="space-y-2">
+            <div class="space-y-1">
+              <!-- Menu Item -->
+              <button
+                class="w-full flex items-center justify-between px-4 py-2.5 rounded-xl bg-white/5 text-white border border-white/5 transition-all cursor-pointer group"
+              >
+                <!-- Item Content -->
+                <div class="flex items-center gap-3">
+                  <!-- Item Icon -->
+                  <div
+                    class="p-1.5 rounded bg-blue-500/20 text-blue-400 group-hover:bg-blue-500 group-hover:text-white transition-colors"
+                  >
+                    <svg
+                      class="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                      ></path>
+                    </svg>
+                  </div>
+
+                  <!-- Item Label -->
+                  <span class="text-sm font-medium">ข้อมูลนักศึกษา</span>
+                </div>
+
+                <!-- Dropdown Icon -->
+                <svg
+                  class="w-4 h-4 text-slate-500 transform rotate-180 transition-transform"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M19 9l-7 7-7-7"
+                  ></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- Sidebar Footer -->
