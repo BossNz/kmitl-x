@@ -7,6 +7,8 @@
   } from "../libs/types/portal.types";
   import { getTheme, setTheme } from "../libs/utils/themeManager";
   import Icon from "@iconify/svelte";
+  import { runScraper } from "../libs/handler/scraperHandler";
+  import type { StudentProfile } from "../libs/types/student.types";
 
   export let meta: PortalScraperResult["meta"];
   export let sections: PortalScraperResult["sections"];
@@ -153,6 +155,17 @@
       if (item) return { section, item };
     }
     return null;
+  }
+
+  async function getUserData() {
+    const data: StudentProfile = await runScraper(
+      window.location.origin + "/u_officer/student.php/"
+    );
+    return {
+      name: data.thaiFullName,
+      studentId: data.studentId,
+      department: data.department,
+    };
   }
 
   // Get favorite items - reactive based on favorites array
@@ -590,13 +603,22 @@
             <div class="flex items-center gap-4 pl-6 border-l border-white/10">
               <!-- Student Info -->
               <div class="text-right hidden md:block">
-                <!-- Name -->
-                <p class="text-sm font-bold text-white leading-tight">ABC</p>
+                {#await getUserData() then userData}
+                  <!-- Name -->
+                  <p class="text-sm font-bold text-white leading-tight">
+                    {userData.name}
+                  </p>
 
-                <!-- Student ID & Department -->
-                <p class="text-xs text-slate-500">68XXXXXX • วิศวกรรมศาสตร์</p>
+                  <!-- Student ID & Department -->
+                  <p class="text-xs text-slate-500">
+                    {userData.studentId} • {userData.department}
+                  </p>
+                {:catch error}
+                  <p class="text-sm font-bold text-white leading-tight">
+                    ไม่สามารถโหลดข้อมูลได้
+                  </p>
+                {/await}
               </div>
-
               <!-- Photo -->
               <div
                 class="w-10 h-10 rounded-full bg-slate-700 border-2 border-orange-500/50 p-0.5 cursor-pointer hover:border-orange-500 transition-colors"
