@@ -115,6 +115,16 @@
     isEditMode = !isEditMode;
   }
 
+  function getSectionAndItemLabel(
+    itemId: string
+  ): { sectionTitle: string; itemLabel: string } | null {
+    for (const section of sections) {
+      const found = section.items.find((item) => item.id === itemId);
+      if (found) return { sectionTitle: section.title, itemLabel: found.label };
+    }
+    return null;
+  }
+
   // Get favorite items - reactive based on favorites array
   $: favoriteItems = (() => {
     const items: Array<{
@@ -461,53 +471,73 @@
     </aside>
 
     <!-- Main Section -->
-    <section>
+    <section class="flex-1 flex flex-col min-w-0 relative z-10">
+      <!-- Header -->
+      <div
+        class="h-20 flex items-center justify-between px-8 border-b border-white/5 backdrop-blur-sm bg-slate-950/80 sticky top-0 z-30"
+      >
+        <!-- Breadcrumb and Title -->
+        <div>
+          <!-- Breadcrumb -->
+          <div class="text-sm text-slate-500 mb-1">
+            ระบบสารสนเทศนักศึกษา /
+            <span class="text-slate-200">
+              {#if activeItem}
+                {@const info = getSectionAndItemLabel(activeItem)}
+                {#if info}
+                  {info.sectionTitle}
+                {/if}
+              {/if}
+            </span>
+          </div>
+
+          <!-- Title -->
+          <h2 class="text-xl font-bold text-white">
+            {#if activeItem}
+              {@const info = getSectionAndItemLabel(activeItem)}
+              {#if info}
+                {info.itemLabel}
+              {:else}
+                หน้าหลัก
+              {/if}
+            {:else}
+              หน้าหลัก
+            {/if}
+          </h2>
+        </div>
+
+        <!-- Buttons and Profile -->
+        <div>
+          <!-- Server Time -->
+          <div></div>
+
+          <!-- Buttons -->
+          <div></div>
+
+          <!-- Profile -->
+          <div>
+            <!-- On Screen -->
+            <div></div>
+
+            <!-- Hover -->
+            <div></div>
+          </div>
+        </div>
+      </div>
+
       <!-- Container -->
       <div>
         <!-- Header -->
         <div>
-          <!-- Breadcrumb and Title -->
-          <div>
-            <!-- Breadcrumb -->
-            <div></div>
+          <!-- Title -->
+          <div></div>
 
-            <!-- Title -->
-            <div></div>
-          </div>
-
-          <!-- Buttons and Profile -->
-          <div>
-            <!-- Server Time -->
-            <div></div>
-
-            <!-- Buttons -->
-            <div></div>
-
-            <!-- Profile -->
-            <div>
-              <!-- On Screen -->
-              <div></div>
-
-              <!-- Hover -->
-              <div></div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Container -->
-        <div>
-          <!-- Header -->
-          <div>
-            <!-- Title -->
-            <div></div>
-
-            <!-- Button -->
-            <div></div>
-          </div>
-
-          <!-- Content -->
+          <!-- Button -->
           <div></div>
         </div>
+
+        <!-- Content -->
+        <div></div>
       </div>
     </section>
   </div>
