@@ -71,7 +71,7 @@
   // Switch to Original mode
   function switchToOriginal() {
     sessionStorage.setItem(KMITLX_MODE_KEY, "original");
-    window.location.reload();
+    window.location.href = window.location.href;
   }
 
   // Toggle section open/close (accordion behavior - only one open at a time)
@@ -175,7 +175,12 @@
       },
       body: new URLSearchParams({ lang: meta.language }),
     });
-    window.location.reload();
+    window.location.href = window.location.href;
+  }
+
+  function goToHome() {
+    activeItem = null;
+    openSections = {};
   }
 
   // Get favorite items - reactive based on favorites array
@@ -248,7 +253,7 @@
         <div class="space-y-1">
           <button
             class="flex items-center gap-3 px-4 py-2.5 w-full rounded-xl bg-orange-500 text-white font-medium shadow-md shadow-orange-500/20 hover:bg-orange-600 transition-all"
-            on:click={() => alert("หน้าหลัก")}
+            on:click={() => goToHome()}
             ><svg
               class="w-5 h-5"
               fill="none"
