@@ -167,6 +167,16 @@
       department: data.department,
     };
   }
+  async function languageToggle() {
+    await fetch(window.location.origin + "/index/lang.php", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: new URLSearchParams({ lang: meta.language }),
+    });
+    window.location.reload();
+  }
 
   // Get favorite items - reactive based on favorites array
   $: favoriteItems = (() => {
@@ -579,7 +589,7 @@
             <button
               class="p-2 rounded-lg hover:bg-white/5 transition-colors"
               aria-label="Toggle Language"
-              on:click={() => alert("เปลี่ยนภาษา (ยังไม่รองรับ)")}
+              on:click={() => languageToggle()}
             >
               <Icon class="w-5 h-5 text-slate-600" icon="mdi:translate" />
             </button>

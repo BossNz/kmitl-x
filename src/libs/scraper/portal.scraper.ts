@@ -140,10 +140,18 @@ export class PortalScraper extends BaseScraper {
     const title = document.title || "KMITL Portal";
     const initialServerTime = this.extractServerSeed(document);
     const homeUrl = document.location.href;
+    const language =
+      Array.from(document.querySelectorAll("a[href]"))
+        .filter((a) => a.getAttribute("href")?.includes("getlang"))
+        .slice(0, 1)
+        .toString()
+        .match(/getlang\(['"]([a-zA-Z-]+)['"]\)/i)?.[1] || "th";
+
     return {
       title,
       initialServerTime,
       homeUrl,
+      language,
     };
   }
 
