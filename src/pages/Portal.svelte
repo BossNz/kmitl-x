@@ -1,6 +1,10 @@
 <script lang="ts">
   import { onDestroy, onMount } from "svelte";
-  import type { PortalScraperResult } from "../libs/types/portal.types";
+  import type {
+    PortalMenuItem,
+    PortalScraperResult,
+    PortalSection,
+  } from "../libs/types/portal.types";
   import { getTheme, setTheme } from "../libs/utils/themeManager";
   import Icon from "@iconify/svelte";
 
@@ -85,6 +89,10 @@
   function handleItemClick(itemId: string) {
     if (activeItem === itemId) return;
     activeItem = itemId;
+    const { section, item } = getSectionAndItem(itemId) || {};
+    if (!openSections[section?.id || ""]) {
+      toggleSection(section?.id || "");
+    }
     console.log(`Clicked on item with ID: ${itemId}`);
   }
 
@@ -136,12 +144,12 @@
     isEditMode = !isEditMode;
   }
 
-  function getSectionAndItemLabel(
+  function getSectionAndItem(
     itemId: string
-  ): { sectionTitle: string; itemLabel: string } | null {
+  ): { section: PortalSection; item: PortalMenuItem } | null {
     for (const section of sections) {
-      const found = section.items.find((item) => item.id === itemId);
-      if (found) return { sectionTitle: section.title, itemLabel: found.label };
+      const item = section.items.find((item) => item.id === itemId);
+      if (item) return { section, item };
     }
     return null;
   }
@@ -263,7 +271,7 @@
             {:else}
               {#each favoriteItems as item}
                 <div
-                  class="group flex items-center justify-between w-full px-4 py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 transition-colors cursor-pointer"
+                  class="group flex items-center justify-between w-full px-4 py-2.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 transition-colors cursor-pointer"
                   on:click={() => handleItemClick(item.id)}
                   role="button"
                   tabindex="0"
@@ -322,7 +330,7 @@
               <div class="space-y-1">
                 <!-- Menu Item -->
                 <button
-                  class="w-full flex items-center justify-between px-4 py-2.5 rounded-xl transition-all cursor-pointer group {openSections[
+                  class="w-full flex items-center justify-between px-4 py-2.5 rounded-xl transition-transform cursor-pointer group {openSections[
                     section.id
                   ]
                     ? 'bg-white/5 text-white border border-white/5'
@@ -504,9 +512,9 @@
             ระบบสารสนเทศนักศึกษา /
             <span class="text-slate-200">
               {#if activeItem}
-                {@const info = getSectionAndItemLabel(activeItem)}
+                {@const info = getSectionAndItem(activeItem)}
                 {#if info}
-                  {info.sectionTitle}
+                  {info.section.title}
                 {/if}
               {/if}
             </span>
@@ -515,9 +523,9 @@
           <!-- Title -->
           <h2 class="text-xl font-bold text-white">
             {#if activeItem}
-              {@const info = getSectionAndItemLabel(activeItem)}
+              {@const info = getSectionAndItem(activeItem)}
               {#if info}
-                {info.itemLabel}
+                {info.item.label}
               {:else}
                 หน้าหลัก
               {/if}
