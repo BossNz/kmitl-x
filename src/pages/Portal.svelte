@@ -610,7 +610,31 @@
             </div>
 
             <!-- Hover -->
-            <div></div>
+            <div
+              class="absolute right-0 mt-2 w-56 glass-card rounded-xl shadow-xl p-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 border border-white/10"
+            >
+              <!-- Student Information Page -->
+              <button
+                class="w-full flex items-center gap-3 px-4 py-2 rounded-lg text-slate-300 hover:bg-white/10 hover:text-white transition-colors"
+                on:click={() =>
+                  handleItemClick(
+                    "student-7-https-www-reg-kmitl-ac-th-u-officer-student-php-close-header-1"
+                  )}
+              >
+                <span class="text-sm"> ข้อมูลนักศึกษา </span>
+              </button>
+
+              <!-- Separator -->
+              <div class="h-px bg-white/5 my-2"></div>
+
+              <!-- Log Out -->
+              <button
+                class="w-full flex items-center gap-3 px-4 py-2 rounded-lg text-sm text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-colors"
+              >
+                <Icon class="w-5 h-5" icon="mdi:logout" />
+                <span> ออกจากระบบ </span>
+              </button>
+            </div>
           </div>
         </div>
       </div>
