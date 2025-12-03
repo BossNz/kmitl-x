@@ -62,6 +62,7 @@
 
   // Handle item click
   function handleItemClick(itemId: string) {
+    if (activeItem === itemId) return;
     activeItem = itemId;
     console.log(`Clicked on item with ID: ${itemId}`);
   }
@@ -338,7 +339,7 @@
                     {#each section.items as item}
                       <!-- Sub Menu Item -->
                       <button
-                        class="w-full flex items-center justify-between gap-2 px-4 py-2 rounded-lg text-sm transition-all relative group/item {activeItem ===
+                        class="w-full flex items-center justify-between gap-2 px-4 py-2 rounded-lg text-sm relative group/item {activeItem ===
                         item.id
                           ? 'text-orange-400 bg-orange-500/5 border border-orange-500/10'
                           : 'text-slate-400 hover:text-white hover:bg-white/5'}"
