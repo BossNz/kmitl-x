@@ -7,6 +7,7 @@
   } from "../libs/types/portal.types";
   import { getTheme, setTheme } from "../libs/utils/themeManager";
   import Icon from "@iconify/svelte";
+  import PortalHome from "../libs/components/portal/PortalHome.svelte";
   import { runScraper } from "../libs/handler/scraperHandler";
   import type { StudentProfile } from "../libs/types/student.types";
 
@@ -238,10 +239,14 @@
 
         <!-- Title -->
         <div>
-          <h1 class="font-bold text-lg tracking-tight text-slate-900 dark:text-white leading-none">
+          <h1
+            class="font-bold text-lg tracking-tight text-slate-900 dark:text-white leading-none"
+          >
             KMITL <span class="text-orange-500">REG</span>
           </h1>
-          <p class="text-[10px] text-slate-500 dark:text-slate-500 uppercase tracking-wider mt-1">
+          <p
+            class="text-[10px] text-slate-500 dark:text-slate-500 uppercase tracking-wider mt-1"
+          >
             Student Infomation
           </p>
         </div>
@@ -293,7 +298,9 @@
           <!-- Items -->
           <div class="space-y-1">
             {#if favoriteItems.length === 0 && !isEditMode}
-              <div class="px-4 py-3 text-xs text-slate-500 dark:text-slate-500 text-center">
+              <div
+                class="px-4 py-3 text-xs text-slate-500 dark:text-slate-500 text-center"
+              >
                 ยังไม่มีรายการโปรด<br />
                 <span class="text-[10px]">กดดาวที่เมนูเพื่อเพิ่ม</span>
               </div>
@@ -314,7 +321,9 @@
                     />
                     <div class="flex flex-col items-start min-w-0 flex-1">
                       <span class="text-sm truncate w-full">{item.label}</span>
-                      <span class="text-[10px] text-slate-500 dark:text-slate-600">
+                      <span
+                        class="text-[10px] text-slate-500 dark:text-slate-600"
+                      >
                         {item.sectionTitle}</span
                       >
                     </div>
@@ -467,7 +476,9 @@
         </div>
       </div>
       <!-- Sidebar Footer -->
-      <div class="p-4 border-t border-slate-200 dark:border-white/5 bg-slate-100/30 dark:bg-slate-900/30 mt-auto">
+      <div
+        class="p-4 border-t border-slate-200 dark:border-white/5 bg-slate-100/30 dark:bg-slate-900/30 mt-auto"
+      >
         <!-- Mode Switcher -->
         <button
           class="w-full mb-3 flex items-center justify-center gap-2 p-2 rounded-lg text-xs font-medium text-slate-500 dark:text-slate-500 hover:text-orange-400 hover:bg-slate-200 dark:hover:bg-white/5 transition-colors border border-dashed border-slate-300 dark:border-white/5"
@@ -634,12 +645,16 @@
           <!-- Profile -->
           <div class="relative group">
             <!-- On Screen -->
-            <div class="flex items-center gap-4 pl-6 border-l border-slate-300 dark:border-white/10">
+            <div
+              class="flex items-center gap-4 pl-6 border-l border-slate-300 dark:border-white/10"
+            >
               <!-- Student Info -->
               <div class="text-right hidden md:block">
                 {#await getUserData() then userData}
                   <!-- Name -->
-                  <p class="text-sm font-bold text-slate-900 dark:text-white leading-tight">
+                  <p
+                    class="text-sm font-bold text-slate-900 dark:text-white leading-tight"
+                  >
                     {userData.name}
                   </p>
 
@@ -648,7 +663,9 @@
                     {userData.studentId} • {userData.department}
                   </p>
                 {:catch error}
-                  <p class="text-sm font-bold text-slate-900 dark:text-white leading-tight">
+                  <p
+                    class="text-sm font-bold text-slate-900 dark:text-white leading-tight"
+                  >
                     ไม่สามารถโหลดข้อมูลได้
                   </p>
                 {/await}
@@ -667,7 +684,7 @@
 
             <!-- Hover -->
             <div
-              class="absolute right-0 mt-2 w-56 glass-card rounded-xl shadow-xl p-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 border border-slate-200 dark:border-white/10 bg-white dark:bg-slate-900"
+              class="absolute right-0 mt-2 w-56 rounded-xl shadow-xl p-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 border border-slate-200 dark:border-white/10 bg-white dark:bg-slate-900"
             >
               <!-- Student Information Page -->
               <button
@@ -699,18 +716,11 @@
       </div>
 
       <!-- Container -->
-      <div>
-        <!-- Header -->
-        <div>
-          <!-- Title -->
-          <div></div>
-
-          <!-- Button -->
-          <div></div>
-        </div>
+      <div class="flex-1 overflow-y-auto p-8">
+        <PortalHome />
 
         <!-- Content -->
-        <div></div>
+        <!-- <div></div> -->
       </div>
     </section>
   </div>
