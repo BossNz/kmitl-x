@@ -573,33 +573,52 @@
           <div class="flex items-center gap-2">
             <!-- Theme Toggle -->
             <button
-              class="p-2 rounded-lg hover:bg-white/5 transition-colors"
+              class="relative p-2 rounded-lg hover:bg-white/5 transition-colors group"
               on:click={toggleTheme}
               aria-label="Toggle Theme"
             >
               <Icon
-                class="w-5 h-5 dark:text-orange-400 text-slate-600"
+                class="w-5 h-5 group-hover:text-orange-400 text-slate-600 transition-colors"
                 icon={theme === "dark"
                   ? "mdi:weather-sunny"
                   : "mdi:weather-night"}
               />
+              <span
+                class="absolute top-full mt-2 left-1/2 -translate-x-1/2 px-2 py-1 bg-slate-800 text-white text-xs rounded invisible opacity-0 group-hover:opacity-100 group-hover:visible transition-opacity whitespace-nowrap"
+              >
+                เปลี่ยนเป็น {theme === "dark" ? "โหมดสว่าง" : "โหมดมืด"}
+              </span>
             </button>
 
             <!-- Thai/Eng Toggle -->
             <button
-              class="p-2 rounded-lg hover:bg-white/5 transition-colors"
+              class="relative p-2 rounded-lg hover:bg-white/5 transition-colors group disabled:cursor-wait disabled:opacity-50"
               aria-label="Toggle Language"
-              on:click={() => languageToggle()}
+              on:click={(e) => {
+                languageToggle();
+                (e.currentTarget as HTMLButtonElement).disabled = true;
+              }}
             >
-              <Icon class="w-5 h-5 text-slate-600" icon="mdi:translate" />
+              <Icon
+                class="w-5 h-5 text-slate-600 group-hover:text-orange-400 transition-colors"
+                icon="mdi:translate"
+              />
+              <span
+                class="absolute top-full mt-2 left-1/2 -translate-x-1/2 px-2 py-1 bg-slate-800 text-white text-xs rounded invisible opacity-0 group-hover:opacity-100 group-hover:visible transition-opacity whitespace-nowrap"
+              >
+                เปลี่ยนภาษา ({meta.language === "th" ? "ไทย" : "อังกฤษ"})
+              </span>
             </button>
 
             <!-- Notification Button -->
             <button
-              class="relative p-2 rounded-lg hover:bg-white/5 transition-colors"
+              class="relative p-2 rounded-lg hover:bg-white/5 transition-colors group"
               aria-label="Notifications"
             >
-              <Icon class="w-5 h-5 text-slate-600" icon="mdi:bell-outline" />
+              <Icon
+                class="w-5 h-5 text-slate-600 group-hover:text-orange-400 transition-colors"
+                icon="mdi:bell-outline"
+              />
               <!-- Orange Badge -->
               <!-- <span
                 class="absolute top-2 right-2 w-2 h-2 bg-orange-500 rounded-full border-2 border-slate-950"
