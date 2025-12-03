@@ -1,7 +1,8 @@
 export interface PortalMeta {
   title: string;
-  initialServerTime: string;
+  initialServerTime: number;
   homeUrl: string;
+  language: string;
 }
 
 export interface PortalMenuItem {

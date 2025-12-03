@@ -16,8 +16,8 @@ const SECTION_LOOKUP: SectionMeta[] = [
     description: "บริการพื้นฐานและลิงก์ภายนอกที่ใช้งานบ่อย",
     icon: "ph:compass-duotone",
     color: {
-      closed: { bg: "bg-gray-800", text: "text-gray-500" },
-      open: { bg: "bg-blue-500/20", text: "text-blue-400" },
+      closed: { bg: "bg-slate-200 dark:bg-gray-800", text: "text-slate-600 dark:text-gray-500" },
+      open: { bg: "bg-blue-500/20", text: "text-blue-500 dark:text-blue-400" },
       hover: { bg: "group-hover:bg-blue-500", text: "group-hover:text-white" },
     },
     order: 1,
@@ -29,8 +29,8 @@ const SECTION_LOOKUP: SectionMeta[] = [
     description: "โปรไฟล์และข้อมูลพื้นฐานของนักศึกษา",
     icon: "ph:identification-card-duotone",
     color: {
-      closed: { bg: "bg-gray-800", text: "text-gray-500" },
-      open: { bg: "bg-purple-500/20", text: "text-purple-400" },
+      closed: { bg: "bg-slate-200 dark:bg-gray-800", text: "text-slate-600 dark:text-gray-500" },
+      open: { bg: "bg-purple-500/20", text: "text-purple-500 dark:text-purple-400" },
       hover: {
         bg: "group-hover:bg-purple-500",
         text: "group-hover:text-white",
@@ -45,8 +45,8 @@ const SECTION_LOOKUP: SectionMeta[] = [
     description: "วางแผนตารางเรียนและการลงทะเบียน",
     icon: "ph:calendar-check-duotone",
     color: {
-      closed: { bg: "bg-gray-800", text: "text-gray-500" },
-      open: { bg: "bg-green-500/20", text: "text-green-400" },
+      closed: { bg: "bg-slate-200 dark:bg-gray-800", text: "text-slate-600 dark:text-gray-500" },
+      open: { bg: "bg-green-500/20", text: "text-green-500 dark:text-green-400" },
       hover: { bg: "group-hover:bg-green-500", text: "group-hover:text-white" },
     },
     order: 3,
@@ -58,8 +58,8 @@ const SECTION_LOOKUP: SectionMeta[] = [
     description: "ติดตามคะแนน สรุปผล และทรานสคริปต์",
     icon: "ph:chart-line-up-duotone",
     color: {
-      closed: { bg: "bg-gray-800", text: "text-gray-500" },
-      open: { bg: "bg-cyan-500/20", text: "text-cyan-400" },
+      closed: { bg: "bg-slate-200 dark:bg-gray-800", text: "text-slate-600 dark:text-gray-500" },
+      open: { bg: "bg-cyan-500/20", text: "text-cyan-500 dark:text-cyan-400" },
       hover: { bg: "group-hover:bg-cyan-500", text: "group-hover:text-white" },
     },
     order: 4,
@@ -71,8 +71,8 @@ const SECTION_LOOKUP: SectionMeta[] = [
     description: "ประกาศทุนและข้อมูลการสนับสนุนนักศึกษา",
     icon: "ph:hand-coins-duotone",
     color: {
-      closed: { bg: "bg-gray-800", text: "text-gray-500" },
-      open: { bg: "bg-yellow-500/20", text: "text-yellow-400" },
+      closed: { bg: "bg-slate-200 dark:bg-gray-800", text: "text-slate-600 dark:text-gray-500" },
+      open: { bg: "bg-yellow-500/20", text: "text-yellow-600 dark:text-yellow-400" },
       hover: {
         bg: "group-hover:bg-yellow-500",
         text: "group-hover:text-white",
@@ -87,8 +87,8 @@ const SECTION_LOOKUP: SectionMeta[] = [
     description: "เครื่องมือและระบบเสริมการเรียน",
     icon: "ph:toolbox-duotone",
     color: {
-      closed: { bg: "bg-gray-800", text: "text-gray-500" },
-      open: { bg: "bg-pink-500/20", text: "text-pink-400" },
+      closed: { bg: "bg-slate-200 dark:bg-gray-800", text: "text-slate-600 dark:text-gray-500" },
+      open: { bg: "bg-pink-500/20", text: "text-pink-500 dark:text-pink-400" },
       hover: { bg: "group-hover:bg-pink-500", text: "group-hover:text-white" },
     },
     order: 6,
@@ -100,8 +100,8 @@ const SECTION_LOOKUP: SectionMeta[] = [
     description: "ข่าวสาร กิจกรรม และเว็บบอร์ด",
     icon: "ph:megaphone-duotone",
     color: {
-      closed: { bg: "bg-gray-800", text: "text-gray-500" },
-      open: { bg: "bg-indigo-500/20", text: "text-indigo-400" },
+      closed: { bg: "bg-slate-200 dark:bg-gray-800", text: "text-slate-600 dark:text-gray-500" },
+      open: { bg: "bg-indigo-500/20", text: "text-indigo-500 dark:text-indigo-400" },
       hover: {
         bg: "group-hover:bg-indigo-500",
         text: "group-hover:text-white",
@@ -116,8 +116,8 @@ const SECTION_LOOKUP: SectionMeta[] = [
     description: "ส่งข้อความ รายงานปัญหา และติดตามแจ้งเตือน",
     icon: "ph:chat-circle-text-duotone",
     color: {
-      closed: { bg: "bg-gray-800", text: "text-gray-500" },
-      open: { bg: "bg-rose-500/20", text: "text-rose-400" },
+      closed: { bg: "bg-slate-200 dark:bg-gray-800", text: "text-slate-600 dark:text-gray-500" },
+      open: { bg: "bg-rose-500/20", text: "text-rose-500 dark:text-rose-400" },
       hover: { bg: "group-hover:bg-rose-500", text: "group-hover:text-white" },
     },
     order: 8,
@@ -140,10 +140,18 @@ export class PortalScraper extends BaseScraper {
     const title = document.title || "KMITL Portal";
     const initialServerTime = this.extractServerSeed(document);
     const homeUrl = document.location.href;
+    const language =
+      Array.from(document.querySelectorAll("a[href]"))
+        .filter((a) => a.getAttribute("href")?.includes("getlang"))
+        .slice(0, 1)
+        .toString()
+        .match(/getlang\(['"]([a-zA-Z-]+)['"]\)/i)?.[1] || "th";
+
     return {
       title,
       initialServerTime,
       homeUrl,
+      language,
     };
   }
 
@@ -313,13 +321,13 @@ export class PortalScraper extends BaseScraper {
 
   // extract initial server time from inline scripts
   // e.g., server_date('2023/10/05 12:34:56')
-  private extractServerSeed(document: Document): string {
+  private extractServerSeed(document: Document): number {
     const scripts = Array.from(document.querySelectorAll("script"));
     for (const script of scripts) {
       const content = script.textContent || "";
       const match = content.match(/server_date\(['\"]([^'\"]+)['\"]\)/);
-      if (match) return match[1];
+      if (match) return new Date(match[1]).getTime();
     }
-    return new Date().toISOString();
+    return Date.now();
   }
 }

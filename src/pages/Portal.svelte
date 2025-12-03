@@ -1,11 +1,20 @@
 <script lang="ts">
-  import { onMount } from "svelte";
-  import type { PortalScraperResult } from "../libs/types/portal.types";
+  import { onDestroy, onMount } from "svelte";
+  import type {
+    PortalMenuItem,
+    PortalScraperResult,
+    PortalSection,
+  } from "../libs/types/portal.types";
   import { getTheme, setTheme } from "../libs/utils/themeManager";
   import Icon from "@iconify/svelte";
+  import { runScraper } from "../libs/handler/scraperHandler";
+  import type { StudentProfile } from "../libs/types/student.types";
 
   export let meta: PortalScraperResult["meta"];
   export let sections: PortalScraperResult["sections"];
+
+  let timer: ReturnType<typeof setInterval> | null = null;
+  let clock: Date = new Date(meta.initialServerTime);
 
   let theme: "light" | "dark" = "dark";
   const KMITLX_MODE_KEY = "kmitlx:view";
@@ -25,15 +34,23 @@
   onMount(() => {
     theme = getTheme();
     setTheme(theme);
-    console.log(meta, sections);
+
+    // Initialize Server Time
+    timer = setInterval(() => {
+      clock = new Date(clock.getTime() + 1000);
+    }, 1000);
 
     // Initialize all sections as closed
     sections.forEach((section) => {
-      openSections[section.title] = false;
+      openSections[section.id] = false;
     });
 
     // Load favorites from localStorage
     loadFavorites();
+  });
+
+  onDestroy(() => {
+    if (timer) clearInterval(timer);
   });
 
   function toggleTheme() {
@@ -41,10 +58,20 @@
     setTheme(theme);
   }
 
+  // Format date to Thai locale
+  function formatTime(date: Date): string {
+    return date.toLocaleTimeString("th-TH", {
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false,
+    });
+  }
+
   // Switch to Original mode
   function switchToOriginal() {
     sessionStorage.setItem(KMITLX_MODE_KEY, "original");
-    window.location.reload();
+    window.location.href = window.location.href;
   }
 
   // Toggle section open/close (accordion behavior - only one open at a time)
@@ -62,9 +89,14 @@
 
   // Handle item click
   function handleItemClick(itemId: string) {
-    if (activeItem === itemId) return;
-    activeItem = itemId;
-    console.log(`Clicked on item with ID: ${itemId}`);
+    const { section } = getSectionAndItem(itemId) || {};
+    if (!openSections[section?.id || ""]) {
+      toggleSection(section?.id || "");
+    }
+    if (activeItem !== itemId) {
+      activeItem = itemId;
+      console.log(`Clicked on item with ID: ${itemId}`);
+    }
   }
 
   // Load favorites from localStorage
@@ -115,6 +147,42 @@
     isEditMode = !isEditMode;
   }
 
+  function getSectionAndItem(
+    itemId: string
+  ): { section: PortalSection; item: PortalMenuItem } | null {
+    for (const section of sections) {
+      const item = section.items.find((item) => item.id === itemId);
+      if (item) return { section, item };
+    }
+    return null;
+  }
+
+  async function getUserData() {
+    const data: StudentProfile = await runScraper(
+      window.location.origin + "/u_officer/student.php/"
+    );
+    return {
+      name: data.thaiFullName,
+      studentId: data.studentId,
+      department: data.department,
+    };
+  }
+  async function languageToggle() {
+    await fetch(window.location.origin + "/index/lang.php", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: new URLSearchParams({ lang: meta.language }),
+    });
+    window.location.href = window.location.href;
+  }
+
+  function goToHome() {
+    activeItem = null;
+    openSections = {};
+  }
+
   // Get favorite items - reactive based on favorites array
   $: favoriteItems = (() => {
     const items: Array<{
@@ -140,7 +208,7 @@
 </script>
 
 <main
-  class="min-h-screen dark:bg-slate-950 bg-white font-prompt text-slate-200 selection:bg-orange-500 selection:text-white"
+  class="min-h-screen bg-slate-50 dark:bg-slate-950 font-prompt text-slate-900 dark:text-slate-200 selection:bg-orange-500 selection:text-white"
 >
   <!-- Shadow -->
   <!-- <div
@@ -151,11 +219,11 @@
   <div class="flex h-screen">
     <!-- Sidebar -->
     <aside
-      class="w-72 flex-shrink-0 bg-slate-950 border-r border-white/10 flex flex-col z-20"
+      class="w-72 flex-shrink-0 bg-white dark:bg-slate-950 border-r border-slate-200 dark:border-white/10 flex flex-col z-20"
     >
       <!-- Header with Logo -->
       <div
-        class="h-20 flex items-center px-6 gap-3 border-b border-white/5 bg-slate-900/50 backdrop-blur-md"
+        class="h-20 flex items-center px-6 gap-3 border-b border-slate-200 dark:border-white/5 bg-slate-100/50 dark:bg-slate-900/50 backdrop-blur-md"
       >
         <!-- Logo -->
         <div
@@ -170,10 +238,10 @@
 
         <!-- Title -->
         <div>
-          <h1 class="font-bold text-lg tracking-tight text-white leading-none">
+          <h1 class="font-bold text-lg tracking-tight text-slate-900 dark:text-white leading-none">
             KMITL <span class="text-orange-500">REG</span>
           </h1>
-          <p class="text-[10px] text-slate-500 uppercase tracking-wider mt-1">
+          <p class="text-[10px] text-slate-500 dark:text-slate-500 uppercase tracking-wider mt-1">
             Student Infomation
           </p>
         </div>
@@ -185,7 +253,7 @@
         <div class="space-y-1">
           <button
             class="flex items-center gap-3 px-4 py-2.5 w-full rounded-xl bg-orange-500 text-white font-medium shadow-md shadow-orange-500/20 hover:bg-orange-600 transition-all"
-            on:click={() => alert("หน้าหลัก")}
+            on:click={() => goToHome()}
             ><svg
               class="w-5 h-5"
               fill="none"
@@ -207,7 +275,7 @@
         <div>
           <!-- Header -->
           <div
-            class="text-[10px] font-bold text-slate-500 uppercase tracking-wider px-4 mb-2 flex items-center justify-between"
+            class="text-[10px] font-bold text-slate-500 dark:text-slate-500 uppercase tracking-wider px-4 mb-2 flex items-center justify-between"
           >
             <!-- Title -->
             <span>รายการโปรด</span>
@@ -225,14 +293,14 @@
           <!-- Items -->
           <div class="space-y-1">
             {#if favoriteItems.length === 0 && !isEditMode}
-              <div class="px-4 py-3 text-xs text-slate-500 text-center">
+              <div class="px-4 py-3 text-xs text-slate-500 dark:text-slate-500 text-center">
                 ยังไม่มีรายการโปรด<br />
                 <span class="text-[10px]">กดดาวที่เมนูเพื่อเพิ่ม</span>
               </div>
             {:else}
               {#each favoriteItems as item}
                 <div
-                  class="group flex items-center justify-between w-full px-4 py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 transition-colors cursor-pointer"
+                  class="group flex items-center justify-between w-full px-4 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5 transition-colors cursor-pointer"
                   on:click={() => handleItemClick(item.id)}
                   role="button"
                   tabindex="0"
@@ -246,8 +314,8 @@
                     />
                     <div class="flex flex-col items-start min-w-0 flex-1">
                       <span class="text-sm truncate w-full">{item.label}</span>
-                      <span class="text-[10px] text-slate-600"
-                        >{item.sectionTitle}</span
+                      <span class="text-[10px] text-slate-500 dark:text-slate-600">
+                        {item.sectionTitle}</span
                       >
                     </div>
                   </div>
@@ -276,7 +344,7 @@
         <div>
           <!-- Title -->
           <div
-            class="text-[10px] font-bold text-slate-500 uppercase tracking-wider px-4 mb-3"
+            class="text-[10px] font-bold text-slate-500 dark:text-slate-500 uppercase tracking-wider px-4 mb-3"
           >
             เมนูทั้งหมด
           </div>
@@ -291,11 +359,11 @@
               <div class="space-y-1">
                 <!-- Menu Item -->
                 <button
-                  class="w-full flex items-center justify-between px-4 py-2.5 rounded-xl transition-all cursor-pointer group {openSections[
+                  class="w-full flex items-center justify-between px-4 py-2.5 rounded-xl transition-transform cursor-pointer group {openSections[
                     section.id
                   ]
-                    ? 'bg-white/5 text-white border border-white/5'
-                    : 'text-slate-400 hover:bg-white/5 hover:text-white'}"
+                    ? 'bg-slate-100 dark:bg-white/5 text-slate-900 dark:text-white border border-slate-200 dark:border-white/5'
+                    : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-white'}"
                   on:click={() => toggleSection(section.id)}
                 >
                   <!-- Item Content -->
@@ -315,7 +383,7 @@
                   <div class="flex items-center gap-2">
                     {#if section.items.length > 0 && !openSections[section.id]}
                       <span
-                        class="w-5 h-5 rounded-full text-[10px] flex items-center justify-center transition-all bg-slate-800 text-slate-400 border border-slate-700 group-hover:bg-orange-500/20 group-hover:text-orange-400 group-hover:border-orange-500/30"
+                        class="w-5 h-5 rounded-full text-[10px] flex items-center justify-center transition-all bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-300 dark:border-slate-700 group-hover:bg-orange-500/20 group-hover:text-orange-400 group-hover:border-orange-500/30"
                       >
                         {section.items.length}
                       </span>
@@ -324,8 +392,8 @@
                     <!-- Dropdown Icon -->
                     <Icon
                       class="w-4 h-4 transition-all {openSections[section.id]
-                        ? 'text-white rotate-90'
-                        : 'text-slate-600 group-hover:text-slate-400'}"
+                        ? 'text-slate-900 dark:text-white rotate-90'
+                        : 'text-slate-400 dark:text-slate-600 group-hover:text-slate-600 dark:group-hover:text-slate-400'}"
                       icon="mdi:chevron-right"
                     />
                   </div>
@@ -334,15 +402,15 @@
                 <!-- Sub Menu Items -->
                 {#if openSections[section.id] && section.items.length > 0}
                   <div
-                    class="relative pl-6 ml-3 space-y-1 border-l border-white/10 animate-slide-in"
+                    class="relative pl-6 ml-3 space-y-1 border-l border-slate-200 dark:border-white/10 animate-slide-in"
                   >
                     {#each section.items as item}
                       <!-- Sub Menu Item -->
                       <button
                         class="w-full flex items-center justify-between gap-2 px-4 py-2 rounded-lg text-sm relative group/item {activeItem ===
                         item.id
-                          ? 'text-orange-400 bg-orange-500/5 border border-orange-500/10'
-                          : 'text-slate-400 hover:text-white hover:bg-white/5'}"
+                          ? 'text-orange-500 bg-orange-500/10 border border-orange-500/20'
+                          : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5'}"
                         on:click={() => handleItemClick(item.id)}
                         on:mouseenter={() => (hoveredItemId = item.id)}
                         on:mouseleave={() => (hoveredItemId = null)}
@@ -369,7 +437,7 @@
                                   item.id
                                 )
                                   ? 'text-orange-400'
-                                  : 'text-slate-600 group-hover/item:text-orange-400'}"
+                                  : 'text-slate-400 dark:text-slate-600 group-hover/item:text-orange-400'}"
                                 icon={favorites.includes(item.id)
                                   ? "mdi:star"
                                   : "mdi:star-outline"}
@@ -399,10 +467,10 @@
         </div>
       </div>
       <!-- Sidebar Footer -->
-      <div class="p-4 border-t border-white/5 bg-slate-900/30 mt-auto">
+      <div class="p-4 border-t border-slate-200 dark:border-white/5 bg-slate-100/30 dark:bg-slate-900/30 mt-auto">
         <!-- Mode Switcher -->
         <button
-          class="w-full mb-3 flex items-center justify-center gap-2 p-2 rounded-lg text-xs font-medium text-slate-500 hover:text-orange-400 hover:bg-white/5 transition-colors border border-dashed border-white/5"
+          class="w-full mb-3 flex items-center justify-center gap-2 p-2 rounded-lg text-xs font-medium text-slate-500 dark:text-slate-500 hover:text-orange-400 hover:bg-slate-200 dark:hover:bg-white/5 transition-colors border border-dashed border-slate-300 dark:border-white/5"
           on:click={switchToOriginal}
         >
           <svg
@@ -424,10 +492,10 @@
         <!-- Credit & Version -->
         <div class="flex items-center justify-between px-2">
           <!-- Credit -->
-          <div class="text-xs font-medium text-slate-300">
+          <div class="text-xs font-medium text-slate-700 dark:text-slate-300">
             <span class="opacity-60">Powered by</span>
             <button
-              class="text-orange-500 hover:text-orange-300 transition-colors"
+              class="text-orange-500 hover:text-orange-400 dark:hover:text-orange-300 transition-colors"
               on:click={() =>
                 window.open(
                   "https://chromewebstore.google.com/detail/lnhfadikffnjjhmoimkeinbbhcnkkcln",
@@ -446,7 +514,7 @@
             ></div>
 
             <button
-              class="text-[10px] font-mono text-slate-600 hover:text-white transition-colors"
+              class="text-[10px] font-mono text-slate-500 dark:text-slate-600 hover:text-slate-900 dark:hover:text-white transition-colors"
               on:click={() =>
                 window.open(
                   "https://github.com/BossNz/kmitl-x/releases",
@@ -461,53 +529,188 @@
     </aside>
 
     <!-- Main Section -->
-    <section>
+    <section class="flex-1 flex flex-col min-w-0 relative z-10">
+      <!-- Header -->
+      <div
+        class="h-20 flex items-center justify-between px-8 border-b border-slate-200 dark:border-white/5 backdrop-blur-sm bg-white/80 dark:bg-slate-950/80 sticky top-0 z-30"
+      >
+        <!-- Breadcrumb and Title -->
+        <div>
+          <!-- Breadcrumb -->
+          <div class="text-sm text-slate-500 dark:text-slate-500 mb-1">
+            ระบบสารสนเทศนักศึกษา /
+            <span class="text-slate-700 dark:text-slate-200">
+              {#if activeItem}
+                {@const info = getSectionAndItem(activeItem)}
+                {#if info}
+                  {info.section.title}
+                {/if}
+              {/if}
+            </span>
+          </div>
+
+          <!-- Title -->
+          <h2 class="text-xl font-bold text-slate-900 dark:text-white">
+            {#if activeItem}
+              {@const info = getSectionAndItem(activeItem)}
+              {#if info}
+                {info.item.label}
+              {:else}
+                หน้าหลัก
+              {/if}
+            {:else}
+              หน้าหลัก
+            {/if}
+          </h2>
+        </div>
+
+        <!-- Buttons and Profile -->
+        <div class="flex items-center gap-6">
+          <!-- Server Time -->
+          <div
+            id="server-time"
+            class="text-xl font-mono text-orange-400 font-bold hidden sm:block"
+          >
+            {formatTime(clock)}
+          </div>
+
+          <!-- Buttons -->
+          <div class="flex items-center gap-2">
+            <!-- Theme Toggle -->
+            <button
+              class="relative p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-white/5 transition-colors group"
+              on:click={toggleTheme}
+              aria-label="Toggle Theme"
+            >
+              <Icon
+                class="w-5 h-5 group-hover:text-orange-400 text-slate-500 dark:text-slate-600 transition-colors"
+                icon={theme === "dark"
+                  ? "mdi:weather-sunny"
+                  : "mdi:weather-night"}
+              />
+              <span
+                class="absolute top-full mt-2 left-1/2 -translate-x-1/2 px-2 py-1 bg-slate-800 dark:bg-slate-800 text-white text-xs rounded invisible opacity-0 group-hover:opacity-100 group-hover:visible transition-opacity whitespace-nowrap"
+              >
+                เปลี่ยนเป็น {theme === "dark" ? "โหมดสว่าง" : "โหมดมืด"}
+              </span>
+            </button>
+
+            <!-- Thai/Eng Toggle -->
+            <button
+              class="relative p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-white/5 transition-colors group disabled:cursor-wait disabled:opacity-50"
+              aria-label="Toggle Language"
+              on:click={(e) => {
+                languageToggle();
+                (e.currentTarget as HTMLButtonElement).disabled = true;
+              }}
+            >
+              <Icon
+                class="w-5 h-5 text-slate-500 dark:text-slate-600 group-hover:text-orange-400 transition-colors"
+                icon="mdi:translate"
+              />
+              <span
+                class="absolute top-full mt-2 left-1/2 -translate-x-1/2 px-2 py-1 bg-slate-800 dark:bg-slate-800 text-white text-xs rounded invisible opacity-0 group-hover:opacity-100 group-hover:visible transition-opacity whitespace-nowrap"
+              >
+                เปลี่ยนภาษา ({meta.language === "th" ? "ไทย" : "อังกฤษ"})
+              </span>
+            </button>
+
+            <!-- Notification Button -->
+            <button
+              class="relative p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-white/5 transition-colors group"
+              aria-label="Notifications"
+            >
+              <Icon
+                class="w-5 h-5 text-slate-500 dark:text-slate-600 group-hover:text-orange-400 transition-colors"
+                icon="mdi:bell-outline"
+              />
+              <!-- Orange Badge -->
+              <!-- <span
+                class="absolute top-2 right-2 w-2 h-2 bg-orange-500 rounded-full border-2 border-slate-950"
+              ></span> -->
+            </button>
+          </div>
+
+          <!-- Profile -->
+          <div class="relative group">
+            <!-- On Screen -->
+            <div class="flex items-center gap-4 pl-6 border-l border-slate-300 dark:border-white/10">
+              <!-- Student Info -->
+              <div class="text-right hidden md:block">
+                {#await getUserData() then userData}
+                  <!-- Name -->
+                  <p class="text-sm font-bold text-slate-900 dark:text-white leading-tight">
+                    {userData.name}
+                  </p>
+
+                  <!-- Student ID & Department -->
+                  <p class="text-xs text-slate-500 dark:text-slate-500">
+                    {userData.studentId} • {userData.department}
+                  </p>
+                {:catch error}
+                  <p class="text-sm font-bold text-slate-900 dark:text-white leading-tight">
+                    ไม่สามารถโหลดข้อมูลได้
+                  </p>
+                {/await}
+              </div>
+              <!-- Photo -->
+              <div
+                class="w-10 h-10 rounded-full bg-slate-700 border-2 border-orange-500/50 p-0.5 cursor-pointer hover:border-orange-500 transition-colors"
+              >
+                <img
+                  src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix"
+                  alt="User"
+                  class="w-full h-full rounded-full bg-slate-800"
+                />
+              </div>
+            </div>
+
+            <!-- Hover -->
+            <div
+              class="absolute right-0 mt-2 w-56 glass-card rounded-xl shadow-xl p-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 border border-slate-200 dark:border-white/10 bg-white dark:bg-slate-900"
+            >
+              <!-- Student Information Page -->
+              <button
+                class="w-full flex items-center gap-3 px-4 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/10 hover:text-slate-900 dark:hover:text-white transition-colors"
+                on:click={() =>
+                  handleItemClick(
+                    "student-7-https-www-reg-kmitl-ac-th-u-officer-student-php-close-header-1"
+                  )}
+              >
+                <span class="text-sm"> ข้อมูลนักศึกษา </span>
+              </button>
+
+              <!-- Separator -->
+              <div class="h-px bg-slate-200 dark:bg-white/5 my-2"></div>
+
+              <!-- Log Out -->
+              <button
+                class="w-full flex items-center gap-3 px-4 py-2 rounded-lg text-sm text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-colors"
+                on:click={() =>
+                  (window.location.href =
+                    window.location.origin + "/user/logout.php")}
+              >
+                <Icon class="w-5 h-5" icon="mdi:logout" />
+                <span> ออกจากระบบ </span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- Container -->
       <div>
         <!-- Header -->
         <div>
-          <!-- Breadcrumb and Title -->
-          <div>
-            <!-- Breadcrumb -->
-            <div></div>
+          <!-- Title -->
+          <div></div>
 
-            <!-- Title -->
-            <div></div>
-          </div>
-
-          <!-- Buttons and Profile -->
-          <div>
-            <!-- Server Time -->
-            <div></div>
-
-            <!-- Buttons -->
-            <div></div>
-
-            <!-- Profile -->
-            <div>
-              <!-- On Screen -->
-              <div></div>
-
-              <!-- Hover -->
-              <div></div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Container -->
-        <div>
-          <!-- Header -->
-          <div>
-            <!-- Title -->
-            <div></div>
-
-            <!-- Button -->
-            <div></div>
-          </div>
-
-          <!-- Content -->
+          <!-- Button -->
           <div></div>
         </div>
+
+        <!-- Content -->
+        <div></div>
       </div>
     </section>
   </div>
