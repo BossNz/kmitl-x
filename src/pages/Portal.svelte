@@ -239,10 +239,10 @@
                     e.key === "Enter" && handleItemClick(item.id)}
                 >
                   <div class="flex items-center gap-3 flex-1 min-w-0">
-                    <span
-                      class="text-orange-400 text-sm transition-colors flex-shrink-0"
-                      >★</span
-                    >
+                    <Icon
+                      class="w-4 h-auto text-orange-400 flex-shrink-0"
+                      icon="mdi:star"
+                    />
                     <div class="flex flex-col items-start min-w-0 flex-1">
                       <span class="text-sm truncate w-full">{item.label}</span>
                       <span class="text-[10px] text-slate-600"
@@ -356,7 +356,7 @@
                           <!-- Star Icon (visible on hover or when favorited) -->
                           {#if hoveredItemId === item.id || favorites.includes(item.id)}
                             <div
-                              class="rounded hover:bg-orange-500/10 transition-all"
+                              class="p-1 rounded hover:bg-orange-500/10 transition-all"
                               on:click={(e) => toggleFavorite(item.id, e)}
                               role="button"
                               tabindex="0"
@@ -364,7 +364,7 @@
                                 e.key === "Enter" && toggleFavorite(item.id, e)}
                             >
                               <Icon
-                                class="w-3.5 h-3.5 transition-colors {favorites.includes(
+                                class="w-3 h-auto transition-colors {favorites.includes(
                                   item.id
                                 )
                                   ? 'text-orange-400'
