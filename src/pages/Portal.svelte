@@ -547,12 +547,67 @@
           </div>
 
           <!-- Buttons -->
-          <div></div>
+          <div class="flex items-center gap-2">
+            <!-- Theme Toggle -->
+            <button
+              class="p-2 rounded-lg hover:bg-white/5 transition-colors"
+              on:click={toggleTheme}
+              aria-label="Toggle Theme"
+            >
+              <Icon
+                class="w-5 h-5 dark:text-orange-400 text-slate-600"
+                icon={theme === "dark"
+                  ? "mdi:weather-sunny"
+                  : "mdi:weather-night"}
+              />
+            </button>
+
+            <!-- Thai/Eng Toggle -->
+            <button
+              class="p-2 rounded-lg hover:bg-white/5 transition-colors"
+              aria-label="Toggle Language"
+              on:click={() => alert("เปลี่ยนภาษา (ยังไม่รองรับ)")}
+            >
+              <Icon class="w-5 h-5 text-slate-600" icon="mdi:translate" />
+            </button>
+
+            <!-- Notification Button -->
+            <button
+              class="relative p-2 rounded-lg hover:bg-white/5 transition-colors"
+              aria-label="Notifications"
+            >
+              <Icon class="w-5 h-5 text-slate-600" icon="mdi:bell-outline" />
+              <!-- Orange Badge -->
+              <!-- <span
+                class="absolute top-2 right-2 w-2 h-2 bg-orange-500 rounded-full border-2 border-slate-950"
+              ></span> -->
+            </button>
+          </div>
 
           <!-- Profile -->
-          <div>
+          <div class="relative group">
             <!-- On Screen -->
-            <div></div>
+            <div class="flex items-center gap-4 pl-6 border-l border-white/10">
+              <!-- Student Info -->
+              <div class="text-right hidden md:block">
+                <!-- Name -->
+                <p class="text-sm font-bold text-white leading-tight">ABC</p>
+
+                <!-- Student ID & Department -->
+                <p class="text-xs text-slate-500">68XXXXXX • วิศวกรรมศาสตร์</p>
+              </div>
+
+              <!-- Photo -->
+              <div
+                class="w-10 h-10 rounded-full bg-slate-700 border-2 border-orange-500/50 p-0.5 cursor-pointer hover:border-orange-500 transition-colors"
+              >
+                <img
+                  src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix"
+                  alt="User"
+                  class="w-full h-full rounded-full bg-slate-800"
+                />
+              </div>
+            </div>
 
             <!-- Hover -->
             <div></div>
