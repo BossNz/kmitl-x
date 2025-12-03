@@ -630,6 +630,9 @@
               <!-- Log Out -->
               <button
                 class="w-full flex items-center gap-3 px-4 py-2 rounded-lg text-sm text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-colors"
+                on:click={() =>
+                  (window.location.href =
+                    window.location.origin + "/user/logout.php")}
               >
                 <Icon class="w-5 h-5" icon="mdi:logout" />
                 <span> ออกจากระบบ </span>
