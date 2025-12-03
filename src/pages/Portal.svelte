@@ -139,7 +139,7 @@
 </script>
 
 <main
-  class="min-h-screen dark:bg-gray-950 bg-white font-prompt text-slate-200 selection:bg-orange-500 selection:text-white"
+  class="min-h-screen dark:bg-slate-950 bg-white font-prompt text-slate-200 selection:bg-orange-500 selection:text-white"
 >
   <!-- Shadow -->
   <!-- <div
@@ -150,7 +150,7 @@
   <div class="flex h-screen">
     <!-- Sidebar -->
     <aside
-      class="w-72 flex-shrink-0 bg-gray-950 border-r border-white/10 flex flex-col z-20"
+      class="w-72 flex-shrink-0 bg-slate-950 border-r border-white/10 flex flex-col z-20"
     >
       <!-- Header with Logo -->
       <div
@@ -305,7 +305,9 @@
                     </div>
 
                     <!-- Item Label -->
-                    <span class="text-sm font-medium truncate">{section.title}</span>
+                    <span class="text-sm font-medium truncate"
+                      >{section.title}</span
+                    >
                   </div>
 
                   <!-- Item Badge and Icon -->
@@ -328,10 +330,10 @@
                   </div>
                 </button>
 
-                <!-- Sub Menu Items with animation -->
+                <!-- Sub Menu Items -->
                 {#if openSections[section.id] && section.items.length > 0}
                   <div
-                    class="relative pl-6 ml-3 space-y-1 border-l border-white/10 animate-in slide-in-from-top-2 duration-200"
+                    class="relative pl-6 ml-3 space-y-1 border-l border-white/10 animate-slide-in"
                   >
                     {#each section.items as item}
                       <!-- Sub Menu Item -->
@@ -354,7 +356,7 @@
                           <!-- Star Icon (visible on hover or when favorited) -->
                           {#if hoveredItemId === item.id || favorites.includes(item.id)}
                             <div
-                              class="p-1 rounded hover:bg-orange-500/10 transition-all"
+                              class="rounded hover:bg-orange-500/10 transition-all"
                               on:click={(e) => toggleFavorite(item.id, e)}
                               role="button"
                               tabindex="0"
