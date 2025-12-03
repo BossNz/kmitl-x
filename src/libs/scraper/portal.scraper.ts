@@ -15,6 +15,11 @@ const SECTION_LOOKUP: SectionMeta[] = [
     title: "ข้อมูลและบริการทั่วไป",
     description: "บริการพื้นฐานและลิงก์ภายนอกที่ใช้งานบ่อย",
     icon: "ph:compass-duotone",
+    color: {
+      closed: { bg: "bg-gray-800", text: "text-gray-500" },
+      open: { bg: "bg-blue-500/20", text: "text-blue-400" },
+      hover: { bg: "group-hover:bg-blue-500", text: "group-hover:text-white" },
+    },
     order: 1,
   },
   {
@@ -23,6 +28,14 @@ const SECTION_LOOKUP: SectionMeta[] = [
     title: "ข้อมูลนักศึกษา",
     description: "โปรไฟล์และข้อมูลพื้นฐานของนักศึกษา",
     icon: "ph:identification-card-duotone",
+    color: {
+      closed: { bg: "bg-gray-800", text: "text-gray-500" },
+      open: { bg: "bg-purple-500/20", text: "text-purple-400" },
+      hover: {
+        bg: "group-hover:bg-purple-500",
+        text: "group-hover:text-white",
+      },
+    },
     order: 2,
   },
   {
@@ -31,6 +44,11 @@ const SECTION_LOOKUP: SectionMeta[] = [
     title: "การลงทะเบียน",
     description: "วางแผนตารางเรียนและการลงทะเบียน",
     icon: "ph:calendar-check-duotone",
+    color: {
+      closed: { bg: "bg-gray-800", text: "text-gray-500" },
+      open: { bg: "bg-green-500/20", text: "text-green-400" },
+      hover: { bg: "group-hover:bg-green-500", text: "group-hover:text-white" },
+    },
     order: 3,
   },
   {
@@ -39,6 +57,11 @@ const SECTION_LOOKUP: SectionMeta[] = [
     title: "ผลการเรียน",
     description: "ติดตามคะแนน สรุปผล และทรานสคริปต์",
     icon: "ph:chart-line-up-duotone",
+    color: {
+      closed: { bg: "bg-gray-800", text: "text-gray-500" },
+      open: { bg: "bg-cyan-500/20", text: "text-cyan-400" },
+      hover: { bg: "group-hover:bg-cyan-500", text: "group-hover:text-white" },
+    },
     order: 4,
   },
   {
@@ -47,6 +70,14 @@ const SECTION_LOOKUP: SectionMeta[] = [
     title: "ทุนและสวัสดิการ",
     description: "ประกาศทุนและข้อมูลการสนับสนุนนักศึกษา",
     icon: "ph:hand-coins-duotone",
+    color: {
+      closed: { bg: "bg-gray-800", text: "text-gray-500" },
+      open: { bg: "bg-yellow-500/20", text: "text-yellow-400" },
+      hover: {
+        bg: "group-hover:bg-yellow-500",
+        text: "group-hover:text-white",
+      },
+    },
     order: 5,
   },
   {
@@ -55,6 +86,11 @@ const SECTION_LOOKUP: SectionMeta[] = [
     title: "ระบบสนับสนุน",
     description: "เครื่องมือและระบบเสริมการเรียน",
     icon: "ph:toolbox-duotone",
+    color: {
+      closed: { bg: "bg-gray-800", text: "text-gray-500" },
+      open: { bg: "bg-pink-500/20", text: "text-pink-400" },
+      hover: { bg: "group-hover:bg-pink-500", text: "group-hover:text-white" },
+    },
     order: 6,
   },
   {
@@ -63,6 +99,14 @@ const SECTION_LOOKUP: SectionMeta[] = [
     title: "ข่าวและประกาศ",
     description: "ข่าวสาร กิจกรรม และเว็บบอร์ด",
     icon: "ph:megaphone-duotone",
+    color: {
+      closed: { bg: "bg-gray-800", text: "text-gray-500" },
+      open: { bg: "bg-indigo-500/20", text: "text-indigo-400" },
+      hover: {
+        bg: "group-hover:bg-indigo-500",
+        text: "group-hover:text-white",
+      },
+    },
     order: 7,
   },
   {
@@ -71,6 +115,11 @@ const SECTION_LOOKUP: SectionMeta[] = [
     title: "กล่องข้อความ",
     description: "ส่งข้อความ รายงานปัญหา และติดตามแจ้งเตือน",
     icon: "ph:chat-circle-text-duotone",
+    color: {
+      closed: { bg: "bg-gray-800", text: "text-gray-500" },
+      open: { bg: "bg-rose-500/20", text: "text-rose-400" },
+      hover: { bg: "group-hover:bg-rose-500", text: "group-hover:text-white" },
+    },
     order: 8,
   },
 ];
