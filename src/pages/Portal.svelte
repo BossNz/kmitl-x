@@ -40,7 +40,7 @@
 
     // Initialize all sections as closed
     sections.forEach((section) => {
-      openSections[section.title] = false;
+      openSections[section.id] = false;
     });
 
     // Load favorites from localStorage
@@ -87,13 +87,14 @@
 
   // Handle item click
   function handleItemClick(itemId: string) {
-    if (activeItem === itemId) return;
-    activeItem = itemId;
-    const { section, item } = getSectionAndItem(itemId) || {};
+    const { section } = getSectionAndItem(itemId) || {};
     if (!openSections[section?.id || ""]) {
       toggleSection(section?.id || "");
     }
-    console.log(`Clicked on item with ID: ${itemId}`);
+    if (activeItem !== itemId) {
+      activeItem = itemId;
+      console.log(`Clicked on item with ID: ${itemId}`);
+    }
   }
 
   // Load favorites from localStorage
