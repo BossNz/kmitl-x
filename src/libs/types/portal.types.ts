@@ -1,6 +1,6 @@
 export interface PortalMeta {
   title: string;
-  initialServerTime: string;
+  initialServerTime: number;
   homeUrl: string;
 }
 

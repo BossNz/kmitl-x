@@ -313,13 +313,13 @@ export class PortalScraper extends BaseScraper {
 
   // extract initial server time from inline scripts
   // e.g., server_date('2023/10/05 12:34:56')
-  private extractServerSeed(document: Document): string {
+  private extractServerSeed(document: Document): number {
     const scripts = Array.from(document.querySelectorAll("script"));
     for (const script of scripts) {
       const content = script.textContent || "";
       const match = content.match(/server_date\(['\"]([^'\"]+)['\"]\)/);
-      if (match) return match[1];
+      if (match) return new Date(match[1]).getTime();
     }
-    return new Date().toISOString();
+    return Date.now();
   }
 }

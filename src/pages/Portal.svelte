@@ -1,11 +1,14 @@
 <script lang="ts">
-  import { onMount } from "svelte";
+  import { onDestroy, onMount } from "svelte";
   import type { PortalScraperResult } from "../libs/types/portal.types";
   import { getTheme, setTheme } from "../libs/utils/themeManager";
   import Icon from "@iconify/svelte";
 
   export let meta: PortalScraperResult["meta"];
   export let sections: PortalScraperResult["sections"];
+
+  let timer: ReturnType<typeof setInterval> | null = null;
+  let clock: Date = new Date(meta.initialServerTime);
 
   let theme: "light" | "dark" = "dark";
   const KMITLX_MODE_KEY = "kmitlx:view";
@@ -25,7 +28,11 @@
   onMount(() => {
     theme = getTheme();
     setTheme(theme);
-    console.log(meta, sections);
+
+    // Initialize Server Time
+    timer = setInterval(() => {
+      clock = new Date(clock.getTime() + 1000);
+    }, 1000);
 
     // Initialize all sections as closed
     sections.forEach((section) => {
@@ -36,9 +43,23 @@
     loadFavorites();
   });
 
+  onDestroy(() => {
+    if (timer) clearInterval(timer);
+  });
+
   function toggleTheme() {
     theme = theme === "dark" ? "light" : "dark";
     setTheme(theme);
+  }
+
+  // Format date to Thai locale
+  function formatTime(date: Date): string {
+    return date.toLocaleTimeString("th-TH", {
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false,
+    });
   }
 
   // Switch to Original mode
@@ -507,9 +528,14 @@
         </div>
 
         <!-- Buttons and Profile -->
-        <div>
+        <div class="flex items-center gap-6">
           <!-- Server Time -->
-          <div></div>
+          <div
+            id="server-time"
+            class="text-xl font-mono text-orange-400 font-bold hidden sm:block"
+          >
+            {formatTime(clock)}
+          </div>
 
           <!-- Buttons -->
           <div></div>
