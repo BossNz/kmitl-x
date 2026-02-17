@@ -4,6 +4,7 @@
     PortalMenuItem,
     PortalScraperResult,
     PortalSection,
+    PortalStudentData,
   } from "../libs/types/portal.types";
   import { getTheme, setTheme } from "../libs/utils/themeManager";
   import Icon from "@iconify/svelte";
@@ -13,6 +14,10 @@
 
   export let meta: PortalScraperResult["meta"];
   export let sections: PortalScraperResult["sections"];
+
+  // Student data — loaded once and shared with PortalHome
+  let studentData: PortalStudentData | null = null;
+  let studentDataError = false;
 
   let timer: ReturnType<typeof setInterval> | null = null;
   let clock: Date = new Date(meta.initialServerTime);
@@ -48,6 +53,9 @@
 
     // Load favorites from localStorage
     loadFavorites();
+
+    // Load student data
+    loadStudentData();
   });
 
   onDestroy(() => {
@@ -149,7 +157,7 @@
   }
 
   function getSectionAndItem(
-    itemId: string
+    itemId: string,
   ): { section: PortalSection; item: PortalMenuItem } | null {
     for (const section of sections) {
       const item = section.items.find((item) => item.id === itemId);
@@ -158,15 +166,20 @@
     return null;
   }
 
-  async function getUserData() {
-    const data: StudentProfile = await runScraper(
-      window.location.origin + "/u_officer/student.php/"
-    );
-    return {
-      name: data.thaiFullName,
-      studentId: data.studentId,
-      department: data.department,
-    };
+  async function loadStudentData() {
+    try {
+      const data: StudentProfile = await runScraper(
+        window.location.origin + "/u_officer/student.php/",
+      );
+      studentData = {
+        name: data.thaiFullName,
+        studentId: data.studentId,
+        department: data.department,
+      };
+    } catch (err) {
+      console.error("Failed to load student data:", err);
+      studentDataError = true;
+    }
   }
   async function languageToggle() {
     await fetch(window.location.origin + "/index/lang.php", {
@@ -443,7 +456,7 @@
                             >
                               <Icon
                                 class="w-3 h-auto transition-colors {favorites.includes(
-                                  item.id
+                                  item.id,
                                 )
                                   ? 'text-orange-400'
                                   : 'text-slate-400 dark:text-slate-600 group-hover/item:text-orange-400'}"
@@ -510,7 +523,7 @@
               on:click={() =>
                 window.open(
                   "https://chromewebstore.google.com/detail/lnhfadikffnjjhmoimkeinbbhcnkkcln",
-                  "_blank"
+                  "_blank",
                 )}
             >
               <span> KMITL X </span>
@@ -529,7 +542,7 @@
               on:click={() =>
                 window.open(
                   "https://github.com/BossNz/kmitl-x/releases",
-                  "_blank"
+                  "_blank",
                 )}
             >
               <span>{appVersion}</span>
@@ -650,25 +663,31 @@
             >
               <!-- Student Info -->
               <div class="text-right hidden md:block">
-                {#await getUserData() then userData}
-                  <!-- Name -->
+                {#if studentData}
                   <p
                     class="text-sm font-bold text-slate-900 dark:text-white leading-tight"
                   >
-                    {userData.name}
+                    {studentData.name}
                   </p>
-
-                  <!-- Student ID & Department -->
                   <p class="text-xs text-slate-500 dark:text-slate-500">
-                    {userData.studentId} • {userData.department}
+                    {studentData.studentId} • {studentData.department}
                   </p>
-                {:catch error}
+                {:else if studentDataError}
                   <p
                     class="text-sm font-bold text-slate-900 dark:text-white leading-tight"
                   >
                     ไม่สามารถโหลดข้อมูลได้
                   </p>
-                {/await}
+                {:else}
+                  <div class="space-y-1.5">
+                    <div
+                      class="h-4 w-28 bg-slate-200 dark:bg-slate-700 rounded animate-pulse ml-auto"
+                    ></div>
+                    <div
+                      class="h-3 w-40 bg-slate-200 dark:bg-slate-700 rounded animate-pulse ml-auto"
+                    ></div>
+                  </div>
+                {/if}
               </div>
               <!-- Photo -->
               <div
@@ -691,7 +710,7 @@
                 class="w-full flex items-center gap-3 px-4 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/10 hover:text-slate-900 dark:hover:text-white transition-colors"
                 on:click={() =>
                   handleItemClick(
-                    "student-7-https-www-reg-kmitl-ac-th-u-officer-student-php-close-header-1"
+                    "student-7-https-www-reg-kmitl-ac-th-u-officer-student-php-close-header-1",
                   )}
               >
                 <span class="text-sm"> ข้อมูลนักศึกษา </span>
@@ -717,7 +736,7 @@
 
       <!-- Container -->
       <div class="flex-1 overflow-y-auto p-8">
-        <PortalHome />
+        <PortalHome {meta} {sections} {studentData} {handleItemClick} />
 
         <!-- Content -->
         <!-- <div></div> -->
