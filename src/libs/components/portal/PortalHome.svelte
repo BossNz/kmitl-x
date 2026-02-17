@@ -6,6 +6,7 @@
     PortalStudentData,
   } from "../../types/portal.types";
   import Icon from "@iconify/svelte";
+  import TodaySchedule from "./TodaySchedule.svelte";
 
   export let meta: PortalMeta;
   export let sections: PortalSection[];
@@ -24,7 +25,6 @@
   let semesterLoading = true;
 
   $: semesterLabel = semester ? `${semester.SEMESTER}/${semester.YEAR}` : null;
-
   $: studentFirstName = studentData ? studentData.name.split(" ")[0] : null;
 
   // Curated quick-access links from scraped sections
@@ -194,9 +194,9 @@
           </button>
           <button
             class="px-6 py-3 rounded-xl bg-white text-slate-700 border border-slate-200 hover:bg-slate-50 transition-all dark:bg-white/5 dark:text-white dark:border-white/10 dark:hover:bg-white/10 font-semibold"
-            on:click={() => window.open(meta.homeUrl, "_self")}
+            on:click={() => window.open(window.location.origin, "_self")}
           >
-            หน้าแรกระบบทะเบียน
+            หน้าแรกสำนักทะเบียน
           </button>
         </div>
       </div>
@@ -304,6 +304,32 @@
             >
           </button>
         {/each}
+      </div>
+    </div>
+  {/if}
+
+  <!-- Row 3: Today's Schedule -->
+  {#if semester}
+    <TodaySchedule year={semester.YEAR} semester={semester.SEMESTER} />
+  {:else if !semesterLoading}
+    <!-- Cannot show schedule without semester info -->
+    <div>
+      <div class="flex items-center mb-4">
+        <h3
+          class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2"
+        >
+          <span class="w-1.5 h-6 bg-orange-500 rounded-full"></span>
+          ตารางเรียนวันนี้
+        </h3>
+      </div>
+      <div
+        class="bg-white dark:bg-[#1e293b66] border border-slate-200 dark:border-white/10 rounded-2xl p-8 text-center"
+      >
+        <Icon
+          class="w-10 h-10 text-slate-300 dark:text-slate-600 mx-auto mb-3"
+          icon="mdi:calendar-alert"
+        />
+        <p class="text-sm text-slate-400">ไม่สามารถโหลดข้อมูลภาคเรียนได้</p>
       </div>
     </div>
   {/if}
