@@ -29,3 +29,6 @@ bun.lockb
 *.sw?
 
 .dev/*
+.agents/
+.agent/
+skills-lock.json
