@@ -59,7 +59,7 @@ export class ReportStudytableScraper extends BaseScraper {
     const cells = rows.map((row) =>
       Array.from(row.querySelectorAll("td"))
         .filter((cell) => cell.cellIndex % 2 === 0)
-        .map((cell) => (cell.textContent || "").trim())
+        .map((cell) => this.dedupeText((cell.textContent || "").trim())),
     );
 
     return cells;
@@ -81,15 +81,15 @@ export class ReportStudytableScraper extends BaseScraper {
   }
   private parseTimeData(timeString: string): StudySchedule["time"] {
     const timeEntries = timeString.match(
-      /((Mon|Tue|Wed|Thu|Fri|Sat|Sun)\s*(\d{2}:\d{2})-(\d{2}:\d{2})\s*\(([LP])\))|(([ก-ฮ]{1,2}|อา)\.\s*(\d{2}:\d{2})-(\d{2}:\d{2})\s*น?\.?\(([ทป])\))/g
+      /((Mon|Tue|Wed|Thu|Fri|Sat|Sun)\s*(\d{2}:\d{2})-(\d{2}:\d{2})\s*\(([LP])\))|(([ก-ฮ]{1,2}|อา)\.\s*(\d{2}:\d{2})-(\d{2}:\d{2})\s*น?\.?\(([ทป])\))/g,
     );
     const timeData: StudySchedule["time"] = [];
     timeEntries?.forEach((entry) => {
       const matchThai = entry.match(
-        /(([ก-ฮ]{1,2}|อา)\.\s*(\d{2}:\d{2})-(\d{2}:\d{2})\s*น?\.?\(([ทป])\))/
+        /(([ก-ฮ]{1,2}|อา)\.\s*(\d{2}:\d{2})-(\d{2}:\d{2})\s*น?\.?\(([ทป])\))/,
       );
       const mathEng = entry.match(
-        /((Mon|Tue|Wed|Thu|Fri|Sat|Sun)\s*(\d{2}:\d{2})-(\d{2}:\d{2})\s*\(([LP])\))/
+        /((Mon|Tue|Wed|Thu|Fri|Sat|Sun)\s*(\d{2}:\d{2})-(\d{2}:\d{2})\s*\(([LP])\))/,
       );
 
       const match = matchThai || mathEng || null;
@@ -113,10 +113,10 @@ export class ReportStudytableScraper extends BaseScraper {
           match[5] === "ท"
             ? "lecture"
             : match[5] === "ป"
-            ? "practice"
-            : match[5] === "L"
-            ? "lecture"
-            : "practice",
+              ? "practice"
+              : match[5] === "L"
+                ? "lecture"
+                : "practice",
       });
     });
     return timeData;

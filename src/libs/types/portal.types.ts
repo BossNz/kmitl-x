@@ -38,3 +38,10 @@ export interface PortalScraperResult {
   meta: PortalMeta;
   sections: PortalSection[];
 }
+
+/** Lightweight student data passed to PortalHome */
+export interface PortalStudentData {
+  name: string;
+  studentId: string;
+  department: string;
+}
