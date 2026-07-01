@@ -3,7 +3,6 @@ import { BaseScraper } from "./baseScraper";
 
 export class ReportTranscriptScraper extends BaseScraper {
   public async scrape(document: Document): Promise<TranscriptData> {
-    this.extractRawTranscript(document);
     return {
       transcriptObject: this.extractRawTranscript(document),
       pdf: this.extractPdfLink(document),
@@ -42,7 +41,7 @@ export class ReportTranscriptScraper extends BaseScraper {
         month: data[1] ? data[1].slice(3)[0] : "",
         year: data[1] ? parseInt(data[1].slice(3)[2]) : 0,
       },
-      studentId: data[2] ? data[2].slice(2).toString() : "",
+      studentId: data[2] ? data[2].slice(2).join(" ") : "",
       // this is only year but its ok for now
       dateOfAdmission:
         data[3] && data[3].length ? data[3].slice(-1).toString() : "",
@@ -88,11 +87,11 @@ export class ReportTranscriptScraper extends BaseScraper {
 
     // get only number from the strings
     // Total number of credit earned: XX
-    const totalCredit = data[0].match(/:\s*(\d+)/);
+    const totalCredit = data[0]?.match(/:\s*(\d+)/);
     // Cumulative GPA:  XX.XX
-    const cagpa = data[1].match(/(\d+\.\d+)/);
+    const cagpa = data[1]?.match(/(\d+\.\d+)/);
     // Date Issued: MONTH DATE, YEAR   Certified copy. Not valid without seal.
-    const dateIssued = data[2].match(/([A-Za-z]+)\s+(\d{1,2}),\s+(\d{4})/);
+    const dateIssued = data[2]?.match(/([A-Za-z]+)\s+(\d{1,2}),\s+(\d{4})/);
 
     return {
       totalCredits: totalCredit ? parseInt(totalCredit[1]) : 0,
