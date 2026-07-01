@@ -26,6 +26,23 @@ export default defineContentScript({
     // wait for DOM to be ready
     await onDOMReady();
 
+    if (!document.body) {
+      hideOverlay();
+      return;
+    }
+
+    // old or retired pages show a placeholder instead of being reskinned
+    const status = route.page?.status ?? "ready";
+    if (status !== "ready") {
+      await mountUI(
+        await import("../libs/components/common/UnderMaintenance.svelte"),
+        document.body,
+        { status }
+      );
+      hideOverlay();
+      return;
+    }
+
     // scrape the page content
     const data = await runPageScraper(route.url);
 
@@ -35,11 +52,6 @@ export default defineContentScript({
     }
 
     if (!route.page?.component) {
-      hideOverlay();
-      return;
-    }
-
-    if (!document.body) {
       hideOverlay();
       return;
     }
