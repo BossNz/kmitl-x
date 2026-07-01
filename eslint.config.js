@@ -37,6 +37,7 @@ export default ts.config(
       "dist/",
       "node_modules/",
       ".dev/",
+      ".remember/",
       "*.config.js",
       "*.config.ts",
     ],

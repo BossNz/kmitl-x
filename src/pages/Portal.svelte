@@ -12,6 +12,7 @@
   import { runScraper } from "../libs/handler/scraperHandler";
   import type { StudentProfile } from "../libs/types/student.types";
   import { logger } from "../libs/utils/logger";
+  import { switchLanguage } from "../libs/i18n";
 
   export let meta: PortalScraperResult["meta"];
   export let sections: PortalScraperResult["sections"];
@@ -182,14 +183,7 @@
     }
   }
   async function languageToggle() {
-    await fetch(window.location.origin + "/index/lang.php", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body: new URLSearchParams({ lang: meta.language }),
-    });
-    window.location.href = window.location.href;
+    await switchLanguage(meta.language);
   }
 
   function goToHome() {
