@@ -7,21 +7,14 @@
   } from "../../types/portal.types";
   import Icon from "@iconify/svelte";
   import TodaySchedule from "./TodaySchedule.svelte";
+  import { getCurrentYearSemester, type YearSemester } from "../../data";
 
   export let meta: PortalMeta;
   export let sections: PortalSection[];
   export let studentData: PortalStudentData | null;
   export let handleItemClick: (itemId: string) => void;
 
-  type SemesterResponse = {
-    YEAR: string;
-    SEMESTER: string;
-    START_DATETIME_SYSTEM: string;
-    START_DATETIME_ACADEMIC: string;
-    END_DATETIME_ACADEMIC: string;
-  };
-
-  let semester: SemesterResponse | null = null;
+  let semester: YearSemester | null = null;
   let semesterLoading = true;
 
   $: semesterLabel = semester ? `${semester.SEMESTER}/${semester.YEAR}` : null;
@@ -115,16 +108,7 @@
     buildQuickLinks();
 
     try {
-      const res = await fetch(
-        "https://regis.reg.kmitl.ac.th/api/?function=get-year-semester-now&level_id=1",
-        {
-          method: "GET",
-          credentials: "include",
-          headers: { Accept: "application/json" },
-        },
-      );
-      if (!res.ok) throw new Error(`${res.status}`);
-      semester = (await res.json()) as SemesterResponse;
+      semester = await getCurrentYearSemester();
     } catch {
       semester = null;
     } finally {
