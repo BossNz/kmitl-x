@@ -5,6 +5,8 @@ import pkg from "./package.json";
 // Chrome build also serves Opera (both Chromium). Firefox build via -b firefox.
 export default defineConfig({
   srcDir: "src",
+  // publicDir is resolved from the project root, so point it at src/public.
+  publicDir: "src/public",
   modules: ["@wxt-dev/module-svelte"],
   manifest: ({ browser }) => ({
     name: "KMITL X",
@@ -19,7 +21,7 @@ export default defineConfig({
       ? {
           browser_specific_settings: {
             gecko: {
-              id: "kmitl-x@bossnz.github.io",
+              id: "kmitlx@googlegroups.com",
               data_collection_permissions: { required: ["none"] },
             },
           },
