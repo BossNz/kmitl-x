@@ -11,6 +11,7 @@
   import PortalHome from "../libs/components/portal/PortalHome.svelte";
   import { runScraper } from "../libs/handler/scraperHandler";
   import type { StudentProfile } from "../libs/types/student.types";
+  import { logger } from "../libs/utils/logger";
 
   export let meta: PortalScraperResult["meta"];
   export let sections: PortalScraperResult["sections"];
@@ -104,7 +105,6 @@
     }
     if (activeItem !== itemId) {
       activeItem = itemId;
-      console.log(`Clicked on item with ID: ${itemId}`);
     }
   }
 
@@ -116,7 +116,7 @@
         favorites = JSON.parse(stored);
       }
     } catch (error) {
-      console.error("Failed to load favorites:", error);
+      logger.error("Failed to load favorites:", error);
       favorites = [];
     }
   }
@@ -126,7 +126,7 @@
     try {
       localStorage.setItem(FAVORITES_KEY, JSON.stringify(favorites));
     } catch (error) {
-      console.error("Failed to save favorites:", error);
+      logger.error("Failed to save favorites:", error);
     }
   }
 
@@ -177,7 +177,7 @@
         department: data.department,
       };
     } catch (err) {
-      console.error("Failed to load student data:", err);
+      logger.error("Failed to load student data:", err);
       studentDataError = true;
     }
   }

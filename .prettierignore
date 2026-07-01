@@ -1,0 +1,7 @@
+.wxt
+.output
+dist
+node_modules
+.dev
+yarn.lock
+*.md
