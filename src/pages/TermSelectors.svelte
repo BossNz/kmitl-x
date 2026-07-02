@@ -14,6 +14,7 @@
     { pattern: /report_examtable/, title: "ตารางสอบ" },
     { pattern: /report_studytable/, title: "ตารางเรียน" },
     { pattern: /report_gradetable/, title: "ผลการเรียน" },
+    { pattern: /ownersubjweb/, title: "รายวิชาที่เปิดสอน" },
   ];
   $: reportTitle =
     reportTitles.find((r) => r.pattern.test(location.pathname))?.title ??
