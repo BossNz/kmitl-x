@@ -18,6 +18,7 @@
     type CalendarDay,
     type ExamGroup,
   } from "../libs/utils/examtable";
+  import { logger } from "../libs/utils/logger";
 
   export let studentInfo: ExamTable["studentInfo"];
   export let exams: ExamTable["exams"] = [];
@@ -42,7 +43,7 @@
       groupedExams = groupExams(exams);
       generateCalendarDays();
     } catch (err) {
-      console.error(err);
+      logger.error(err);
     }
   });
 

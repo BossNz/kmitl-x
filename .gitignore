@@ -12,6 +12,12 @@ dist
 dist-ssr
 *.local
 
+# WXT
+.wxt
+.output
+web-ext-artifacts
+stats.html
+
 # lock files
 .package-lock.json
 .yarn.lock

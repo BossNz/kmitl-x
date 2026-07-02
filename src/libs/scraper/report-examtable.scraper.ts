@@ -5,6 +5,7 @@ import type {
   ExamTime,
 } from "../types/report-examtable.types";
 import { BaseScraper } from "./baseScraper";
+import { normalizeGregorianYear } from "../utils/examtable/year";
 
 export class ReportExamtableScraper extends BaseScraper {
   public async scrape(document: Document): Promise<ExamTable> {
@@ -64,7 +65,7 @@ export class ReportExamtableScraper extends BaseScraper {
     return {
       studentId: data[5],
       name: data[6],
-      faculty: data[0].replace(/^(คณะ|Faculty:\s*)/i, "").trim(),
+      faculty: (data[0] || "").replace(/^(คณะ|Faculty:\s*)/i, "").trim(),
       department: data[1],
       curriculum: data[2],
       semester: data[3],
@@ -157,18 +158,11 @@ export class ReportExamtableScraper extends BaseScraper {
     timeString: string
   ): ExamObject["date"] {
     const [weekDay, day, month, rawYear] = dateString.split(" ");
-    // this logic is not perfect but works for now
-    // year from scraper is last two digits of Gregorian year (at 11 November 2025)
-    let year: string;
-    if (!rawYear) year = "";
-    else {
-      year = (parseInt(rawYear, 10) + 2000).toString();
-    }
     return {
       weekDay,
       day: day || "",
       month: month || "",
-      year,
+      year: normalizeGregorianYear(rawYear),
       raw: dateString,
       time: this.parseTimeData(timeString),
     };

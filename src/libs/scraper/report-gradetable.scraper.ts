@@ -87,13 +87,10 @@ export class ReportGradetableScraper extends BaseScraper {
     const data = extractedText.flat();
 
     // raw name contains both thai and english names
-    const rawName = data[2]
-      .replace(/\s+/g, " ")
-      .replace(/\s+/g, " ")
-      .split(" ");
+    const rawName = (data[2] || "").replace(/\s+/g, " ").split(" ");
 
     // extract semester and year from ": semester/year"
-    const semesterMatch = data[4].match(/(\d)\/(\d+)/);
+    const semesterMatch = data[4]?.match(/(\d)\/(\d+)/);
     return {
       studentId: data[1],
       thaiName: rawName.slice(2, 4).join(" "),
@@ -125,6 +122,12 @@ export class ReportGradetableScraper extends BaseScraper {
     return cells;
   }
 
+  // credit can be missing or non numeric, fall back to 0 instead of NaN
+  private parseCredit(value: string): number {
+    const n = parseFloat(value);
+    return Number.isNaN(n) ? 0 : n;
+  }
+
   private parseGradeTable(
     raw: Array<string[]>
   ): ReportGradeTable["gradeTable"] {
@@ -136,7 +139,7 @@ export class ReportGradetableScraper extends BaseScraper {
           subjectCode: row[1],
           subjectName: row[2],
           section: parseInt(row[3], 10),
-          credit: parseFloat(row[4]),
+          credit: this.parseCredit(row[4]),
           type: row[5],
           grade: row[6],
           gradeColor: row[7],

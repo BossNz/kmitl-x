@@ -10,7 +10,7 @@ export const registry = {
   // Get scraper instance for a URL
   async getScraper(url: string): Promise<IScraper | null> {
     const entry = this.find(url);
-    if (!entry) return null;
+    if (!entry?.scraper) return null;
     return entry.scraper();
   },
 

@@ -84,13 +84,10 @@ export class MidtermScoreScraper extends BaseScraper {
     const data = extractedText.flat();
 
     // raw name contains both thai and english names
-    const rawName = data[2]
-      .replace(/\s+/g, " ")
-      .replace(/\s+/g, " ")
-      .split(" ");
+    const rawName = (data[2] || "").replace(/\s+/g, " ").split(" ");
 
     // extract semester and year from ": semester/year"
-    const semesterMatch = data[4].match(/(\d)\/(\d+)/);
+    const semesterMatch = data[4]?.match(/(\d)\/(\d+)/);
     return {
       studentId: data[1],
       thaiName: rawName.slice(2, 4).join(" "),

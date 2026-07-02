@@ -34,26 +34,43 @@
 # install dependencies
 yarn install
 
-# build files to `/dist` directory
-# HMR for extension pages and content scripts
+# start dev with HMR (Chrome)
 yarn dev
+
+# or start dev for Firefox
+yarn dev:firefox
 ```
+
+The extension is built with [WXT](https://wxt.dev). Output goes to `.output/<target>`.
 
 ## ⚙️ Build
 
 ```bash
-# build files to `/dist` directory
-$ yarn build
+# build for Chrome and Opera (Chromium)
+yarn build
+yarn build:opera
+
+# build for Firefox
+yarn build:firefox
+
+# create store-ready zips in `.output/`
+yarn zip
+yarn zip:firefox
+yarn zip:opera
 ```
 
 ## 📦 Load unpacked extensions
 
-[Getting Started Tutorial](https://developer.chrome.com/docs/extensions/mv3/getstarted/)
+1. Chrome or Opera: open `chrome://extensions`, enable Developer mode, click `LOAD UNPACKED`, and select `.output/chrome-mv3`.
+2. Firefox: open `about:debugging`, choose `This Firefox`, click `Load Temporary Add-on`, and select any file inside `.output/firefox-mv2`.
 
-1. Open the Extension Management page by navigating to `chrome://extensions`.
-2. Enable Developer Mode by clicking the toggle switch next to `Developer mode`.
-3. Click the `LOAD UNPACKED` button and select the `/dist` directory.
-4. Install [Extensions Reloader](https://chromewebstore.google.com/detail/extensions-reloader/fimgfedafeadlieiabdeeaodndnlbhid) for auto update `/dist` to easy develop.
+## ✅ Checks
+
+```bash
+yarn typecheck   # svelte-check types
+yarn lint    # eslint
+yarn test    # vitest
+```
 
 ## 🤝 Contribute
 we invite you to contribute kmitlx

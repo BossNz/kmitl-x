@@ -67,4 +67,10 @@ export const pages: PageDefinition[] = [
         (m) => new m.ReportTranscriptScraper()
       ),
   },
+  {
+    // static image page, kept as a placeholder rather than reskinned
+    name: "grade-process",
+    match: /u_student\/grade_process\.php/,
+    status: "maintenance",
+  },
 ];
