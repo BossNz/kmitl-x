@@ -16,6 +16,7 @@ export const pages: PageDefinition[] = [
     match: /u_officer\/student\.php/,
     scraper: () =>
       import("../scraper/student.scraper").then((m) => new m.StudentScraper()),
+    component: () => import("../../pages/StudentProfile.svelte"),
   },
   {
     name: "term-selectors",
@@ -50,6 +51,7 @@ export const pages: PageDefinition[] = [
       import("../scraper/midterm-score.scraper").then(
         (m) => new m.MidtermScoreScraper()
       ),
+    component: () => import("../../pages/MidtermScore.svelte"),
   },
   {
     name: "report-gradetable",
@@ -58,6 +60,7 @@ export const pages: PageDefinition[] = [
       import("../scraper/report-gradetable.scraper").then(
         (m) => new m.ReportGradetableScraper()
       ),
+    component: () => import("../../pages/GradeReport.svelte"),
   },
   {
     name: "report-transcript",
@@ -66,6 +69,7 @@ export const pages: PageDefinition[] = [
       import("../scraper/report-transcript.scraper").then(
         (m) => new m.ReportTranscriptScraper()
       ),
+    component: () => import("../../pages/Transcript.svelte"),
   },
   {
     // static image page, kept as a placeholder rather than reskinned
