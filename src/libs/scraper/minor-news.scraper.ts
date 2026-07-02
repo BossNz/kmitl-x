@@ -18,7 +18,11 @@ export class MinorNewsScraper extends BaseScraper {
       const cell = link.closest("td");
       const dateText =
         cell?.querySelector('font[color="#CCCCCC"]')?.textContent || "";
-      const date = dateText.replace(/[[\]]/g, "").replace(/\s+/g, " ").trim();
+      // The date sits inside square brackets, e.g. "[3 ก.ย. 68 - 10:29 น.]".
+      const insideBrackets = dateText.match(/\[(.*)\]/);
+      const date = (insideBrackets ? insideBrackets[1] : dateText)
+        .replace(/\s+/g, " ")
+        .trim();
 
       // The view count is the numeric bracket after the link, e.g. [10].
       const countMatch = (cell?.textContent || "").match(/\[(\d+)\]/);
