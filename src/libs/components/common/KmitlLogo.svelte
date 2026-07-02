@@ -1,6 +1,6 @@
 <script lang="ts">
   // Inlined so it works inside a content-script shadow root without needing
-  // web_accessible_resources. Uses currentColor so callers control the color.
+  // web_accessible_resources. Uses the KMITL brand orange.
   let className = "";
   export { className as class };
 </script>
@@ -8,7 +8,7 @@
 <svg
   xmlns="http://www.w3.org/2000/svg"
   viewBox="0 0 1145.7 590.6"
-  fill="currentColor"
+  fill="#F16322"
   role="img"
   aria-label="KMITL X"
   class={className}
