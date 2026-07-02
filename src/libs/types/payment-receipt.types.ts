@@ -4,6 +4,8 @@ export interface ReceiptRecord {
   requestedDate: string;
   approvedDate: string;
   status: string;
+  // When the receipt is available, the request/print column is a download link.
+  receiptUrl: string;
 }
 
 export interface FeeDocument {

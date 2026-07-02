@@ -30,15 +30,18 @@ export class PaymentReceiptScraper extends BaseScraper {
           !!row.querySelector('td[bgcolor="#FBFCDE"]')
       )
       .map((row) => {
-        const c = Array.from(row.querySelectorAll("td")).map((td) =>
-          (td.textContent || "").replace(/\s+/g, " ").trim()
-        );
+        const cells = Array.from(row.querySelectorAll("td"));
+        const text = (i: number) =>
+          (cells[i]?.textContent || "").replace(/\s+/g, " ").trim();
+        // The last cell is a download link when the receipt is available.
+        const link = cells[4]?.querySelector<HTMLAnchorElement>("a[href]");
         return {
-          studentId: c[0] || "",
-          name: c[1] || "",
-          requestedDate: c[2] || "",
-          approvedDate: c[3] || "",
-          status: c[4] || "",
+          studentId: text(0),
+          name: text(1),
+          requestedDate: text(2),
+          approvedDate: text(3),
+          status: text(4),
+          receiptUrl: link?.href || "",
         };
       })
       .filter((r) => r.studentId || r.name);

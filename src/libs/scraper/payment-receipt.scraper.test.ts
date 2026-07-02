@@ -13,9 +13,9 @@ describe("PaymentReceiptScraper", () => {
         <tr align="center">
           <td bgcolor="#FBFCDE">68010488</td>
           <td bgcolor="#FBFCDE">First Last</td>
-          <td bgcolor="#FBFCDE">-</td>
-          <td bgcolor="#FBFCDE">-</td>
-          <td bgcolor="#FBFCDE">ยังไม่ได้ร้องขอ</td>
+          <td bgcolor="#FBFCDE">2025-11-02</td>
+          <td bgcolor="#FBFCDE">2025-11-02</td>
+          <td bgcolor="#FBFCDE"><a href="http://x/payment/billstd_v2_pdf.php?student_id=68010488&year=2568&semester=1"><img src="bill.png"></a></td>
         </tr>
       </tbody></table>
       <table width="750"><tbody>
@@ -40,7 +40,7 @@ describe("PaymentReceiptScraper", () => {
     expect(r.selectedSemester).toBe("1");
     expect(r.records).toHaveLength(1);
     expect(r.records[0].studentId).toBe("68010488");
-    expect(r.records[0].status).toBe("ยังไม่ได้ร้องขอ");
+    expect(r.records[0].receiptUrl).toContain("billstd_v2_pdf");
     // fee.pdf appears twice but is de-duplicated
     expect(r.documents).toHaveLength(2);
     expect(r.documents.map((d) => d.url)).toEqual([

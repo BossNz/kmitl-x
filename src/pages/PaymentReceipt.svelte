@@ -60,7 +60,21 @@
             <td class="px-3 py-2">{row.name}</td>
             <td class="px-3 py-2">{row.requestedDate}</td>
             <td class="px-3 py-2">{row.approvedDate}</td>
-            <td class="px-3 py-2">{row.status}</td>
+            <td class="px-3 py-2">
+              {#if row.receiptUrl}
+                <a
+                  href={row.receiptUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="inline-flex items-center gap-1 text-orange-500 hover:underline"
+                >
+                  <Icon icon="ph:file-pdf-light" class="text-lg" />
+                  พิมพ์ใบเสร็จ
+                </a>
+              {:else}
+                {row.status}
+              {/if}
+            </td>
           </tr>
         {/each}
       </tbody>
