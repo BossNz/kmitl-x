@@ -30,7 +30,7 @@
       href={location.origin}
       class="inline-block mt-6 px-5 py-2 rounded-xl bg-orange-500 text-white text-sm font-semibold hover:bg-orange-600 transition-colors"
     >
-      กลับหน้าแรก
+      กลับหน้าแรก / Back to home
     </a>
   </div>
 </div>

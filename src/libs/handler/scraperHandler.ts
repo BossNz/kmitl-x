@@ -7,7 +7,12 @@ export async function runPageScraper(url: string) {
 
   // check if the scraper requires fetching the page content
   if (scraper.requiresFetch) return runScraper(url);
-  else return scraper.scrape(document);
+
+  try {
+    return await scraper.scrape(document);
+  } catch {
+    return { error: "Failed to scrape page" };
+  }
 }
 
 export async function runScraper(url: string) {

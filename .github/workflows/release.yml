@@ -78,12 +78,12 @@ jobs:
 
       - name: Resolve chrome zip path
         id: zip
-        run: echo "PATH=$(ls *-chrome.zip | head -n1)" >> "$GITHUB_OUTPUT"
+        run: echo "file=$(ls *-chrome.zip .output/*-chrome.zip 2>/dev/null | head -n1)" >> "$GITHUB_OUTPUT"
 
       - name: Publish to Chrome Web Store
         uses: mnao305/chrome-extension-upload@v5.0.0
         with:
-          file-path: ${{ steps.zip.outputs.PATH }}
+          file-path: ${{ steps.zip.outputs.file }}
           extension-id: "lnhfadikffnjjhmoimkeinbbhcnkkcln"
           client-id: ${{ secrets.CLIENT_ID }}
           client-secret: ${{ secrets.CLIENT_SECRET }}

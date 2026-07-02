@@ -42,10 +42,10 @@ async function request(url: string, opts: RequestOptions = {}): Promise<Response
   for (let attempt = 0; attempt <= retries; attempt++) {
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), timeoutMs);
+    const onExternalAbort = () => controller.abort();
     if (opts.signal) {
-      opts.signal.addEventListener("abort", () => controller.abort(), {
-        once: true,
-      });
+      if (opts.signal.aborted) controller.abort();
+      else opts.signal.addEventListener("abort", onExternalAbort);
     }
     try {
       return await fetch(target.toString(), {
@@ -59,6 +59,7 @@ async function request(url: string, opts: RequestOptions = {}): Promise<Response
       lastError = error;
     } finally {
       clearTimeout(timer);
+      opts.signal?.removeEventListener("abort", onExternalAbort);
     }
   }
   throw lastError instanceof Error ? lastError : new Error("Request failed");
