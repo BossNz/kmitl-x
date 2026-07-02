@@ -29,11 +29,21 @@
 
   <div class="mt-4 flex flex-wrap items-center gap-3">
     <span class="text-sm text-slate-500 dark:text-slate-400">ปีการศึกษา</span>
-    <select bind:value={year} on:change={reload} class={selectClass}>
+    <select
+      bind:value={year}
+      on:change={reload}
+      class={selectClass}
+      aria-label="ปีการศึกษา"
+    >
       {#each yearOptions as y (y)}<option value={y}>{y}</option>{/each}
     </select>
     <span class="text-sm text-slate-500 dark:text-slate-400">ภาคการศึกษา</span>
-    <select bind:value={semester} on:change={reload} class={selectClass}>
+    <select
+      bind:value={semester}
+      on:change={reload}
+      class={selectClass}
+      aria-label="ภาคการศึกษา"
+    >
       {#each semesterOptions as s (s)}<option value={s}>{s}</option>{/each}
     </select>
   </div>

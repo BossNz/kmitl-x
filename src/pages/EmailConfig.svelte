@@ -41,6 +41,7 @@
         >
           <input
             type="radio"
+            name="group0"
             bind:group={choice}
             value={opt.value}
             class="accent-orange-500"
