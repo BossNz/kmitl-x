@@ -13,7 +13,7 @@
     "zip": "wxt zip",
     "zip:firefox": "wxt zip -b firefox",
     "zip:opera": "wxt zip -b opera",
-    "check": "wxt prepare && svelte-check --tsconfig ./tsconfig.json",
+    "typecheck": "wxt prepare && svelte-check --tsconfig ./tsconfig.json",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",

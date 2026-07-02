@@ -67,7 +67,7 @@ yarn zip:opera
 ## ✅ Checks
 
 ```bash
-yarn check   # svelte-check types
+yarn typecheck   # svelte-check types
 yarn lint    # eslint
 yarn test    # vitest
 ```

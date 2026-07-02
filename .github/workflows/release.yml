@@ -34,7 +34,7 @@ jobs:
 
       - name: Quality gate
         run: |
-          yarn check
+          yarn typecheck
           yarn lint
           yarn test
 
