@@ -20,7 +20,7 @@ export const pages: PageDefinition[] = [
   },
   {
     name: "term-selectors",
-    match: /u_student\/(report_(examtable|studytable|gradetable))\.php/,
+    match: /u_student\/(report_(examtable|studytable|gradetable)|ownersubjweb)\.php/,
     scraper: () =>
       import("../scraper/term-selectors.scraper").then(
         (m) => new m.TermSelectorsScraper()
@@ -71,6 +71,24 @@ export const pages: PageDefinition[] = [
         (m) => new m.ReportTranscriptScraper()
       ),
     component: () => import("../../pages/Transcript.svelte"),
+  },
+  {
+    name: "ownersubjweb-show",
+    match: /u_student\/ownersubjweb_show\.php/,
+    scraper: () =>
+      import("../scraper/ownersubjweb.scraper").then(
+        (m) => new m.OwnersubjwebScraper()
+      ),
+    component: () => import("../../pages/OwnersubjwebShow.svelte"),
+  },
+  {
+    name: "check-regis",
+    match: /u_student\/check_regis_no_right\.php/,
+    scraper: () =>
+      import("../scraper/check-regis.scraper").then(
+        (m) => new m.CheckRegisScraper()
+      ),
+    component: () => import("../../pages/CheckRegis.svelte"),
   },
   {
     // static image page, kept as a placeholder rather than reskinned
