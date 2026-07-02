@@ -16,7 +16,7 @@
   />
 
   <div class="mt-4 space-y-2">
-    {#each subjects as subject (subject.code + subject.name)}
+    {#each subjects as subject, i (subject.code + "-" + i)}
       <a
         href={subject.url}
         target="_blank"

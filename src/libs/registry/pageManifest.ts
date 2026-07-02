@@ -116,6 +116,24 @@ export const pages: PageDefinition[] = [
     component: () => import("../../pages/MinorProgram.svelte"),
   },
   {
+    name: "payment-receipt",
+    match: /payment\/print_receipt\.php/,
+    scraper: () =>
+      import("../scraper/payment-receipt.scraper").then(
+        (m) => new m.PaymentReceiptScraper()
+      ),
+    component: () => import("../../pages/PaymentReceipt.svelte"),
+  },
+  {
+    name: "email-config",
+    match: /u_student\/email_config\.php/,
+    scraper: () =>
+      import("../scraper/email-config.scraper").then(
+        (m) => new m.EmailConfigScraper()
+      ),
+    component: () => import("../../pages/EmailConfig.svelte"),
+  },
+  {
     // static image page, kept as a placeholder rather than reskinned
     name: "grade-process",
     match: /u_student\/grade_process\.php/,
