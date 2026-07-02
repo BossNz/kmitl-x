@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { ExamTable } from "../../types/report-examtable.types";
+  import KmitlLogo from "../common/KmitlLogo.svelte";
   export let studentInfo: ExamTable["studentInfo"];
   export let type: ExamTable["type"];
 </script>
@@ -9,11 +10,7 @@
 >
   <div class="flex justify-between">
     <!-- Left (Logo) -->
-    <img
-      src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/94/KMITL_Sublogo.svg/1024px-KMITL_Sublogo.svg.png"
-      alt="kmitl logo"
-      class="w-40 my-auto transition-all"
-    />
+    <KmitlLogo class="w-40 my-auto shrink-0 transition-all" />
 
     <!-- Right -->
     <div class="text-right my-auto">
