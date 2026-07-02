@@ -91,6 +91,31 @@ export const pages: PageDefinition[] = [
     component: () => import("../../pages/CheckRegis.svelte"),
   },
   {
+    name: "minor",
+    match: /u_student\/minor\.php/,
+    scraper: () =>
+      import("../scraper/minor.scraper").then((m) => new m.MinorScraper()),
+    component: () => import("../../pages/Minor.svelte"),
+  },
+  {
+    name: "minor-news",
+    match: /u_student\/minor_news\.php/,
+    scraper: () =>
+      import("../scraper/minor-news.scraper").then(
+        (m) => new m.MinorNewsScraper()
+      ),
+    component: () => import("../../pages/MinorNews.svelte"),
+  },
+  {
+    name: "minor-program",
+    match: /u_student\/minor_program\.php/,
+    scraper: () =>
+      import("../scraper/minor-program.scraper").then(
+        (m) => new m.MinorProgramScraper()
+      ),
+    component: () => import("../../pages/MinorProgram.svelte"),
+  },
+  {
     // static image page, kept as a placeholder rather than reskinned
     name: "grade-process",
     match: /u_student\/grade_process\.php/,
