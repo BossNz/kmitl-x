@@ -23,6 +23,14 @@ describe("PaymentReceiptScraper", () => {
           <td><a href="http://x/files/fee.pdf">อัตราค่าธรรมเนียม</a></td>
           <td><a href="http://x/files/fee.pdf"><img src="pdf16.gif"></a></td>
         </tr>
+        <tr bgcolor="#FDF3E7">
+          <td><a href="http://x/files/form.pdf">แบบฟอร์ม</a></td>
+          <td><a href="http://x/files/form.pdf"><img src="pdf16.gif"></a></td>
+        </tr>
+        <tr bgcolor="#ECECEC">
+          <td><a href="http://x/files/fee.pdf">อัตราค่าธรรมเนียม (ซ้ำ)</a></td>
+          <td><a href="http://x/files/fee.pdf"><img src="pdf16.gif"></a></td>
+        </tr>
       </tbody></table>`;
     const doc = new DOMParser().parseFromString(html, "text/html");
     const r = await new PaymentReceiptScraper().scrape(doc);
@@ -33,8 +41,12 @@ describe("PaymentReceiptScraper", () => {
     expect(r.records).toHaveLength(1);
     expect(r.records[0].studentId).toBe("68010488");
     expect(r.records[0].status).toBe("ยังไม่ได้ร้องขอ");
-    expect(r.documents).toHaveLength(1);
+    // fee.pdf appears twice but is de-duplicated
+    expect(r.documents).toHaveLength(2);
+    expect(r.documents.map((d) => d.url)).toEqual([
+      "http://x/files/fee.pdf",
+      "http://x/files/form.pdf",
+    ]);
     expect(r.documents[0].name).toBe("อัตราค่าธรรมเนียม");
-    expect(r.documents[0].url).toContain("fee.pdf");
   });
 });

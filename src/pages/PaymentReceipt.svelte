@@ -77,7 +77,7 @@
       เอกสารประกอบการเบิก
     </h2>
     <div class="grid gap-2 sm:grid-cols-2">
-      {#each documents as doc (doc.url)}
+      {#each documents as doc, i (doc.url + "-" + i)}
         <a
           href={doc.url}
           target="_blank"

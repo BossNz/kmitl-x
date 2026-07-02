@@ -37,7 +37,7 @@
         </tr>
       </thead>
       <tbody>
-        {#each midtermScores as subject (subject.subjectCode + subject.section)}
+        {#each midtermScores as subject, i (subject.subjectCode + "-" + i)}
           <tr class="border-t dark:border-white/10 border-slate-200">
             <td class="px-3 py-2 font-medium text-orange-500">
               {subject.subjectCode}
