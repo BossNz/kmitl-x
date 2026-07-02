@@ -45,6 +45,7 @@
     add("semester", semester);
     document.body.appendChild(form);
     form.submit();
+    form.remove();
   }
 </script>
 
