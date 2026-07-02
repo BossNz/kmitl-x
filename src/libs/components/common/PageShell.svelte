@@ -1,15 +1,11 @@
 <script lang="ts">
-  import { onMount } from "svelte";
   import Icon from "@iconify/svelte";
   import { getTheme, setTheme } from "../../utils/themeManager";
   import Button from "./Button.svelte";
 
-  let theme: "light" | "dark" = "dark";
-
-  onMount(() => {
-    theme = getTheme();
-    setTheme(theme);
-  });
+  // Initialized synchronously so the toggle shows the right state on first
+  // paint. The mount wrapper already applies the theme class to the root.
+  let theme: "light" | "dark" = getTheme();
 
   function toggleTheme() {
     theme = theme === "dark" ? "light" : "dark";

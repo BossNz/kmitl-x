@@ -50,7 +50,9 @@
       <div class="flex justify-between gap-4">
         <dt class="text-slate-500 dark:text-slate-400">วันเกิด</dt>
         <dd class="font-medium">
-          {birth ? `${birth.day} ${birth.month} ${birth.year}` : "-"}
+          {birth && birth.day
+            ? `${birth.day} ${birth.month} ${birth.year}`
+            : "-"}
         </dd>
       </div>
       <div class="flex justify-between gap-4">

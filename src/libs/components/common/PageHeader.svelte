@@ -11,6 +11,9 @@
       src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/94/KMITL_Sublogo.svg/1024px-KMITL_Sublogo.svg.png"
       alt="KMITL logo"
       class="w-40 my-auto"
+      referrerpolicy="no-referrer"
+      loading="lazy"
+      decoding="async"
     />
     <div class="text-right my-auto">
       <h1 class="text-2xl font-bold">{title}</h1>
