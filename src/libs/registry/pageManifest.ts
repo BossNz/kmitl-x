@@ -25,6 +25,7 @@ export const pages: PageDefinition[] = [
       import("../scraper/term-selectors.scraper").then(
         (m) => new m.TermSelectorsScraper()
       ),
+    component: () => import("../../pages/TermSelectors.svelte"),
   },
   {
     name: "report-studytable",
