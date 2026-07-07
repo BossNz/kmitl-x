@@ -134,6 +134,15 @@ export const pages: PageDefinition[] = [
     component: () => import("../../pages/EmailConfig.svelte"),
   },
   {
+    name: "bug-report",
+    match: /bug\/report\.php/,
+    scraper: () =>
+      import("../scraper/bug-report.scraper").then(
+        (m) => new m.BugReportScraper()
+      ),
+    component: () => import("../../pages/BugReport.svelte"),
+  },
+  {
     // static image page, kept as a placeholder rather than reskinned
     name: "grade-process",
     match: /u_student\/grade_process\.php/,
