@@ -23,10 +23,12 @@ export class BugReportScraper extends BaseScraper {
       document.querySelector<HTMLInputElement>("#ssid, input[name='ssid']")
         ?.value || "";
 
-    const form = document.querySelector<HTMLFormElement>(
-      "form[action*='save.php'], form"
+    // Prefer the save form; fall back to the known endpoint rather than some
+    // other form that might be on the page.
+    const saveForm = document.querySelector<HTMLFormElement>(
+      "form[action*='save.php']"
     );
-    const action = form?.action || `${location.origin}/bug/save.php`;
+    const action = saveForm?.action || `${location.origin}/bug/save.php`;
 
     return { studentId, name, semester, typeOptions, ssid, action };
   }
