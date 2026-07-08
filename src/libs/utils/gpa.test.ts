@@ -8,6 +8,11 @@ describe("gradePoint", () => {
     expect(gradePoint("F")).toBe(0);
   });
 
+  it("normalizes case and surrounding whitespace", () => {
+    expect(gradePoint(" a ")).toBe(4);
+    expect(gradePoint("b+")).toBe(3.5);
+  });
+
   it("returns null for non-GPA grades", () => {
     expect(gradePoint("W")).toBeNull();
     expect(gradePoint("S")).toBeNull();

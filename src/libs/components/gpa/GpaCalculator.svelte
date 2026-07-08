@@ -116,24 +116,28 @@
   </div>
 
   <div class="space-y-2">
-    {#each rows as row (row.id)}
+    {#each rows as row, i (row.id)}
       <div class="flex items-center gap-2">
         {#if row.fixed}
           <span class="flex-1 text-sm truncate" title={row.name}
             >{row.name}</span
           >
         {:else}
-          <input bind:value={row.name} class="flex-1 {fieldClass}" />
+          <input bind:value={rows[i].name} class="flex-1 {fieldClass}" />
         {/if}
         <input
           type="number"
-          bind:value={row.credit}
+          bind:value={rows[i].credit}
           min="0"
           step="1"
           aria-label="หน่วยกิต"
           class="w-16 text-center {fieldClass}"
         />
-        <select bind:value={row.grade} aria-label="เกรด" class="w-20 {fieldClass}">
+        <select
+          bind:value={rows[i].grade}
+          aria-label="เกรด"
+          class="w-20 {fieldClass}"
+        >
           {#each GRADE_OPTIONS as g (g)}
             <option value={g}>{g}</option>
           {/each}
