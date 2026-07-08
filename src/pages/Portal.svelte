@@ -694,15 +694,11 @@
                   </div>
                 {/if}
               </div>
-              <!-- Photo -->
+              <!-- Photo (initial avatar; real photo needs the kmitl1 token) -->
               <div
-                class="w-10 h-10 rounded-full bg-slate-700 border-2 border-orange-500/50 p-0.5 cursor-pointer hover:border-orange-500 transition-colors"
+                class="w-10 h-10 rounded-full bg-orange-500 border-2 border-orange-500/50 flex items-center justify-center text-white font-bold cursor-pointer hover:border-orange-500 transition-colors"
               >
-                <img
-                  src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix"
-                  alt="User"
-                  class="w-full h-full rounded-full bg-slate-800"
-                />
+                {studentData?.name ? studentData.name.charAt(0) : "?"}
               </div>
             </div>
 
