@@ -18,7 +18,16 @@ export function saveMenu(links: MenuLink[]): void {
 export function loadMenu(): MenuLink[] {
   try {
     const raw = localStorage.getItem(MENU_KEY);
-    if (raw) return JSON.parse(raw) as MenuLink[];
+    if (!raw) return [];
+    const parsed: unknown = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return [];
+    // The store shares the page's origin, so validate the shape defensively.
+    return parsed.filter(
+      (x): x is MenuLink =>
+        !!x &&
+        typeof (x as MenuLink).label === "string" &&
+        typeof (x as MenuLink).url === "string"
+    );
   } catch {
     // ignore malformed or unavailable storage
   }

@@ -30,8 +30,22 @@
     open = false;
   }
 
+  // Only navigate to KMITL http(s) URLs. The menu comes from storage, which the
+  // host page shares and could write to.
+  function isSafeUrl(url: string): boolean {
+    try {
+      const u = new URL(url, location.href);
+      if (u.protocol !== "https:" && u.protocol !== "http:") return false;
+      return (
+        u.hostname === location.hostname || u.hostname.endsWith(".kmitl.ac.th")
+      );
+    } catch {
+      return false;
+    }
+  }
+
   function go(item: MenuLink | undefined) {
-    if (!item) return;
+    if (!item || !isSafeUrl(item.url)) return;
     closePalette();
     window.location.href = item.url;
   }
@@ -49,7 +63,7 @@
       closePalette();
     } else if (e.key === "ArrowDown") {
       e.preventDefault();
-      activeIndex = Math.min(activeIndex + 1, filtered.length - 1);
+      activeIndex = Math.max(0, Math.min(activeIndex + 1, filtered.length - 1));
     } else if (e.key === "ArrowUp") {
       e.preventDefault();
       activeIndex = Math.max(activeIndex - 1, 0);
@@ -86,6 +100,7 @@
           bind:this={inputEl}
           bind:value={query}
           placeholder="ค้นหาเมนู..."
+          aria-label="ค้นหาเมนู"
           class="flex-1 py-3 bg-transparent outline-none text-sm dark:text-white text-gray-900"
         />
         <kbd class="text-xs text-slate-400">Esc</kbd>
