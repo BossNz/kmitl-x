@@ -20,6 +20,12 @@
   // Student data — loaded once and shared with PortalHome
   let studentData: PortalStudentData | null = null;
   let studentDataError = false;
+  let photoError = false;
+
+  // Real student card photo from the KMITL API; falls back to an icon on error.
+  $: photoUrl = studentData?.studentId
+    ? `https://kmitl1.reg.kmitl.ac.th/api/?student_id=${studentData.studentId}&function=get-student-card-photo&type=file`
+    : "";
 
   let timer: ReturnType<typeof setInterval> | null = null;
   let clock: Date = new Date(meta.initialServerTime);
@@ -685,13 +691,22 @@
               </div>
               <!-- Photo -->
               <div
-                class="w-10 h-10 rounded-full bg-slate-700 border-2 border-orange-500/50 p-0.5 cursor-pointer hover:border-orange-500 transition-colors"
+                class="w-10 h-10 rounded-full bg-slate-700 border-2 border-orange-500/50 p-0.5 cursor-pointer hover:border-orange-500 transition-colors overflow-hidden"
               >
-                <img
-                  src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix"
-                  alt="User"
-                  class="w-full h-full rounded-full bg-slate-800"
-                />
+                {#if photoUrl && !photoError}
+                  <img
+                    src={photoUrl}
+                    alt="รูปนักศึกษา"
+                    class="w-full h-full rounded-full object-cover bg-slate-800"
+                    on:error={() => (photoError = true)}
+                  />
+                {:else}
+                  <div
+                    class="w-full h-full rounded-full bg-slate-800 flex items-center justify-center text-slate-400"
+                  >
+                    <Icon icon="mdi:account" class="w-5 h-5" />
+                  </div>
+                {/if}
               </div>
             </div>
 
