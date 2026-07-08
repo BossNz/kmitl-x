@@ -7,7 +7,13 @@
   } from "../../types/portal.types";
   import Icon from "@iconify/svelte";
   import TodaySchedule from "./TodaySchedule.svelte";
-  import { getCurrentYearSemester, type YearSemester } from "../../data";
+  import {
+    getCurrentYearSemester,
+    getGpax,
+    getNextExam,
+    type YearSemester,
+    type NextExam,
+  } from "../../data";
 
   export let meta: PortalMeta;
   export let sections: PortalSection[];
@@ -16,6 +22,8 @@
 
   let semester: YearSemester | null = null;
   let semesterLoading = true;
+  let gpax = "";
+  let nextExam: NextExam | null = null;
 
   $: semesterLabel = semester ? `${semester.SEMESTER}/${semester.YEAR}` : null;
   $: studentFirstName = studentData ? studentData.name.split(" ")[0] : null;
@@ -113,6 +121,15 @@
       semester = null;
     } finally {
       semesterLoading = false;
+    }
+
+    if (semester) {
+      getGpax(semester.YEAR, semester.SEMESTER)
+        .then((value) => (gpax = value))
+        .catch(() => {});
+      getNextExam(semester.YEAR, semester.SEMESTER)
+        .then((value) => (nextExam = value))
+        .catch(() => {});
     }
   });
 </script>
@@ -254,6 +271,59 @@
         >
           <Icon class="w-7 h-7" icon="mdi:card-account-details-outline" />
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Row: at-a-glance stats -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+    <div
+      class="bg-white dark:bg-[#1e293b66] border border-slate-200 dark:border-white/10 rounded-3xl p-6 flex items-center justify-between hover:border-orange-500/30 transition-colors"
+    >
+      <div>
+        <p class="text-sm text-slate-500 dark:text-slate-400 font-medium mb-1">
+          เกรดเฉลี่ยสะสม (GPAX)
+        </p>
+        {#if gpax}
+          <p class="text-3xl font-bold text-slate-900 dark:text-white">
+            {gpax}
+          </p>
+        {:else}
+          <p class="text-sm text-slate-400">-</p>
+        {/if}
+      </div>
+      <div
+        class="w-14 h-14 rounded-2xl bg-green-500/10 flex items-center justify-center text-green-500 shrink-0"
+      >
+        <Icon class="w-7 h-7" icon="mdi:chart-line" />
+      </div>
+    </div>
+
+    <div
+      class="bg-white dark:bg-[#1e293b66] border border-slate-200 dark:border-white/10 rounded-3xl p-6 flex items-center justify-between hover:border-orange-500/30 transition-colors"
+    >
+      <div class="min-w-0">
+        <p class="text-sm text-slate-500 dark:text-slate-400 font-medium mb-1">
+          สอบครั้งถัดไป
+        </p>
+        {#if nextExam}
+          <p class="text-lg font-bold text-slate-900 dark:text-white truncate">
+            {nextExam.subjectCode}
+            {nextExam.subjectName}
+          </p>
+          <p class="text-xs text-slate-400 mt-0.5">
+            {nextExam.day}
+            {nextExam.month}
+            {nextExam.year} · อีก {nextExam.daysUntil} วัน
+          </p>
+        {:else}
+          <p class="text-sm text-slate-400">ไม่มีตารางสอบที่จะถึง</p>
+        {/if}
+      </div>
+      <div
+        class="w-14 h-14 rounded-2xl bg-purple-500/10 flex items-center justify-center text-purple-500 shrink-0"
+      >
+        <Icon class="w-7 h-7" icon="mdi:clipboard-text-clock" />
       </div>
     </div>
   </div>
