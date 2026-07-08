@@ -13,6 +13,7 @@
   import type { StudentProfile } from "../libs/types/student.types";
   import { logger } from "../libs/utils/logger";
   import { switchLanguage } from "../libs/i18n";
+  import { saveMenu } from "../libs/utils/menu";
 
   export let meta: PortalScraperResult["meta"];
   export let sections: PortalScraperResult["sections"];
@@ -58,6 +59,16 @@
 
     // Load student data
     loadStudentData();
+
+    // Cache the menu so the command palette can offer it on every page
+    saveMenu(
+      sections.flatMap((section) =>
+        section.items.map((item) => ({
+          label: item.label,
+          url: item.absoluteUrl,
+        }))
+      )
+    );
   });
 
   onDestroy(() => {

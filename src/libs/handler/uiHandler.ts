@@ -1,6 +1,7 @@
 import { mount } from "svelte";
 import tailwind from "../../assets/css/tailwind.css?inline";
 import { getTheme } from "../utils/themeManager";
+import CommandPalette from "../components/common/CommandPalette.svelte";
 
 // Wait for DOM to be ready
 export function onDOMReady(): Promise<void> {
@@ -102,6 +103,8 @@ export async function mountUI(
       target: appRoot,
       props,
     });
+    // Global command palette (Ctrl-K) available on every reskinned page.
+    mount(CommandPalette, { target: appRoot });
     resolve();
   });
 }
