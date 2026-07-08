@@ -2,6 +2,7 @@
   import PageShell from "../libs/components/common/PageShell.svelte";
   import PageHeader from "../libs/components/common/PageHeader.svelte";
   import Icon from "@iconify/svelte";
+  import GpaCalculator from "../libs/components/gpa/GpaCalculator.svelte";
   import type { ReportGradeTable } from "../libs/types/report-gradetable.types";
 
   export let studentInfo: ReportGradeTable["studentInfo"];
@@ -101,6 +102,10 @@
       </table>
     </div>
   {/if}
+
+  <div class="mt-4">
+    <GpaCalculator {gradeTable} {gradeSummary} />
+  </div>
 
   {#if gradeSymbol && gradeSymbol.symbols.length}
     <div
